@@ -4,12 +4,14 @@
 
 Server functions run on the server and are called from the client like async functions. They replace Next.js Server Actions.
 
+**Isomorphic behavior:** On the server, the handler runs directly. On the client (e.g. loader during soft nav), the call becomes a typed RPC request.
+
 **Definition:** Use `.inputValidator()` (not `.validator()`); the client receives a function that expects `{ data: T }`.
 
 ```tsx
-import { createServerFn } from '@tanstack/start';
+import { createServerFn } from '@tanstack/react-start';
 
-export const updateName = createServerFn({ method: 'POST' })
+export const updateNameFn = createServerFn({ method: 'POST' })
   .inputValidator((data: { name: string }) => {
     if (typeof data.name !== 'string' || data.name.length < 2) throw new Error('Invalid name');
     return data;
@@ -23,19 +25,32 @@ export const updateName = createServerFn({ method: 'POST' })
 **From client:**
 
 ```tsx
-'use client';
-import { updateName } from './profile.server';
+import { updateNameFn } from '@/server/profile/profile.functions';
 
-await updateName({ data: { name: 'Jane' } });
+await updateNameFn({ data: { name: 'Jane' } });
 ```
 
-- **method:** Use `'POST'` for mutations. Omit or use GET only for idempotent reads.
-- **validator:** Runs on server (and can run on client for optimistic validation). Throw or return validated payload; handler receives `{ data }`.
-- **handler:** Async; receives `{ data }` from validator. Run DB, external APIs, etc. Return serializable value.
+- **method:** `'POST'` for mutations; `'GET'` (or omit) for idempotent reads.
+- **inputValidator:** Validate before handler; handler receives `{ data }`.
+- **handler:** Async; DB, external APIs, fs. Return serializable value.
 
-## File Convention
+## FMC file conventions
 
-Keep server-only code out of client bundle: put server functions in `*.server.ts` or under `server/`. Import only the function reference in client code; implementation stays on server.
+| Suffix | Purpose |
+|--------|---------|
+| `*.server.ts` | Server-only modules; use `createServerOnlyFn` for exports — **never** imported by routes/components |
+| `*.functions.ts` | `createServerFn` exports (`*Fn` naming); imported by routes and components |
+
+Example layout:
+
+```
+server/profile/
+├── queries/getProfile.server.ts
+├── mutations/updateProfile.server.ts
+└── profile.functions.ts    # updateProfileFn, getProfileFn
+```
+
+Route files call server fns in `loader` / `beforeLoad` — not direct `*.server.ts` imports.
 
 ## Validation (Zod)
 
@@ -44,7 +59,7 @@ import { z } from 'zod';
 
 const schema = z.object({ name: z.string().min(2), email: z.string().email() });
 
-export const submitForm = createServerFn({ method: 'POST' })
+export const submitFormFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) => schema.parse(data))
   .handler(async ({ data }) => {
     // data: { name: string; email: string }
@@ -53,33 +68,34 @@ export const submitForm = createServerFn({ method: 'POST' })
 
 ## Errors
 
-- Throw in handler → client receives error. Use `try/catch` at call site and/or global error boundary.
-- For validation errors, throw a structured error (e.g. `ValidationError`) so client can show field-level messages.
+- Throw in handler → client receives error. Use `try/catch` at call site and/or route `errorComponent`.
+- For validation errors, throw structured errors for field-level UI.
 
 ## Invalidation After Mutations
 
-After a server function that changes data used by a route loader, invalidate so the loader re-runs:
+After a mutation that changes loader/Query data:
 
-- **TanStack Router:** `router.invalidate()` or invalidate specific route/loader.
-- **React Query:** `queryClient.invalidateQueries({ queryKey: ['users'] })` if loaders use the same query key.
+- **React Query:** `queryClient.invalidateQueries({ queryKey: [...] })`
+- **Router:** `router.invalidate()` for loader-only routes
 
 Call invalidation after `await serverFn(...)` in the same event handler.
 
 ## No formAction
 
-Next.js `formAction={action}` does not exist. Use:
+Use `onSubmit` → server fn → invalidate/redirect. Optional `useTransition` for pending state.
 
-- `onSubmit` that calls the server function and then invalidates or redirects.
-- Optional: `useTransition` or local state for `isPending` to disable submit or show loading.
+## Auth note
+
+Route `beforeLoad` protects the page UX; it does **not** stop direct RPC to a server function. Apply auth checks inside every server function handler that needs it. See `tanstack-start-auth`.
 
 ## Multiple Arguments
 
-Validator can accept a single payload; for multiple args, pass an object:
+Pass a single object via validator:
 
 ```tsx
-export const updateItem = createServerFn({ method: 'POST' })
+export const updateItemFn = createServerFn({ method: 'POST' })
   .inputValidator((input: { id: string; name: string }) => input)
   .handler(async ({ data }) => { ... });
 ```
 
-Call: `updateItem({ data: { id: '1', name: 'Foo' } })`.
+Call: `updateItemFn({ data: { id: '1', name: 'Foo' } })`.

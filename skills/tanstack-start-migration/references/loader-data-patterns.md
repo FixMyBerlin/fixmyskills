@@ -1,89 +1,100 @@
 # Loader & Data Patterns (TanStack Start)
 
-## Loader Contract
+## Loader runs on server AND client
 
-- **Runs:** On server when route is loaded (SSR) or on client in SPA mode. Re-runs when dependencies change if using `loaderDeps`.
-- **Arguments:** `{ params, search?, context, deps? }` — typed from route `path` and `validateSearch`.
-- **Return:** Serializable object (no functions, no Symbols). Passed to component via `Route.useLoaderData()` or `useLoaderData({ from: routeId })`.
+On **hard refresh / first visit**, the loader runs on the server (SSR). On **client-side navigation**, the same loader runs in the browser.
 
-## loaderDeps — When to Re-run
+**Rule:** Anything that needs DB, filesystem, env secrets, or server-only APIs must be inside a `createServerFn` that the loader calls — not inline in the loader body.
 
-Loader runs on route load. To re-run when search params or something external change, use `loaderDeps`:
+```tsx
+// WRONG — breaks on client nav
+loader: async () => {
+  const posts = await fs.readdir('content/posts')
+  return { posts }
+}
+
+// CORRECT
+loader: () => getAllPostsFn()
+```
+
+## Loader contract
+
+- **Arguments:** `{ params, search?, context, deps? }` — typed from route path and `validateSearch`.
+- **Return:** Serializable object (no functions, class instances). Passed via `Route.useLoaderData()` when not using Query.
+
+## loaderDeps — when to re-run
 
 ```tsx
 export const Route = createFileRoute('/products')({
   validateSearch: z.object({ q: z.string().optional(), page: z.number().default(1) }),
   loaderDeps: ({ search }) => ({ q: search.q, page: search.page }),
   loader: async ({ deps }) => {
-    const list = await fetchProducts({ q: deps.q, page: deps.page });
-    return { list };
+    return { list: await fetchProductsFn({ data: deps }) };
   },
   component: ProductsPage,
 });
 ```
 
-When `search.q` or `search.page` changes, loader runs again. Don’t put side effects that must run only once in the loader; use `beforeLoad` or app-level init for that.
+## beforeLoad — auth & redirects (FMC default)
 
-## beforeLoad — Auth & Redirects
-
-Runs before loader. Use for redirects and injecting shared context (e.g. user):
+Runs before loader. Use for redirects and light context — via server functions, not direct DB/session in route files:
 
 ```tsx
 export const Route = createFileRoute('/dashboard')({
-  beforeLoad: async ({ location }) => {
-    const user = await getSession();
-    if (!user) throw redirect({ to: '/login', search: { redirect: location.href } });
-    return { user };
+  beforeLoad: async () => {
+    const session = await getSessionFn();
+    if (!session) throw redirect({ to: '/login' });
+    return { session };
   },
   loader: async ({ context }) => {
-    // context.user from beforeLoad
-    return { projects: await getProjects(context.user.id) };
+    return { projects: await getProjectsFn({ data: { userId: context.session.userId } }) };
   },
   component: Dashboard,
 });
 ```
 
-Return value from `beforeLoad` is merged into route context for that route and children.
+See `tanstack-start-auth` for session-via-Headers patterns.
 
-## Errors
+## FMC: React Query integration (preferred)
 
-- **Throw in loader:** Caught by route’s `errorComponent` if defined, or bubble to root error boundary.
-- **Not found:** `throw notFound()` (TanStack Router) or return 404 in loader and render a not-found UI.
+For shared, invalidatable, or multi-route data:
 
-## Pending & Streaming
-
-- **pendingComponent:** Shown while loader is in flight (e.g. skeleton).
-- **Streaming:** Loader runs on server; result streamed when ready. No extra config for basic streaming.
-
-## Prefetching
-
-Use router’s `preloadRoute` or `Link` with prefetch to run loader before navigation:
+1. Define `*QueryOptions` in `src/server/<domain>/`.
+2. Loader: `context.queryClient.ensureQueryData(...)` (await if SSR/`head` needs resolved data).
+3. Component: `useSuspenseQuery(sameOptions)` — **not** `useLoaderData` alone.
 
 ```tsx
-<Link to="/users/$userId" params={{ userId }} preload="intent" />
-```
+export const postsQueryOptions = () =>
+  queryOptions({ queryKey: ['posts'], queryFn: () => getAllPostsFn() });
 
-## React Query Integration
-
-Prefill query client in loader so component can use `useQuery` with same key:
-
-```tsx
-const userOptions = (id: string) => queryOptions({ queryKey: ['user', id], queryFn: () => fetchUser(id) });
-
-export const Route = createFileRoute('/users/$userId')({
-  loader: ({ context, params }) => context.queryClient.ensureQueryData(userOptions(params.userId)),
-  component: UserPage,
+export const Route = createFileRoute('/')({
+  loader: ({ context }) => context.queryClient.ensureQueryData(postsQueryOptions()),
+  component: HomePage,
 });
 
-function UserPage() {
-  const { userId } = Route.useParams();
-  const { data: user } = useQuery(userOptions(userId));
-  return <div>{user?.name}</div>;
+function HomePage() {
+  const { data: posts } = useSuspenseQuery(postsQueryOptions());
+  return <ul>{posts.map(...)}</ul>;
 }
 ```
 
+Query cache dehydrates from server to client automatically via `@tanstack/react-router-ssr-query`.
+
+**One-off admin data:** Loader return + `useLoaderData()` is acceptable when Query invalidation is not needed.
+
+## Errors
+
+- Throw in loader → route `errorComponent` or root error boundary.
+- Not found: `throw notFound()`.
+
+## Pending & prefetch
+
+- **pendingComponent:** Skeleton while loader in flight.
+- **Link prefetch:** `<Link preload="intent" ... />` or `router.preloadRoute`.
+
 ## Gotchas
 
-1. **Loader runs per route activation** — not once per app. Use `loaderDeps` for reactive refetch.
-2. **Serialization** — returned value must be JSON-serializable (no functions, class instances, undefined in arrays).
-3. **Context** — Type router context generically so `context` in loader/`beforeLoad` is typed (e.g. `createRootRoute<{ user: User | null }>()`).
+1. **Loader per route activation** — use `loaderDeps` for search/param-driven refetch.
+2. **Serialization** — JSON-serializable returns only.
+3. **Isomorphic loaders** — always route server I/O through `createServerFn`.
+4. **Query vs loader data** — Query needs an observer (`useQuery` / `useSuspenseQuery`) for refetch and cache retention.
