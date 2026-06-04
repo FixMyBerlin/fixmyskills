@@ -25,10 +25,7 @@ export default function SortableList() {
   const sortOrder = sort as SortOrder // Unsafe cast!
 
   return (
-    <select
-      value={sort ?? 'asc'}
-      onChange={e => setSort(e.target.value)}
-    >
+    <select value={sort ?? 'asc'} onChange={(e) => setSort(e.target.value)}>
       <option value="asc">Ascending</option>
       <option value="desc">Descending</option>
     </select>
@@ -45,15 +42,12 @@ import { useQueryState, parseAsStringLiteral } from 'nuqs'
 const sortOrders = ['asc', 'desc'] as const
 
 export default function SortableList() {
-  const [sort, setSort] = useQueryState(
-    'sort',
-    parseAsStringLiteral(sortOrders).withDefault('asc')
-  )
+  const [sort, setSort] = useQueryState('sort', parseAsStringLiteral(sortOrders).withDefault('asc'))
   // sort is 'asc' | 'desc' - invalid values return null/default
   // URL: ?sort=malicious → falls back to 'asc'
 
   return (
-    <select value={sort} onChange={e => setSort(e.target.value as typeof sort)}>
+    <select value={sort} onChange={(e) => setSort(e.target.value as typeof sort)}>
       <option value="asc">Ascending</option>
       <option value="desc">Descending</option>
     </select>
@@ -69,12 +63,12 @@ import { parseAsStringEnum } from 'nuqs'
 enum Status {
   Active = 'active',
   Inactive = 'inactive',
-  Pending = 'pending'
+  Pending = 'pending',
 }
 
 const [status, setStatus] = useQueryState(
   'status',
-  parseAsStringEnum<Status>(Object.values(Status)).withDefault(Status.Active)
+  parseAsStringEnum<Status>(Object.values(Status)).withDefault(Status.Active),
 )
 ```
 

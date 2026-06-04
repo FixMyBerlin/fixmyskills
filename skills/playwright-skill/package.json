@@ -2,25 +2,25 @@
   "name": "playwright-skill",
   "version": "4.1.0",
   "description": "General-purpose browser automation with Playwright for Claude Code with auto-detection and smart test management",
+  "keywords": [
+    "automation",
+    "browser-testing",
+    "claude-skill",
+    "general-purpose",
+    "playwright",
+    "web-automation"
+  ],
+  "license": "MIT",
   "author": "lackeyjb",
   "main": "run.js",
   "scripts": {
-    "setup": "bun install && bunx playwright install chromium",
-    "install-all-browsers": "bunx playwright install chromium firefox webkit"
+    "install-all-browsers": "bunx playwright install chromium firefox webkit",
+    "setup": "bun install && bunx playwright install chromium"
   },
-  "keywords": [
-    "playwright",
-    "automation",
-    "browser-testing",
-    "web-automation",
-    "claude-skill",
-    "general-purpose"
-  ],
   "dependencies": {
     "playwright": "^1.57.0"
   },
   "engines": {
     "node": ">=14.0.0"
-  },
-  "license": "MIT"
+  }
 }

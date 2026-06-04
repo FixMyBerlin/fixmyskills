@@ -9,25 +9,25 @@ Server functions run on the server and are called from the client like async fun
 **Definition:** Use `.inputValidator()` (not `.validator()`); the client receives a function that expects `{ data: T }`.
 
 ```tsx
-import { createServerFn } from '@tanstack/react-start';
+import { createServerFn } from '@tanstack/react-start'
 
 export const updateNameFn = createServerFn({ method: 'POST' })
   .inputValidator((data: { name: string }) => {
-    if (typeof data.name !== 'string' || data.name.length < 2) throw new Error('Invalid name');
-    return data;
+    if (typeof data.name !== 'string' || data.name.length < 2) throw new Error('Invalid name')
+    return data
   })
   .handler(async ({ data }) => {
-    await db.user.update({ where: { id: currentUser.id }, data: { name: data.name } });
-    return { ok: true };
-  });
+    await db.user.update({ where: { id: currentUser.id }, data: { name: data.name } })
+    return { ok: true }
+  })
 ```
 
 **From client:**
 
 ```tsx
-import { updateNameFn } from '@/server/profile/profile.functions';
+import { updateNameFn } from '@/server/profile/profile.functions'
 
-await updateNameFn({ data: { name: 'Jane' } });
+await updateNameFn({ data: { name: 'Jane' } })
 ```
 
 - **method:** `'POST'` for mutations; `'GET'` (or omit) for idempotent reads.
@@ -36,10 +36,10 @@ await updateNameFn({ data: { name: 'Jane' } });
 
 ## FMC file conventions
 
-| Suffix | Purpose |
-|--------|---------|
-| `*.server.ts` | Server-only modules; use `createServerOnlyFn` for exports — **never** imported by routes/components |
-| `*.functions.ts` | `createServerFn` exports (`*Fn` naming); imported by routes and components |
+| Suffix           | Purpose                                                                                             |
+| ---------------- | --------------------------------------------------------------------------------------------------- |
+| `*.server.ts`    | Server-only modules; use `createServerOnlyFn` for exports — **never** imported by routes/components |
+| `*.functions.ts` | `createServerFn` exports (`*Fn` naming); imported by routes and components                          |
 
 Example layout:
 
@@ -55,15 +55,15 @@ Route files call server fns in `loader` / `beforeLoad` — not direct `*.server.
 ## Validation (Zod)
 
 ```tsx
-import { z } from 'zod';
+import { z } from 'zod'
 
-const schema = z.object({ name: z.string().min(2), email: z.string().email() });
+const schema = z.object({ name: z.string().min(2), email: z.string().email() })
 
 export const submitFormFn = createServerFn({ method: 'POST' })
   .inputValidator((data: unknown) => schema.parse(data))
   .handler(async ({ data }) => {
     // data: { name: string; email: string }
-  });
+  })
 ```
 
 ## Errors

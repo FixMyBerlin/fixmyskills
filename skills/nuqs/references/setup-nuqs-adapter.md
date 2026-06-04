@@ -13,11 +13,7 @@ nuqs requires the `NuqsAdapter` provider to function. Without it, `useQueryState
 
 ```tsx
 // src/app/layout.tsx
-export default function RootLayout({
-  children
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html>
       <body>{children}</body>
@@ -33,11 +29,7 @@ export default function RootLayout({
 // src/app/layout.tsx
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
-export default function RootLayout({
-  children
-}: {
-  children: React.ReactNode
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html>
       <body>
@@ -65,6 +57,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
 ```
 
 **Available adapters:**
+
 - `nuqs/adapters/next/app` - Next.js App Router
 - `nuqs/adapters/next/pages` - Next.js Pages Router
 - `nuqs/adapters/react` - Plain React (with react-router)

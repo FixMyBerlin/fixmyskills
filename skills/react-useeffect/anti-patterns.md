@@ -7,20 +7,20 @@ If you **named** the effect honestly and the name sounds like derived state, eve
 ```tsx
 // BAD: Extra state + Effect for derived value
 function Form() {
-  const [firstName, setFirstName] = useState('Taylor');
-  const [lastName, setLastName] = useState('Swift');
-  const [fullName, setFullName] = useState('');
+  const [firstName, setFirstName] = useState('Taylor')
+  const [lastName, setLastName] = useState('Swift')
+  const [fullName, setFullName] = useState('')
 
   useEffect(() => {
-    setFullName(firstName + ' ' + lastName);
-  }, [firstName, lastName]);
+    setFullName(firstName + ' ' + lastName)
+  }, [firstName, lastName])
 }
 
 // GOOD: Calculate during rendering
 function Form() {
-  const [firstName, setFirstName] = useState('Taylor');
-  const [lastName, setLastName] = useState('Swift');
-  const fullName = firstName + ' ' + lastName; // Just compute it
+  const [firstName, setFirstName] = useState('Taylor')
+  const [lastName, setLastName] = useState('Swift')
+  const fullName = firstName + ' ' + lastName // Just compute it
 }
 ```
 
@@ -33,19 +33,16 @@ function Form() {
 ```tsx
 // BAD: Effect to filter list
 function TodoList({ todos, filter }) {
-  const [visibleTodos, setVisibleTodos] = useState([]);
+  const [visibleTodos, setVisibleTodos] = useState([])
 
   useEffect(() => {
-    setVisibleTodos(getFilteredTodos(todos, filter));
-  }, [todos, filter]);
+    setVisibleTodos(getFilteredTodos(todos, filter))
+  }, [todos, filter])
 }
 
 // GOOD: Filter during render (memoize if expensive)
 function TodoList({ todos, filter }) {
-  const visibleTodos = useMemo(
-    () => getFilteredTodos(todos, filter),
-    [todos, filter]
-  );
+  const visibleTodos = useMemo(() => getFilteredTodos(todos, filter), [todos, filter])
 }
 ```
 
@@ -56,20 +53,20 @@ function TodoList({ todos, filter }) {
 ```tsx
 // BAD: Effect to reset state
 function ProfilePage({ userId }) {
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState('')
 
   useEffect(() => {
-    setComment('');
-  }, [userId]);
+    setComment('')
+  }, [userId])
 }
 
 // GOOD: Use key prop
 function ProfilePage({ userId }) {
-  return <Profile userId={userId} key={userId} />;
+  return <Profile userId={userId} key={userId} />
 }
 
 function Profile({ userId }) {
-  const [comment, setComment] = useState(''); // Resets automatically
+  const [comment, setComment] = useState('') // Resets automatically
 }
 ```
 
@@ -84,20 +81,20 @@ function Profile({ userId }) {
 function ProductPage({ product, addToCart }) {
   useEffect(() => {
     if (product.isInCart) {
-      showNotification(`Added ${product.name}!`);
+      showNotification(`Added ${product.name}!`)
     }
-  }, [product]);
+  }, [product])
 
   function handleBuyClick() {
-    addToCart(product);
+    addToCart(product)
   }
 }
 
 // GOOD: Handle in event handler
 function ProductPage({ product, addToCart }) {
   function handleBuyClick() {
-    addToCart(product);
-    showNotification(`Added ${product.name}!`);
+    addToCart(product)
+    showNotification(`Added ${product.name}!`)
   }
 }
 ```
@@ -111,45 +108,45 @@ function ProductPage({ product, addToCart }) {
 ```tsx
 // BAD: Effects triggering each other
 function Game() {
-  const [card, setCard] = useState(null);
-  const [goldCardCount, setGoldCardCount] = useState(0);
-  const [round, setRound] = useState(1);
-  const [isGameOver, setIsGameOver] = useState(false);
+  const [card, setCard] = useState(null)
+  const [goldCardCount, setGoldCardCount] = useState(0)
+  const [round, setRound] = useState(1)
+  const [isGameOver, setIsGameOver] = useState(false)
 
   useEffect(() => {
-    if (card?.gold) setGoldCardCount(c => c + 1);
-  }, [card]);
+    if (card?.gold) setGoldCardCount((c) => c + 1)
+  }, [card])
 
   useEffect(() => {
     if (goldCardCount > 3) {
-      setRound(r => r + 1);
-      setGoldCardCount(0);
+      setRound((r) => r + 1)
+      setGoldCardCount(0)
     }
-  }, [goldCardCount]);
+  }, [goldCardCount])
 
   useEffect(() => {
-    if (round > 5) setIsGameOver(true);
-  }, [round]);
+    if (round > 5) setIsGameOver(true)
+  }, [round])
 }
 
 // GOOD: Calculate in event handler
 function Game() {
-  const [card, setCard] = useState(null);
-  const [goldCardCount, setGoldCardCount] = useState(0);
-  const [round, setRound] = useState(1);
-  const isGameOver = round > 5; // Derived!
+  const [card, setCard] = useState(null)
+  const [goldCardCount, setGoldCardCount] = useState(0)
+  const [round, setRound] = useState(1)
+  const isGameOver = round > 5 // Derived!
 
   function handlePlaceCard(nextCard) {
-    if (isGameOver) throw Error('Game ended');
+    if (isGameOver) throw Error('Game ended')
 
-    setCard(nextCard);
+    setCard(nextCard)
     if (nextCard.gold) {
       if (goldCardCount < 3) {
-        setGoldCardCount(goldCardCount + 1);
+        setGoldCardCount(goldCardCount + 1)
       } else {
-        setGoldCardCount(0);
-        setRound(round + 1);
-        if (round === 5) alert('Good game!');
+        setGoldCardCount(0)
+        setRound(round + 1)
+        if (round === 5) alert('Good game!')
       }
     }
   }
@@ -165,35 +162,35 @@ function Game() {
 ```tsx
 // BAD: Effect to notify parent
 function Toggle({ onChange }) {
-  const [isOn, setIsOn] = useState(false);
+  const [isOn, setIsOn] = useState(false)
 
   useEffect(() => {
-    onChange(isOn);
-  }, [isOn, onChange]);
+    onChange(isOn)
+  }, [isOn, onChange])
 
   function handleClick() {
-    setIsOn(!isOn);
+    setIsOn(!isOn)
   }
 }
 
 // GOOD: Notify in same event
 function Toggle({ onChange }) {
-  const [isOn, setIsOn] = useState(false);
+  const [isOn, setIsOn] = useState(false)
 
   function updateToggle(nextIsOn) {
-    setIsOn(nextIsOn);
-    onChange(nextIsOn); // Same event, batched render
+    setIsOn(nextIsOn)
+    onChange(nextIsOn) // Same event, batched render
   }
 
   function handleClick() {
-    updateToggle(!isOn);
+    updateToggle(!isOn)
   }
 }
 
 // BEST: Fully controlled component
 function Toggle({ isOn, onChange }) {
   function handleClick() {
-    onChange(!isOn);
+    onChange(!isOn)
   }
 }
 ```
@@ -205,22 +202,22 @@ function Toggle({ isOn, onChange }) {
 ```tsx
 // BAD: Child fetches, passes up via Effect
 function Parent() {
-  const [data, setData] = useState(null);
-  return <Child onFetched={setData} />;
+  const [data, setData] = useState(null)
+  return <Child onFetched={setData} />
 }
 
 function Child({ onFetched }) {
-  const data = useSomeAPI();
+  const data = useSomeAPI()
 
   useEffect(() => {
-    if (data) onFetched(data);
-  }, [onFetched, data]);
+    if (data) onFetched(data)
+  }, [onFetched, data])
 }
 
 // GOOD: Parent fetches, passes down
 function Parent() {
-  const data = useSomeAPI();
-  return <Child data={data} />;
+  const data = useSomeAPI()
+  return <Child data={data} />
 }
 ```
 
@@ -233,28 +230,30 @@ function Parent() {
 ```tsx
 // BAD: No cleanup - race condition
 function SearchResults({ query }) {
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState([])
 
   useEffect(() => {
-    fetchResults(query).then(json => {
-      setResults(json); // "hello" response may arrive after "hell"
-    });
-  }, [query]);
+    fetchResults(query).then((json) => {
+      setResults(json) // "hello" response may arrive after "hell"
+    })
+  }, [query])
 }
 
 // GOOD: Cleanup ignores stale responses
 function SearchResults({ query }) {
-  const [results, setResults] = useState([]);
+  const [results, setResults] = useState([])
 
   useEffect(() => {
-    let ignore = false;
+    let ignore = false
 
-    fetchResults(query).then(json => {
-      if (!ignore) setResults(json);
-    });
+    fetchResults(query).then((json) => {
+      if (!ignore) setResults(json)
+    })
 
-    return () => { ignore = true; };
-  }, [query]);
+    return () => {
+      ignore = true
+    }
+  }, [query])
 }
 ```
 
@@ -266,27 +265,27 @@ function SearchResults({ query }) {
 // BAD: Runs twice in dev, may break auth
 function App() {
   useEffect(() => {
-    loadDataFromLocalStorage();
-    checkAuthToken(); // May invalidate token on second call!
-  }, []);
+    loadDataFromLocalStorage()
+    checkAuthToken() // May invalidate token on second call!
+  }, [])
 }
 
 // GOOD: Module-level guard
-let didInit = false;
+let didInit = false
 
 function App() {
   useEffect(() => {
     if (!didInit) {
-      didInit = true;
-      loadDataFromLocalStorage();
-      checkAuthToken();
+      didInit = true
+      loadDataFromLocalStorage()
+      checkAuthToken()
     }
-  }, []);
+  }, [])
 }
 
 // ALSO GOOD: Module-level execution
 if (typeof window !== 'undefined') {
-  checkAuthToken();
-  loadDataFromLocalStorage();
+  checkAuthToken()
+  loadDataFromLocalStorage()
 }
 ```

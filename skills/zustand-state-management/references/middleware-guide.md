@@ -14,9 +14,11 @@ import { persist, createJSONStorage } from 'zustand/middleware'
 
 const useStore = create<Store>()(
   persist(
-    (set) => ({ /* store */ }),
-    { name: 'storage-name' }
-  )
+    (set) => ({
+      /* store */
+    }),
+    { name: 'storage-name' },
+  ),
 )
 ```
 
@@ -37,14 +39,16 @@ storage: createJSONStorage(() => customStorage)
 
 ```typescript
 persist(
-  (set) => ({ /* store */ }),
+  (set) => ({
+    /* store */
+  }),
   {
     name: 'storage',
     partialize: (state) => ({
       theme: state.theme,
       // Don't persist sensitive data
     }),
-  }
+  },
 )
 ```
 
@@ -52,7 +56,9 @@ persist(
 
 ```typescript
 persist(
-  (set) => ({ /* store */ }),
+  (set) => ({
+    /* store */
+  }),
   {
     name: 'storage',
     version: 2,
@@ -67,7 +73,7 @@ persist(
       }
       return persistedState
     },
-  }
+  },
 )
 ```
 
@@ -82,31 +88,36 @@ import { devtools } from 'zustand/middleware'
 
 const useStore = create<Store>()(
   devtools(
-    (set) => ({ /* store */ }),
-    { name: 'StoreName' }
-  )
+    (set) => ({
+      /* store */
+    }),
+    { name: 'StoreName' },
+  ),
 )
 ```
 
 ### Named Actions
 
 ```typescript
-increment: () => set(
-  (state) => ({ count: state.count + 1 }),
-  undefined,
-  'counter/increment' // Shows in DevTools
-)
+increment: () =>
+  set(
+    (state) => ({ count: state.count + 1 }),
+    undefined,
+    'counter/increment', // Shows in DevTools
+  )
 ```
 
 ### Production Toggle
 
 ```typescript
 devtools(
-  (set) => ({ /* store */ }),
+  (set) => ({
+    /* store */
+  }),
   {
     name: 'Store',
-    enabled: process.env.NODE_ENV === 'development'
-  }
+    enabled: process.env.NODE_ENV === 'development',
+  },
 )
 ```
 
@@ -122,11 +133,12 @@ import { immer } from 'zustand/middleware/immer'
 const useStore = create<Store>()(
   immer((set) => ({
     todos: [],
-    addTodo: (text) => set((state) => {
-      // Mutate directly!
-      state.todos.push({ id: Date.now(), text })
-    }),
-  }))
+    addTodo: (text) =>
+      set((state) => {
+        // Mutate directly!
+        state.todos.push({ id: Date.now(), text })
+      }),
+  })),
 )
 ```
 
@@ -143,11 +155,13 @@ const useStore = create<Store>()(
 const useStore = create<Store>()(
   devtools(
     persist(
-      (set) => ({ /* store */ }),
-      { name: 'storage' }
+      (set) => ({
+        /* store */
+      }),
+      { name: 'storage' },
     ),
-    { name: 'Store' }
-  )
+    { name: 'Store' },
+  ),
 )
 
 // Shows persist actions in DevTools
@@ -187,11 +201,15 @@ const logger = (config) => (set, get, api) => {
       console.log('After:', get())
     },
     get,
-    api
+    api,
   )
 }
 
-const useStore = create(logger((set) => ({ /* store */ })))
+const useStore = create(
+  logger((set) => ({
+    /* store */
+  })),
+)
 ```
 
 ### TypeScript Logger
@@ -199,10 +217,7 @@ const useStore = create(logger((set) => ({ /* store */ })))
 ```typescript
 import { StateCreator } from 'zustand'
 
-type Logger = <T>(
-  f: StateCreator<T, [], []>,
-  name?: string
-) => StateCreator<T, [], []>
+type Logger = <T>(f: StateCreator<T, [], []>, name?: string) => StateCreator<T, [], []>
 
 const logger: Logger = (f, name) => (set, get, store) => {
   const loggedSet: typeof set = (...a) => {
@@ -269,8 +284,8 @@ const useStore = create<Store>()(
       ...initialState,
       reset: () => set(initialState),
     }),
-    { name: 'storage' }
-  )
+    { name: 'storage' },
+  ),
 )
 ```
 
@@ -289,8 +304,8 @@ const useStore = create<Store>()(
         set(initialState)
       },
     }),
-    { name: 'storage-name' }
-  )
+    { name: 'storage-name' },
+  ),
 )
 ```
 

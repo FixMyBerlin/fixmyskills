@@ -16,18 +16,15 @@ When using `shallow: false`, integrate React's `useTransition` to track when the
 import { useQueryState, parseAsString } from 'nuqs'
 
 export default function SearchBox() {
-  const [query, setQuery] = useQueryState('q', parseAsString.withDefault('').withOptions({
-    shallow: false
-  }))
+  const [query, setQuery] = useQueryState(
+    'q',
+    parseAsString.withDefault('').withOptions({
+      shallow: false,
+    }),
+  )
   // User types, waits with no feedback while server fetches
 
-  return (
-    <input
-      value={query}
-      onChange={e => setQuery(e.target.value)}
-      placeholder="Search..."
-    />
-  )
+  return <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search..." />
 }
 ```
 
@@ -40,18 +37,17 @@ import { useQueryState, parseAsString } from 'nuqs'
 
 export default function SearchBox() {
   const [isLoading, startTransition] = useTransition()
-  const [query, setQuery] = useQueryState('q', parseAsString.withDefault('').withOptions({
-    shallow: false,
-    startTransition
-  }))
+  const [query, setQuery] = useQueryState(
+    'q',
+    parseAsString.withDefault('').withOptions({
+      shallow: false,
+      startTransition,
+    }),
+  )
 
   return (
     <div>
-      <input
-        value={query}
-        onChange={e => setQuery(e.target.value)}
-        placeholder="Search..."
-      />
+      <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search..." />
       {isLoading && <span className="spinner" />}
     </div>
   )
@@ -70,20 +66,17 @@ export default function FilterPanel() {
   const [filters, setFilters] = useQueryStates(
     {
       category: parseAsString.withDefault(''),
-      page: parseAsInteger.withDefault(1)
+      page: parseAsInteger.withDefault(1),
     },
     {
       shallow: false,
-      startTransition
-    }
+      startTransition,
+    },
   )
 
   return (
     <fieldset disabled={isLoading}>
-      <select
-        value={filters.category}
-        onChange={e => setFilters({ category: e.target.value, page: 1 })}
-      >
+      <select value={filters.category} onChange={(e) => setFilters({ category: e.target.value, page: 1 })}>
         <option value="">All</option>
         <option value="electronics">Electronics</option>
       </select>

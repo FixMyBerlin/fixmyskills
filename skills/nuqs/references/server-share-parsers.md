@@ -16,11 +16,11 @@ Define parsers once and reuse them in both `createSearchParamsCache` (server) an
 import { createSearchParamsCache, parseAsInteger } from 'nuqs/server'
 
 const cache = createSearchParamsCache({
-  page: parseAsInteger.withDefault(1)
+  page: parseAsInteger.withDefault(1),
 })
 
 // components/Pagination.tsx (Client)
-'use client'
+;('use client')
 import { useQueryState, parseAsInteger } from 'nuqs'
 
 export function Pagination() {
@@ -38,7 +38,7 @@ import { parseAsInteger, parseAsString } from 'nuqs' // Works for both
 export const searchParamsParsers = {
   q: parseAsString.withDefault(''),
   page: parseAsInteger.withDefault(1),
-  limit: parseAsInteger.withDefault(10)
+  limit: parseAsInteger.withDefault(10),
 }
 
 // lib/searchParams.server.ts
@@ -56,7 +56,7 @@ export default async function SearchPage({ searchParams }) {
 }
 
 // components/Pagination.tsx (Client)
-'use client'
+;('use client')
 import { useQueryState } from 'nuqs'
 import { searchParamsParsers } from '@/lib/searchParams'
 
@@ -67,6 +67,7 @@ export function Pagination() {
 ```
 
 **Benefits:**
+
 - Single source of truth for defaults
 - TypeScript catches inconsistencies
 - Easier to update configuration

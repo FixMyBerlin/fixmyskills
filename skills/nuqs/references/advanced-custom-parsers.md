@@ -55,14 +55,11 @@ const parseAsSort = createParser<SortState>({
   },
   eq(a, b) {
     return a.id === b.id && a.desc === b.desc
-  }
+  },
 })
 
 export default function SortableTable() {
-  const [sort, setSort] = useQueryState(
-    'sort',
-    parseAsSort.withDefault({ id: 'name', desc: false })
-  )
+  const [sort, setSort] = useQueryState('sort', parseAsSort.withDefault({ id: 'name', desc: false }))
   // Type-safe, reusable, with proper equality checking
 }
 ```

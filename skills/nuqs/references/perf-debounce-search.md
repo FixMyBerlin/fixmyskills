@@ -16,16 +16,14 @@ For search inputs with `shallow: false`, debounce the URL update to avoid hammer
 import { useQueryState, parseAsString } from 'nuqs'
 
 export default function SearchBox() {
-  const [query, setQuery] = useQueryState('q', parseAsString.withDefault('').withOptions({
-    shallow: false // Every keystroke triggers server fetch
-  }))
-
-  return (
-    <input
-      value={query}
-      onChange={e => setQuery(e.target.value)}
-    />
+  const [query, setQuery] = useQueryState(
+    'q',
+    parseAsString.withDefault('').withOptions({
+      shallow: false, // Every keystroke triggers server fetch
+    }),
   )
+
+  return <input value={query} onChange={(e) => setQuery(e.target.value)} />
 }
 ```
 
@@ -38,10 +36,13 @@ import { useQueryState, parseAsString } from 'nuqs'
 
 export default function SearchBox() {
   const [isLoading, startTransition] = useTransition()
-  const [query, setQuery] = useQueryState('q', parseAsString.withDefault('').withOptions({
-    shallow: false,
-    startTransition
-  }))
+  const [query, setQuery] = useQueryState(
+    'q',
+    parseAsString.withDefault('').withOptions({
+      shallow: false,
+      startTransition,
+    }),
+  )
 
   // Local state for instant UI
   const [inputValue, setInputValue] = useState(query)
@@ -63,11 +64,7 @@ export default function SearchBox() {
 
   return (
     <div>
-      <input
-        value={inputValue}
-        onChange={e => setInputValue(e.target.value)}
-        placeholder="Search..."
-      />
+      <input value={inputValue} onChange={(e) => setInputValue(e.target.value)} placeholder="Search..." />
       {isLoading && <span>Searching...</span>}
     </div>
   )
@@ -88,7 +85,7 @@ export default function SearchBox() {
 
   return (
     <div style={{ opacity: isStale ? 0.7 : 1 }}>
-      <input value={query} onChange={e => setQuery(e.target.value)} />
+      <input value={query} onChange={(e) => setQuery(e.target.value)} />
       <Results query={deferredQuery} />
     </div>
   )

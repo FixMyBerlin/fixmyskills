@@ -20,7 +20,7 @@ export default function Pagination() {
   // shallow: true (default) - server doesn't see URL changes
   // Server-fetched data stays stale
 
-  return <button onClick={() => setPage(p => p + 1)}>Next</button>
+  return <button onClick={() => setPage((p) => p + 1)}>Next</button>
 }
 ```
 
@@ -31,12 +31,15 @@ export default function Pagination() {
 import { useQueryState, parseAsInteger } from 'nuqs'
 
 export default function Pagination() {
-  const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1).withOptions({
-    shallow: false // Notify server of URL changes
-  }))
+  const [page, setPage] = useQueryState(
+    'page',
+    parseAsInteger.withDefault(1).withOptions({
+      shallow: false, // Notify server of URL changes
+    }),
+  )
   // Server Components re-render with new page value
 
-  return <button onClick={() => setPage(p => p + 1)}>Next</button>
+  return <button onClick={() => setPage((p) => p + 1)}>Next</button>
 }
 ```
 
@@ -49,15 +52,18 @@ import { useQueryState, parseAsInteger } from 'nuqs'
 
 export default function Pagination() {
   const [isLoading, startTransition] = useTransition()
-  const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1).withOptions({
-    shallow: false,
-    startTransition // Shows loading during server fetch
-  }))
+  const [page, setPage] = useQueryState(
+    'page',
+    parseAsInteger.withDefault(1).withOptions({
+      shallow: false,
+      startTransition, // Shows loading during server fetch
+    }),
+  )
 
   return (
     <div>
       {isLoading && <span>Loading...</span>}
-      <button onClick={() => setPage(p => p + 1)} disabled={isLoading}>
+      <button onClick={() => setPage((p) => p + 1)} disabled={isLoading}>
         Next
       </button>
     </div>
@@ -66,6 +72,7 @@ export default function Pagination() {
 ```
 
 **When to use shallow:false:**
+
 - Pagination with server-fetched data
 - Search that triggers server queries
 - Filters that affect server-rendered content

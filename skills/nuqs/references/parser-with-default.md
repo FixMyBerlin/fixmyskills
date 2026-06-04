@@ -24,9 +24,7 @@ export default function Counter() {
       {/* Null check required */}
       <p>Count: {count ?? 0}</p>
       {/* Null check required */}
-      <button onClick={() => setCount((count ?? 0) + 1)}>
-        Increment
-      </button>
+      <button onClick={() => setCount((count ?? 0) + 1)}>Increment</button>
     </div>
   )
 }
@@ -39,24 +37,20 @@ export default function Counter() {
 import { useQueryState, parseAsInteger } from 'nuqs'
 
 export default function Counter() {
-  const [count, setCount] = useQueryState(
-    'count',
-    parseAsInteger.withDefault(0)
-  )
+  const [count, setCount] = useQueryState('count', parseAsInteger.withDefault(0))
   // count is number (never null)
 
   return (
     <div>
       <p>Count: {count}</p>
-      <button onClick={() => setCount(c => c + 1)}>
-        Increment
-      </button>
+      <button onClick={() => setCount((c) => c + 1)}>Increment</button>
     </div>
   )
 }
 ```
 
 **Benefits:**
+
 - TypeScript infers non-nullable type
 - No null coalescing needed
 - Functional updates work without null checks

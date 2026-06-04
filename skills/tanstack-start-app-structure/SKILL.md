@@ -16,12 +16,12 @@ Portable layout conventions for `app/src` (or equivalent) in TanStack Start proj
 
 Keep a small set of top-level folders:
 
-| Folder | Purpose |
-|--------|---------|
-| `components/` | All React/JSX — route files never define components |
-| `routes/` | Route definitions only (thin: `Route` config + single component import) |
-| `server/` | Server-only modules, `*QueryOptions`, domain helpers |
-| `data/` | Optional static assets (GeoJSON, JSON, etc.) |
+| Folder        | Purpose                                                                 |
+| ------------- | ----------------------------------------------------------------------- |
+| `components/` | All React/JSX — route files never define components                     |
+| `routes/`     | Route definitions only (thin: `Route` config + single component import) |
+| `server/`     | Server-only modules, `*QueryOptions`, domain helpers                    |
+| `data/`       | Optional static assets (GeoJSON, JSON, etc.)                            |
 
 Plus root files such as `router.tsx`. Prefer `server/` or `components/shared/` over a vague top-level `lib/`.
 
@@ -78,9 +78,9 @@ If using React Email: `src/emails/` with templates; shared pieces in `_templates
 
 ## Related skills
 
-| Topic | Skill |
-|-------|--------|
+| Topic                                    | Skill                        |
+| ---------------------------------------- | ---------------------------- |
 | Boundaries, loaders, SSR, API validation | `tanstack-start-conventions` |
-| Auth / session | `tanstack-start-auth` |
-| Zustand | `zustand-state-management` |
-| Next.js migration | `tanstack-start-migration` |
+| Auth / session                           | `tanstack-start-auth`        |
+| Zustand                                  | `zustand-state-management`   |
+| Next.js migration                        | `tanstack-start-migration`   |

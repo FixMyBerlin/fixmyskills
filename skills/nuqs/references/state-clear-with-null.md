@@ -23,7 +23,7 @@ export default function SearchBox() {
 
   return (
     <div>
-      <input value={query ?? ''} onChange={e => setQuery(e.target.value)} />
+      <input value={query ?? ''} onChange={(e) => setQuery(e.target.value)} />
       <button onClick={clear}>Clear</button>
     </div>
   )
@@ -44,10 +44,7 @@ export default function SearchBox() {
 
   return (
     <div>
-      <input
-        value={query ?? ''}
-        onChange={e => setQuery(e.target.value || null)}
-      />
+      <input value={query ?? ''} onChange={(e) => setQuery(e.target.value || null)} />
       <button onClick={clear}>Clear</button>
     </div>
   )
@@ -57,10 +54,7 @@ export default function SearchBox() {
 **Pattern: Convert empty to null on change:**
 
 ```tsx
-<input
-  value={query ?? ''}
-  onChange={e => setQuery(e.target.value || null)}
-/>
+<input value={query ?? ''} onChange={(e) => setQuery(e.target.value || null)} />
 // Empty input → null → clean URL
 // "search term" → "search term" → ?q=search+term
 ```

@@ -19,7 +19,7 @@ export default function SearchPage() {
   const [query, setQuery] = useQueryState('q')
   // Error: Hooks can only be called inside Client Components
 
-  return <input value={query ?? ''} onChange={e => setQuery(e.target.value)} />
+  return <input value={query ?? ''} onChange={(e) => setQuery(e.target.value)} />
 }
 ```
 
@@ -34,7 +34,7 @@ import { useQueryState } from 'nuqs'
 export default function SearchPage() {
   const [query, setQuery] = useQueryState('q')
 
-  return <input value={query ?? ''} onChange={e => setQuery(e.target.value)} />
+  return <input value={query ?? ''} onChange={(e) => setQuery(e.target.value)} />
 }
 ```
 
@@ -54,13 +54,13 @@ export default function SearchPage() {
 }
 
 // app/search/SearchInput.tsx (Client Component)
-'use client'
+;('use client')
 
 import { useQueryState } from 'nuqs'
 
 export default function SearchInput() {
   const [query, setQuery] = useQueryState('q')
-  return <input value={query ?? ''} onChange={e => setQuery(e.target.value)} />
+  return <input value={query ?? ''} onChange={(e) => setQuery(e.target.value)} />
 }
 ```
 

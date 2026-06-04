@@ -34,12 +34,14 @@ import { persist, createJSONStorage } from 'zustand/middleware'
 
 const useStore = create<MyState>()(
   persist(
-    (set) => ({ /* ... */ }),
+    (set) => ({
+      /* ... */
+    }),
     {
       name: 'my-store',
       storage: createJSONStorage(() => localStorage),
-    }
-  )
+    },
+  ),
 )
 ```
 
@@ -58,9 +60,7 @@ const increment = useStore((s) => s.increment)
 
 /* ✅ Option 2: Use shallow comparator */
 import { useShallow } from 'zustand/shallow'
-const { count, increment } = useStore(
-  useShallow((s) => ({ count: s.count, increment: s.increment }))
-)
+const { count, increment } = useStore(useShallow((s) => ({ count: s.count, increment: s.increment })))
 ```
 
 ## Next.js Hydration Mismatch
@@ -121,10 +121,10 @@ const createBearSlice: StateCreator<
 
 ## Quick Fixes
 
-| If Claude suggests... | Use instead... |
-|----------------------|----------------|
-| `create<T>((set) => ...)` | `create<T>()((set) => ...)` |
-| Import persist from 'zustand' | Import from 'zustand/middleware' |
-| Object in selector | Select separately or use `useShallow` |
-| Next.js hydration error | Add `_hasHydrated` pattern |
-| Simple slices types | Use explicit `StateCreator` types |
+| If Claude suggests...         | Use instead...                        |
+| ----------------------------- | ------------------------------------- |
+| `create<T>((set) => ...)`     | `create<T>()((set) => ...)`           |
+| Import persist from 'zustand' | Import from 'zustand/middleware'      |
+| Object in selector            | Select separately or use `useShallow` |
+| Next.js hydration error       | Add `_hasHydrated` pattern            |
+| Simple slices types           | Use explicit `StateCreator` types     |

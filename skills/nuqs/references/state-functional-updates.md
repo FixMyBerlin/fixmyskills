@@ -38,8 +38,8 @@ export default function Counter() {
   const [count, setCount] = useQueryState('count', parseAsInteger.withDefault(0))
 
   const incrementTwice = () => {
-    setCount(c => c + 1) // Gets latest value
-    setCount(c => c + 1) // Gets updated value
+    setCount((c) => c + 1) // Gets latest value
+    setCount((c) => c + 1) // Gets updated value
     // Result: correctly increments by 2
   }
 
@@ -52,17 +52,14 @@ export default function Counter() {
 ```tsx
 // Toggle boolean
 const [enabled, setEnabled] = useQueryState('enabled', parseAsBoolean.withDefault(false))
-setEnabled(e => !e)
+setEnabled((e) => !e)
 
 // Append to array
-const [tags, setTags] = useQueryState(
-  'tags',
-  parseAsArrayOf(parseAsString).withDefault([])
-)
-setTags(t => [...t, 'new-tag'])
+const [tags, setTags] = useQueryState('tags', parseAsArrayOf(parseAsString).withDefault([]))
+setTags((t) => [...t, 'new-tag'])
 
 // Remove from array
-setTags(t => t.filter(tag => tag !== 'remove-me'))
+setTags((t) => t.filter((tag) => tag !== 'remove-me'))
 ```
 
 Reference: [nuqs State Updates](https://nuqs.dev/docs)

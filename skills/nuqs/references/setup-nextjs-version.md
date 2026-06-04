@@ -11,11 +11,11 @@ nuqs requires specific Next.js versions depending on the router you use. Using i
 
 **Version Requirements:**
 
-| Router | Minimum Next.js | Notes |
-|--------|-----------------|-------|
-| App Router | 14.2.0+ | Full support including streaming |
-| App Router (basic) | 14.0.0+ | Limited features |
-| Pages Router | 12.0.0+ | Full support |
+| Router             | Minimum Next.js | Notes                            |
+| ------------------ | --------------- | -------------------------------- |
+| App Router         | 14.2.0+         | Full support including streaming |
+| App Router (basic) | 14.0.0+         | Limited features                 |
+| Pages Router       | 12.0.0+         | Full support                     |
 
 **Check your version:**
 
@@ -62,6 +62,7 @@ pnpm add next@latest
 ```
 
 **Common symptoms of version mismatch:**
+
 - `useQueryState` returns undefined
 - URL doesn't update on state change
 - Hydration mismatches

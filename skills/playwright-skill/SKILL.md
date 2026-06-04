@@ -22,6 +22,7 @@ General-purpose browser automation skill supporting two use cases:
 2. **E2E Testing** - Proper test suites with `@playwright/test` framework (recommended for Next.js projects)
 
 **IMPORTANT: For Next.js E2E Testing**
+
 - Use `@playwright/test` framework (not raw Playwright API)
 - Test against **production builds** (`bun run build && bun run start`), not dev server
 - Use semantic locators (`getByRole`, `getByLabel`) instead of CSS selectors
@@ -55,6 +56,7 @@ General-purpose browser automation skill supporting two use cases:
 ## How It Works
 
 ### Ad-hoc Automation Flow
+
 1. You describe what you want to test/automate
 2. I auto-detect running dev servers (or ask for URL if testing external site)
 3. I write custom Playwright code in `/tmp/playwright-test-*.js` (won't clutter your project)
@@ -63,6 +65,7 @@ General-purpose browser automation skill supporting two use cases:
 6. Test files auto-cleaned from /tmp by your OS
 
 ### E2E Testing Flow (Recommended for Next.js)
+
 1. You describe what you want to test
 2. I create proper test files in `tests/` directory using `@playwright/test` framework
 3. I set up `playwright.config.ts` with Next.js `webServer` configuration
@@ -72,6 +75,7 @@ General-purpose browser automation skill supporting two use cases:
 ## Setup (First Time)
 
 ### For Ad-hoc Automation
+
 ```bash
 cd $SKILL_DIR
 bun run setup
@@ -80,6 +84,7 @@ bun run setup
 This installs Playwright and Chromium browser. Only needed once.
 
 ### For E2E Testing (Next.js Projects)
+
 ```bash
 # In your Next.js project root
 bun add -d @playwright/test
@@ -100,23 +105,23 @@ cd $SKILL_DIR && node -e "require('./lib/helpers').detectDevServers().then(s => 
 
 ```javascript
 // /tmp/playwright-test-page.js
-const { chromium } = require('playwright');
+const { chromium } = require('playwright')
 
 // Parameterized URL (detected or user-provided)
-const TARGET_URL = 'http://localhost:3001'; // <-- Auto-detected or from user
+const TARGET_URL = 'http://localhost:3001' // <-- Auto-detected or from user
 
-(async () => {
-  const browser = await chromium.launch({ headless: false });
-  const page = await browser.newPage();
+;(async () => {
+  const browser = await chromium.launch({ headless: false })
+  const page = await browser.newPage()
 
-  await page.goto(TARGET_URL);
-  console.log('Page loaded:', await page.title());
+  await page.goto(TARGET_URL)
+  console.log('Page loaded:', await page.title())
 
-  await page.screenshot({ path: '/tmp/screenshot.png', fullPage: true });
-  console.log('📸 Screenshot saved to /tmp/screenshot.png');
+  await page.screenshot({ path: '/tmp/screenshot.png', fullPage: true })
+  console.log('📸 Screenshot saved to /tmp/screenshot.png')
 
-  await browser.close();
-})();
+  await browser.close()
+})()
 ```
 
 **Step 3: Execute from skill directory**
@@ -137,32 +142,32 @@ bunx playwright install chromium
 ### 2. Create `playwright.config.ts`
 
 ```typescript
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
   // Test files location
   testDir: './tests',
-  
+
   // Run tests in parallel
   fullyParallel: true,
-  
+
   // Fail the build on CI if you accidentally left test.only in the source code
   forbidOnly: !!process.env.CI,
-  
+
   // Retry on CI only
   retries: process.env.CI ? 2 : 0,
-  
+
   // Opt out of parallel tests on CI
   workers: process.env.CI ? 1 : undefined,
-  
+
   // Reporter to use
   reporter: 'html',
-  
+
   // Shared settings for all projects
   use: {
     // Base URL to use in actions like `await page.goto('/')`
     baseURL: 'http://localhost:3000',
-    
+
     // Collect trace when retrying the failed test
     trace: 'on-first-retry',
   },
@@ -182,7 +187,7 @@ export default defineConfig({
     reuseExistingServer: !process.env.CI,
     timeout: 120 * 1000,
   },
-});
+})
 ```
 
 **CRITICAL:** The `webServer` configuration automatically builds and starts your Next.js production server. This ensures tests run against production code, not dev server.
@@ -200,41 +205,41 @@ tests/
 
 ```typescript
 // tests/example.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from '@playwright/test'
 
 test.describe('Home Page', () => {
   test('should display homepage content', async ({ page }) => {
     // Navigate to home page (baseURL configured in playwright.config.ts)
-    await page.goto('/');
-    
+    await page.goto('/')
+
     // Use semantic locators (not CSS selectors!)
-    const heading = page.getByRole('heading', { name: /home/i });
-    await expect(heading).toBeVisible();
-    
+    const heading = page.getByRole('heading', { name: /home/i })
+    await expect(heading).toBeVisible()
+
     // Test navigation link
-    const aboutLink = page.getByRole('link', { name: /about/i });
-    await expect(aboutLink).toBeVisible();
-    
+    const aboutLink = page.getByRole('link', { name: /about/i })
+    await expect(aboutLink).toBeVisible()
+
     // Click and verify navigation
-    await aboutLink.click();
-    await expect(page).toHaveURL('/about');
-  });
-  
+    await aboutLink.click()
+    await expect(page).toHaveURL('/about')
+  })
+
   test('should handle form submission', async ({ page }) => {
-    await page.goto('/contact');
-    
+    await page.goto('/contact')
+
     // Use getByLabel for form inputs (semantic!)
-    await page.getByLabel('Name').fill('John Doe');
-    await page.getByLabel('Email').fill('john@example.com');
-    await page.getByLabel('Message').fill('Test message');
-    
+    await page.getByLabel('Name').fill('John Doe')
+    await page.getByLabel('Email').fill('john@example.com')
+    await page.getByLabel('Message').fill('Test message')
+
     // Use getByRole for buttons
-    await page.getByRole('button', { name: /submit/i }).click();
-    
+    await page.getByRole('button', { name: /submit/i }).click()
+
     // Wait for success message
-    await expect(page.getByText(/success/i)).toBeVisible();
-  });
-});
+    await expect(page.getByText(/success/i)).toBeVisible()
+  })
+})
 ```
 
 ### 5. Run Tests
@@ -259,36 +264,36 @@ bunx playwright test --debug
 
 ```typescript
 // tests/login.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from '@playwright/test'
 
 test.describe('Login Flow', () => {
   test.beforeEach(async ({ page }) => {
     // Each test gets isolated page context
-    await page.goto('/login');
-  });
+    await page.goto('/login')
+  })
 
   test('should login successfully', async ({ page }) => {
     // Use semantic locators
-    await page.getByLabel('Email').fill('test@example.com');
-    await page.getByLabel('Password').fill('password123');
-    await page.getByRole('button', { name: /sign in/i }).click();
-    
+    await page.getByLabel('Email').fill('test@example.com')
+    await page.getByLabel('Password').fill('password123')
+    await page.getByRole('button', { name: /sign in/i }).click()
+
     // Wait for navigation
-    await expect(page).toHaveURL('/dashboard');
-    
+    await expect(page).toHaveURL('/dashboard')
+
     // Verify user is logged in
-    await expect(page.getByText(/welcome/i)).toBeVisible();
-  });
-  
+    await expect(page.getByText(/welcome/i)).toBeVisible()
+  })
+
   test('should show error for invalid credentials', async ({ page }) => {
-    await page.getByLabel('Email').fill('invalid@example.com');
-    await page.getByLabel('Password').fill('wrong');
-    await page.getByRole('button', { name: /sign in/i }).click();
-    
+    await page.getByLabel('Email').fill('invalid@example.com')
+    await page.getByLabel('Password').fill('wrong')
+    await page.getByRole('button', { name: /sign in/i }).click()
+
     // Verify error message
-    await expect(page.getByText(/invalid credentials/i)).toBeVisible();
-  });
-});
+    await expect(page.getByText(/invalid credentials/i)).toBeVisible()
+  })
+})
 ```
 
 ### Ad-hoc Automation Pattern (Quick Tasks)
@@ -297,227 +302,229 @@ test.describe('Login Flow', () => {
 
 ```javascript
 // /tmp/playwright-test-responsive.js
-const { chromium } = require('playwright');
+const { chromium } = require('playwright')
 
-const TARGET_URL = 'http://localhost:3001'; // Auto-detected
+const TARGET_URL = 'http://localhost:3001' // Auto-detected
 
-(async () => {
-  const browser = await chromium.launch({ headless: false, slowMo: 100 });
-  const page = await browser.newPage();
+;(async () => {
+  const browser = await chromium.launch({ headless: false, slowMo: 100 })
+  const page = await browser.newPage()
 
   // Desktop test
-  await page.setViewportSize({ width: 1920, height: 1080 });
-  await page.goto(TARGET_URL);
-  console.log('Desktop - Title:', await page.title());
-  await page.screenshot({ path: '/tmp/desktop.png', fullPage: true });
+  await page.setViewportSize({ width: 1920, height: 1080 })
+  await page.goto(TARGET_URL)
+  console.log('Desktop - Title:', await page.title())
+  await page.screenshot({ path: '/tmp/desktop.png', fullPage: true })
 
   // Mobile test
-  await page.setViewportSize({ width: 375, height: 667 });
-  await page.screenshot({ path: '/tmp/mobile.png', fullPage: true });
+  await page.setViewportSize({ width: 375, height: 667 })
+  await page.screenshot({ path: '/tmp/mobile.png', fullPage: true })
 
-  await browser.close();
-})();
+  await browser.close()
+})()
 ```
 
 ### Test Login Flow
 
 **E2E Test Version (Recommended):**
+
 ```typescript
 // tests/login.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from '@playwright/test'
 
 test('should login successfully', async ({ page }) => {
-  await page.goto('/login');
-  
+  await page.goto('/login')
+
   // Use semantic locators (resilient to DOM changes)
-  await page.getByLabel('Email').fill('test@example.com');
-  await page.getByLabel('Password').fill('password123');
-  await page.getByRole('button', { name: /sign in/i }).click();
-  
+  await page.getByLabel('Email').fill('test@example.com')
+  await page.getByLabel('Password').fill('password123')
+  await page.getByRole('button', { name: /sign in/i }).click()
+
   // Web-first assertion (auto-waits)
-  await expect(page).toHaveURL('/dashboard');
-  await expect(page.getByText(/welcome/i)).toBeVisible();
-});
+  await expect(page).toHaveURL('/dashboard')
+  await expect(page.getByText(/welcome/i)).toBeVisible()
+})
 ```
 
 **Ad-hoc Automation Version:**
+
 ```javascript
 // /tmp/playwright-test-login.js
-const { chromium } = require('playwright');
+const { chromium } = require('playwright')
 
-const TARGET_URL = 'http://localhost:3001'; // Auto-detected
+const TARGET_URL = 'http://localhost:3001' // Auto-detected
 
-(async () => {
-  const browser = await chromium.launch({ headless: false });
-  const page = await browser.newPage();
+;(async () => {
+  const browser = await chromium.launch({ headless: false })
+  const page = await browser.newPage()
 
-  await page.goto(`${TARGET_URL}/login`);
+  await page.goto(`${TARGET_URL}/login`)
 
   // Prefer semantic locators even in ad-hoc scripts
-  await page.getByLabel('Email').fill('test@example.com');
-  await page.getByLabel('Password').fill('password123');
-  await page.getByRole('button', { name: /submit/i }).click();
+  await page.getByLabel('Email').fill('test@example.com')
+  await page.getByLabel('Password').fill('password123')
+  await page.getByRole('button', { name: /submit/i }).click()
 
   // Wait for redirect
-  await page.waitForURL('**/dashboard');
-  console.log('✅ Login successful, redirected to dashboard');
+  await page.waitForURL('**/dashboard')
+  console.log('✅ Login successful, redirected to dashboard')
 
-  await browser.close();
-})();
+  await browser.close()
+})()
 ```
 
 ### Fill and Submit Form
 
 **E2E Test Version (Recommended):**
+
 ```typescript
 // tests/contact.spec.ts
-import { test, expect } from '@playwright/test';
+import { test, expect } from '@playwright/test'
 
 test('should submit contact form', async ({ page }) => {
-  await page.goto('/contact');
-  
+  await page.goto('/contact')
+
   // Use semantic locators
-  await page.getByLabel('Name').fill('John Doe');
-  await page.getByLabel('Email').fill('john@example.com');
-  await page.getByLabel('Message').fill('Test message');
-  await page.getByRole('button', { name: /submit/i }).click();
-  
+  await page.getByLabel('Name').fill('John Doe')
+  await page.getByLabel('Email').fill('john@example.com')
+  await page.getByLabel('Message').fill('Test message')
+  await page.getByRole('button', { name: /submit/i }).click()
+
   // Web-first assertion (auto-waits)
-  await expect(page.getByText(/success/i)).toBeVisible();
-});
+  await expect(page.getByText(/success/i)).toBeVisible()
+})
 ```
 
 **Ad-hoc Automation Version:**
+
 ```javascript
 // /tmp/playwright-test-form.js
-const { chromium } = require('playwright');
+const { chromium } = require('playwright')
 
-const TARGET_URL = 'http://localhost:3001'; // Auto-detected
+const TARGET_URL = 'http://localhost:3001' // Auto-detected
 
-(async () => {
-  const browser = await chromium.launch({ headless: false, slowMo: 50 });
-  const page = await browser.newPage();
+;(async () => {
+  const browser = await chromium.launch({ headless: false, slowMo: 50 })
+  const page = await browser.newPage()
 
-  await page.goto(`${TARGET_URL}/contact`);
+  await page.goto(`${TARGET_URL}/contact`)
 
   // Prefer semantic locators
-  await page.getByLabel('Name').fill('John Doe');
-  await page.getByLabel('Email').fill('john@example.com');
-  await page.getByLabel('Message').fill('Test message');
-  await page.getByRole('button', { name: /submit/i }).click();
+  await page.getByLabel('Name').fill('John Doe')
+  await page.getByLabel('Email').fill('john@example.com')
+  await page.getByLabel('Message').fill('Test message')
+  await page.getByRole('button', { name: /submit/i }).click()
 
   // Verify submission with web-first assertion
-  await expect(page.getByText(/success/i)).toBeVisible();
-  console.log('✅ Form submitted successfully');
+  await expect(page.getByText(/success/i)).toBeVisible()
+  console.log('✅ Form submitted successfully')
 
-  await browser.close();
-})();
+  await browser.close()
+})()
 ```
 
 ### Check for Broken Links
 
 ```javascript
-const { chromium } = require('playwright');
+const { chromium } = require('playwright')
 
-(async () => {
-  const browser = await chromium.launch({ headless: false });
-  const page = await browser.newPage();
+;(async () => {
+  const browser = await chromium.launch({ headless: false })
+  const page = await browser.newPage()
 
-  await page.goto('http://localhost:3000');
+  await page.goto('http://localhost:3000')
 
-  const links = await page.locator('a[href^="http"]').all();
-  const results = { working: 0, broken: [] };
+  const links = await page.locator('a[href^="http"]').all()
+  const results = { working: 0, broken: [] }
 
   for (const link of links) {
-    const href = await link.getAttribute('href');
+    const href = await link.getAttribute('href')
     try {
-      const response = await page.request.head(href);
+      const response = await page.request.head(href)
       if (response.ok()) {
-        results.working++;
+        results.working++
       } else {
-        results.broken.push({ url: href, status: response.status() });
+        results.broken.push({ url: href, status: response.status() })
       }
     } catch (e) {
-      results.broken.push({ url: href, error: e.message });
+      results.broken.push({ url: href, error: e.message })
     }
   }
 
-  console.log(`✅ Working links: ${results.working}`);
-  console.log(`❌ Broken links:`, results.broken);
+  console.log(`✅ Working links: ${results.working}`)
+  console.log(`❌ Broken links:`, results.broken)
 
-  await browser.close();
-})();
+  await browser.close()
+})()
 ```
 
 ### Take Screenshot with Error Handling
 
 ```javascript
-const { chromium } = require('playwright');
+const { chromium } = require('playwright')
 
-(async () => {
-  const browser = await chromium.launch({ headless: false });
-  const page = await browser.newPage();
+;(async () => {
+  const browser = await chromium.launch({ headless: false })
+  const page = await browser.newPage()
 
   try {
     await page.goto('http://localhost:3000', {
       waitUntil: 'networkidle',
       timeout: 10000,
-    });
+    })
 
     await page.screenshot({
       path: '/tmp/screenshot.png',
       fullPage: true,
-    });
+    })
 
-    console.log('📸 Screenshot saved to /tmp/screenshot.png');
+    console.log('📸 Screenshot saved to /tmp/screenshot.png')
   } catch (error) {
-    console.error('❌ Error:', error.message);
+    console.error('❌ Error:', error.message)
   } finally {
-    await browser.close();
+    await browser.close()
   }
-})();
+})()
 ```
 
 ### Test Responsive Design
 
 ```javascript
 // /tmp/playwright-test-responsive-full.js
-const { chromium } = require('playwright');
+const { chromium } = require('playwright')
 
-const TARGET_URL = 'http://localhost:3001'; // Auto-detected
+const TARGET_URL = 'http://localhost:3001' // Auto-detected
 
-(async () => {
-  const browser = await chromium.launch({ headless: false });
-  const page = await browser.newPage();
+;(async () => {
+  const browser = await chromium.launch({ headless: false })
+  const page = await browser.newPage()
 
   const viewports = [
     { name: 'Desktop', width: 1920, height: 1080 },
     { name: 'Tablet', width: 768, height: 1024 },
     { name: 'Mobile', width: 375, height: 667 },
-  ];
+  ]
 
   for (const viewport of viewports) {
-    console.log(
-      `Testing ${viewport.name} (${viewport.width}x${viewport.height})`,
-    );
+    console.log(`Testing ${viewport.name} (${viewport.width}x${viewport.height})`)
 
     await page.setViewportSize({
       width: viewport.width,
       height: viewport.height,
-    });
+    })
 
-    await page.goto(TARGET_URL);
-    await page.waitForTimeout(1000);
+    await page.goto(TARGET_URL)
+    await page.waitForTimeout(1000)
 
     await page.screenshot({
       path: `/tmp/${viewport.name.toLowerCase()}.png`,
       fullPage: true,
-    });
+    })
   }
 
-  console.log('✅ All viewports tested');
-  await browser.close();
-})();
+  console.log('✅ All viewports tested')
+  await browser.close()
+})()
 ```
 
 ## Inline Execution (Simple Tasks)
@@ -546,26 +553,26 @@ await browser.close();
 Optional utility functions in `lib/helpers.js`:
 
 ```javascript
-const helpers = require('./lib/helpers');
+const helpers = require('./lib/helpers')
 
 // Detect running dev servers (CRITICAL - use this first!)
-const servers = await helpers.detectDevServers();
-console.log('Found servers:', servers);
+const servers = await helpers.detectDevServers()
+console.log('Found servers:', servers)
 
 // Safe click with retry
-await helpers.safeClick(page, 'button.submit', { retries: 3 });
+await helpers.safeClick(page, 'button.submit', { retries: 3 })
 
 // Safe type with clear
-await helpers.safeType(page, '#username', 'testuser');
+await helpers.safeType(page, '#username', 'testuser')
 
 // Take timestamped screenshot
-await helpers.takeScreenshot(page, 'test-result');
+await helpers.takeScreenshot(page, 'test-result')
 
 // Handle cookie banners
-await helpers.handleCookieBanner(page);
+await helpers.handleCookieBanner(page)
 
 // Extract table data
-const data = await helpers.extractTableData(page, 'table.results');
+const data = await helpers.extractTableData(page, 'table.results')
 ```
 
 See `lib/helpers.js` for full list.
@@ -599,17 +606,15 @@ PW_EXTRA_HEADERS='{"X-Automated-By":"playwright-skill","X-Debug":"true"}' \
 Headers are automatically applied when using `helpers.createContext()`:
 
 ```javascript
-const context = await helpers.createContext(browser);
-const page = await context.newPage();
+const context = await helpers.createContext(browser)
+const page = await context.newPage()
 // All requests from this page include your custom headers
 ```
 
 For scripts using raw Playwright API, use the injected `getContextOptionsWithHeaders()`:
 
 ```javascript
-const context = await browser.newContext(
-  getContextOptionsWithHeaders({ viewport: { width: 1920, height: 1080 } }),
-);
+const context = await browser.newContext(getContextOptionsWithHeaders({ viewport: { width: 1920, height: 1080 } }))
 ```
 
 ## Advanced Usage
@@ -704,6 +709,7 @@ User: "Use 3001"
 ## Notes
 
 ### Ad-hoc Automation
+
 - Each automation is custom-written for your specific request
 - Not limited to pre-built scripts - any browser task possible
 - Auto-detects running dev servers to eliminate hardcoded URLs
@@ -712,6 +718,7 @@ User: "Use 3001"
 - Progressive disclosure - API_REFERENCE.md loaded only when advanced features needed
 
 ### E2E Testing
+
 - Use `@playwright/test` framework for proper test structure
 - Tests run against production builds for accurate results
 - Proper test isolation ensures tests don't interfere with each other
@@ -722,6 +729,7 @@ User: "Use 3001"
 ## When to Use What
 
 **Use E2E Testing (`@playwright/test`):**
+
 - ✅ Writing test suites for your application
 - ✅ Regression testing
 - ✅ CI/CD integration
@@ -729,6 +737,7 @@ User: "Use 3001"
 - ✅ Next.js applications
 
 **Use Ad-hoc Automation (Raw Playwright API):**
+
 - ✅ Quick debugging sessions
 - ✅ One-off screenshots
 - ✅ Testing external websites

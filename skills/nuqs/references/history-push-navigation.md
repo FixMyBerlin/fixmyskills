@@ -22,9 +22,9 @@ export default function Pagination() {
 
   return (
     <nav>
-      <button onClick={() => setPage(p => p - 1)}>Previous</button>
+      <button onClick={() => setPage((p) => p - 1)}>Previous</button>
       <span>Page {page}</span>
-      <button onClick={() => setPage(p => p + 1)}>Next</button>
+      <button onClick={() => setPage((p) => p + 1)}>Next</button>
     </nav>
   )
 }
@@ -37,22 +37,26 @@ export default function Pagination() {
 import { useQueryState, parseAsInteger } from 'nuqs'
 
 export default function Pagination() {
-  const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1).withOptions({
-    history: 'push'
-  }))
+  const [page, setPage] = useQueryState(
+    'page',
+    parseAsInteger.withDefault(1).withOptions({
+      history: 'push',
+    }),
+  )
   // User clicks page 1 → 2 → 3 → back button → page 2
 
   return (
     <nav>
-      <button onClick={() => setPage(p => p - 1)}>Previous</button>
+      <button onClick={() => setPage((p) => p - 1)}>Previous</button>
       <span>Page {page}</span>
-      <button onClick={() => setPage(p => p + 1)}>Next</button>
+      <button onClick={() => setPage((p) => p + 1)}>Next</button>
     </nav>
   )
 }
 ```
 
 **Typical use cases for history:push:**
+
 - Pagination
 - Tab selection
 - Modal open/close state
@@ -62,9 +66,12 @@ export default function Pagination() {
 **Mix modes when needed:**
 
 ```tsx
-const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1).withOptions({
-  history: 'push'
-}))
+const [page, setPage] = useQueryState(
+  'page',
+  parseAsInteger.withDefault(1).withOptions({
+    history: 'push',
+  }),
+)
 
 // Programmatic navigation pushes
 setPage(5)

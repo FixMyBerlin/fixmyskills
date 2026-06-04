@@ -12,6 +12,7 @@ Comprehensive guide for type-safe URL query state management with nuqs in Next.j
 ## When to Apply
 
 Reference these guidelines when:
+
 - Implementing URL-based state with nuqs
 - Setting up nuqs in a Next.js project
 - Configuring parsers for URL parameters
@@ -21,16 +22,16 @@ Reference these guidelines when:
 
 ## Rule Categories by Priority
 
-| Priority | Category | Impact | Prefix |
-|----------|----------|--------|--------|
-| 1 | Parser Configuration | CRITICAL | `parser-` |
-| 2 | Adapter & Setup | CRITICAL | `setup-` |
-| 3 | State Management | HIGH | `state-` |
-| 4 | Server Integration | HIGH | `server-` |
-| 5 | Performance Optimization | MEDIUM | `perf-` |
-| 6 | History & Navigation | MEDIUM | `history-` |
-| 7 | Debugging & Testing | LOW-MEDIUM | `debug-` |
-| 8 | Advanced Patterns | LOW | `advanced-` |
+| Priority | Category                 | Impact     | Prefix      |
+| -------- | ------------------------ | ---------- | ----------- |
+| 1        | Parser Configuration     | CRITICAL   | `parser-`   |
+| 2        | Adapter & Setup          | CRITICAL   | `setup-`    |
+| 3        | State Management         | HIGH       | `state-`    |
+| 4        | Server Integration       | HIGH       | `server-`   |
+| 5        | Performance Optimization | MEDIUM     | `perf-`     |
+| 6        | History & Navigation     | MEDIUM     | `history-`  |
+| 7        | Debugging & Testing      | LOW-MEDIUM | `debug-`    |
+| 8        | Advanced Patterns        | LOW        | `advanced-` |
 
 ## Quick Reference
 
@@ -109,9 +110,9 @@ Read individual reference files for detailed explanations and code examples:
 
 ## Reference Files
 
-| File | Description |
-|------|-------------|
-| [AGENTS.md](AGENTS.md) | Complete compiled guide with all rules |
-| [references/_sections.md](references/_sections.md) | Category definitions and ordering |
-| [assets/templates/_template.md](assets/templates/_template.md) | Template for new rules |
-| [metadata.json](metadata.json) | Version and reference information |
+| File                                                            | Description                            |
+| --------------------------------------------------------------- | -------------------------------------- |
+| [AGENTS.md](AGENTS.md)                                          | Complete compiled guide with all rules |
+| [references/\_sections.md](references/_sections.md)             | Category definitions and ordering      |
+| [assets/templates/\_template.md](assets/templates/_template.md) | Template for new rules                 |
+| [metadata.json](metadata.json)                                  | Version and reference information      |

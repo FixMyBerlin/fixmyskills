@@ -24,7 +24,7 @@ interface Filters {
 export default function FilterPanel() {
   const [filters, setFilters] = useQueryState(
     'filters',
-    parseAsJson<Filters>() // No validation!
+    parseAsJson<Filters>(), // No validation!
   )
   // URL: ?filters={"malicious":true} passes through
   // URL: ?filters=notjson crashes
@@ -52,7 +52,7 @@ function isValidFilters(value: unknown): value is Filters {
     typeof obj.minPrice === 'number' &&
     typeof obj.maxPrice === 'number' &&
     Array.isArray(obj.categories) &&
-    obj.categories.every(c => typeof c === 'string')
+    obj.categories.every((c) => typeof c === 'string')
   )
 }
 
@@ -62,8 +62,8 @@ export default function FilterPanel() {
     parseAsJson<Filters>(isValidFilters).withDefault({
       minPrice: 0,
       maxPrice: 1000,
-      categories: []
-    })
+      categories: [],
+    }),
   )
   // Invalid JSON returns null, falls back to default
 
@@ -83,14 +83,12 @@ import { z } from 'zod'
 const FiltersSchema = z.object({
   minPrice: z.number(),
   maxPrice: z.number(),
-  categories: z.array(z.string())
+  categories: z.array(z.string()),
 })
 
 const [filters, setFilters] = useQueryState(
   'filters',
-  parseAsJson<z.infer<typeof FiltersSchema>>(
-    (value) => FiltersSchema.safeParse(value).success ? value : null
-  )
+  parseAsJson<z.infer<typeof FiltersSchema>>((value) => (FiltersSchema.safeParse(value).success ? value : null)),
 )
 ```
 

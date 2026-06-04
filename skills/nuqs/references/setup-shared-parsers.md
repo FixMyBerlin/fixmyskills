@@ -18,11 +18,11 @@ import { useQueryState, parseAsInteger } from 'nuqs'
 
 export function Pagination() {
   const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1))
-  return <button onClick={() => setPage(p => p + 1)}>Next</button>
+  return <button onClick={() => setPage((p) => p + 1)}>Next</button>
 }
 
 // components/PageInfo.tsx
-'use client'
+;('use client')
 import { useQueryState } from 'nuqs'
 
 export function PageInfo() {
@@ -40,21 +40,21 @@ import { parseAsInteger, parseAsString, parseAsStringLiteral } from 'nuqs'
 export const searchParams = {
   page: parseAsInteger.withDefault(1),
   query: parseAsString.withDefault(''),
-  sort: parseAsStringLiteral(['asc', 'desc'] as const).withDefault('asc')
+  sort: parseAsStringLiteral(['asc', 'desc'] as const).withDefault('asc'),
 }
 
 // components/Pagination.tsx
-'use client'
+;('use client')
 import { useQueryState } from 'nuqs'
 import { searchParams } from '@/lib/searchParams'
 
 export function Pagination() {
   const [page, setPage] = useQueryState('page', searchParams.page)
-  return <button onClick={() => setPage(p => p + 1)}>Next</button>
+  return <button onClick={() => setPage((p) => p + 1)}>Next</button>
 }
 
 // components/PageInfo.tsx
-'use client'
+;('use client')
 import { useQueryState } from 'nuqs'
 import { searchParams } from '@/lib/searchParams'
 
@@ -65,6 +65,7 @@ export function PageInfo() {
 ```
 
 **Benefits:**
+
 - Single source of truth for parser configuration
 - TypeScript catches mismatches at compile time
 - Easy to update defaults in one place

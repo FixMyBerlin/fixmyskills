@@ -53,10 +53,7 @@ export default function Pagination() {
 
   // Derived value, not duplicated state
   const isFirstPage = useMemo(() => page === 1, [page])
-  const pageRange = useMemo(
-    () => ({ start: (page - 1) * 10, end: page * 10 }),
-    [page]
-  )
+  const pageRange = useMemo(() => ({ start: (page - 1) * 10, end: page * 10 }), [page])
 
   return (
     <div>

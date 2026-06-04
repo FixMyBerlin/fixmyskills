@@ -25,7 +25,7 @@ export default function DateRangePicker() {
     <input
       type="date"
       value={startDate?.toISOString().slice(0, 10) ?? ''}
-      onChange={e => setStartDate(new Date(e.target.value))}
+      onChange={(e) => setStartDate(new Date(e.target.value))}
     />
   )
 }
@@ -50,7 +50,7 @@ export default function DateRangePicker() {
     <input
       type="date"
       value={startDate?.toISOString().slice(0, 10) ?? ''}
-      onChange={e => setStartDate(new Date(e.target.value))}
+      onChange={(e) => setStartDate(new Date(e.target.value))}
     />
   )
 }
@@ -58,10 +58,10 @@ export default function DateRangePicker() {
 
 **When to use each:**
 
-| Parser | URL Format | Use Case |
-|--------|------------|----------|
-| `parseAsTimestamp` | `1704067200000` | Precise timestamps, API integration |
+| Parser               | URL Format                 | Use Case                            |
+| -------------------- | -------------------------- | ----------------------------------- |
+| `parseAsTimestamp`   | `1704067200000`            | Precise timestamps, API integration |
 | `parseAsIsoDateTime` | `2024-01-01T12:00:00.000Z` | Debugging, shareable URLs with time |
-| `parseAsIsoDate` | `2024-01-01` | Date pickers, calendar views |
+| `parseAsIsoDate`     | `2024-01-01`               | Date pickers, calendar views        |
 
 Reference: [nuqs Date Parsers](https://nuqs.dev/docs/parsers)

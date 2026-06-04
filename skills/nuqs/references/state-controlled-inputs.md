@@ -22,7 +22,7 @@ export default function SearchBox() {
   return (
     <input
       value={query} // Warning: value is null initially
-      onChange={e => setQuery(e.target.value)}
+      onChange={(e) => setQuery(e.target.value)}
     />
   )
 }
@@ -41,7 +41,7 @@ export default function SearchBox() {
   return (
     <input
       value={query ?? ''} // Fallback to empty string
-      onChange={e => setQuery(e.target.value || null)}
+      onChange={(e) => setQuery(e.target.value || null)}
     />
   )
 }
@@ -60,7 +60,7 @@ export default function SearchBox() {
   return (
     <input
       value={query} // No fallback needed
-      onChange={e => setQuery(e.target.value)}
+      onChange={(e) => setQuery(e.target.value)}
     />
   )
 }

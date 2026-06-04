@@ -29,10 +29,10 @@ export const Route = createFileRoute('/products')({
   validateSearch: z.object({ q: z.string().optional(), page: z.number().default(1) }),
   loaderDeps: ({ search }) => ({ q: search.q, page: search.page }),
   loader: async ({ deps }) => {
-    return { list: await fetchProductsFn({ data: deps }) };
+    return { list: await fetchProductsFn({ data: deps }) }
   },
   component: ProductsPage,
-});
+})
 ```
 
 ## beforeLoad — auth & redirects (FMC default)
@@ -42,15 +42,15 @@ Runs before loader. Use for redirects and light context — via server functions
 ```tsx
 export const Route = createFileRoute('/dashboard')({
   beforeLoad: async () => {
-    const session = await getSessionFn();
-    if (!session) throw redirect({ to: '/login' });
-    return { session };
+    const session = await getSessionFn()
+    if (!session) throw redirect({ to: '/login' })
+    return { session }
   },
   loader: async ({ context }) => {
-    return { projects: await getProjectsFn({ data: { userId: context.session.userId } }) };
+    return { projects: await getProjectsFn({ data: { userId: context.session.userId } }) }
   },
   component: Dashboard,
-});
+})
 ```
 
 See `tanstack-start-auth` for session-via-Headers patterns.

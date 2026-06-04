@@ -15,12 +15,12 @@ After the mechanical migration, apply FMC stack skills: `tanstack-start-app-stru
 
 > TanStack Start is **isomorphic by default**. Components and loaders run on **both** server and client unless you isolate server-only logic in `createServerFn`. This is the **opposite** of Next.js Server Components (server-only by default).
 
-| Next.js habit | TanStack Start reality |
-|---------------|------------------------|
+| Next.js habit                          | TanStack Start reality                                     |
+| -------------------------------------- | ---------------------------------------------------------- |
 | Async server component + `await db...` | **Wrong** — component code runs on client after navigation |
-| `'use server'` / `'use client'` | **Remove both** — use `createServerFn` for server-only |
-| `getServerSideProps` always on server | Route `loader` runs on server **or** client (soft nav) |
-| Direct DB/fs in loader | Wrap in `createServerFn`; loader calls the fn |
+| `'use server'` / `'use client'`        | **Remove both** — use `createServerFn` for server-only     |
+| `getServerSideProps` always on server  | Route `loader` runs on server **or** client (soft nav)     |
+| Direct DB/fs in loader                 | Wrap in `createServerFn`; loader calls the fn              |
 
 **Loader on client nav:** During client-side navigation, the loader runs in the browser. Any DB, filesystem, or secret access inside the loader must go through a server function (RPC on the client, direct call on the server).
 
@@ -33,21 +33,21 @@ After the mechanical migration, apply FMC stack skills: `tanstack-start-app-stru
 
 ## Quick Mapping
 
-| Next.js | TanStack Start |
-|---------|----------------|
-| `app/page.tsx` / `pages/index.tsx` | `src/routes/index.tsx` |
-| `app/layout.tsx` | `src/routes/__root.tsx` |
-| `app/posts/[slug]/page.tsx` | `src/routes/posts/$slug.tsx` |
-| `app/posts/[...slug]/page.tsx` | `src/routes/posts/$.tsx` |
-| `app/api/foo/route.ts` | `src/routes/api/foo.ts` (`server.handlers`) |
-| `getServerSideProps` | Route `loader` (+ server fn for server-only I/O) |
-| Server Actions (`'use server'`) | `createServerFn` in `*.functions.ts` |
-| `next/link` `href` | `<Link to="..." params={...} />` |
-| `next/navigation` | `@tanstack/react-router` hooks |
-| `metadata` export | Route `head` property |
-| `middleware.ts` | `beforeLoad` (FMC default) or `createMiddleware` in `src/start.ts` |
-| `next.config.*` | `vite.config.ts` |
-| `process.env` | `import.meta.env` (client: `VITE_*`) |
+| Next.js                            | TanStack Start                                                     |
+| ---------------------------------- | ------------------------------------------------------------------ |
+| `app/page.tsx` / `pages/index.tsx` | `src/routes/index.tsx`                                             |
+| `app/layout.tsx`                   | `src/routes/__root.tsx`                                            |
+| `app/posts/[slug]/page.tsx`        | `src/routes/posts/$slug.tsx`                                       |
+| `app/posts/[...slug]/page.tsx`     | `src/routes/posts/$.tsx`                                           |
+| `app/api/foo/route.ts`             | `src/routes/api/foo.ts` (`server.handlers`)                        |
+| `getServerSideProps`               | Route `loader` (+ server fn for server-only I/O)                   |
+| Server Actions (`'use server'`)    | `createServerFn` in `*.functions.ts`                               |
+| `next/link` `href`                 | `<Link to="..." params={...} />`                                   |
+| `next/navigation`                  | `@tanstack/react-router` hooks                                     |
+| `metadata` export                  | Route `head` property                                              |
+| `middleware.ts`                    | `beforeLoad` (FMC default) or `createMiddleware` in `src/start.ts` |
+| `next.config.*`                    | `vite.config.ts`                                                   |
+| `process.env`                      | `import.meta.env` (client: `VITE_*`)                               |
 
 See [references/nextjs-to-start-mapping.md](references/nextjs-to-start-mapping.md) for edge cases.
 
@@ -143,7 +143,9 @@ export const Route = createRootRoute({
 function RootLayout() {
   return (
     <html lang="en">
-      <head><HeadContent /></head>
+      <head>
+        <HeadContent />
+      </head>
       <body>
         <Outlet />
         <Scripts />
@@ -172,7 +174,9 @@ function HomePage() {
 **Links:** Never interpolate params into `to`. Use typed `params` prop:
 
 ```tsx
-<Link to="/posts/$slug" params={{ slug: post.slug }}>View</Link>
+<Link to="/posts/$slug" params={{ slug: post.slug }}>
+  View
+</Link>
 ```
 
 ---
@@ -277,13 +281,13 @@ Provider SDKs (Clerk, WorkOS) work at React level; server integration may need S
 
 ## 7. Other migrations
 
-| Next.js | TanStack Start |
-|---------|----------------|
-| `next/image` | Vite assets, `@unpic/react`, or `<img>` |
-| `next/font` | Fontsource + Tailwind `@theme` in CSS |
-| `next/head` / `metadata` | Route `head` (can use `loaderData`) |
-| RSC async page | Loader + sync component + `useLoaderData` or Query |
-| `generateStaticParams` | `prerender` in Vite/Start config |
+| Next.js                  | TanStack Start                                     |
+| ------------------------ | -------------------------------------------------- |
+| `next/image`             | Vite assets, `@unpic/react`, or `<img>`            |
+| `next/font`              | Fontsource + Tailwind `@theme` in CSS              |
+| `next/head` / `metadata` | Route `head` (can use `loaderData`)                |
+| RSC async page           | Loader + sync component + `useLoaderData` or Query |
+| `generateStaticParams`   | `prerender` in Vite/Start config                   |
 
 Remove all `"use server"` and `"use client"` directives.
 
@@ -309,11 +313,11 @@ Remove all `"use server"` and `"use client"` directives.
 
 ## References
 
-| Topic | File |
-|-------|------|
+| Topic                        | File                                                                |
+| ---------------------------- | ------------------------------------------------------------------- |
 | Concept mapping, file layout | [nextjs-to-start-mapping.md](references/nextjs-to-start-mapping.md) |
-| Loaders, loaderDeps, Query | [loader-data-patterns.md](references/loader-data-patterns.md) |
-| createServerFn, validation | [server-functions.md](references/server-functions.md) |
+| Loaders, loaderDeps, Query   | [loader-data-patterns.md](references/loader-data-patterns.md)       |
+| createServerFn, validation   | [server-functions.md](references/server-functions.md)               |
 
 **FMC stack (post-migration):** `tanstack-start-app-structure`, `tanstack-start-conventions`, `tanstack-start-auth`, `nuqs` (URL state).
 

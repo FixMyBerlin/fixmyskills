@@ -16,12 +16,15 @@ By default, nuqs doesn't scroll on URL changes. Use the `scroll` option to contr
 import { useQueryState, parseAsString } from 'nuqs'
 
 export default function FilterPanel() {
-  const [filter, setFilter] = useQueryState('filter', parseAsString.withDefault('').withOptions({
-    scroll: true // Bad for filters - user loses their place!
-  }))
+  const [filter, setFilter] = useQueryState(
+    'filter',
+    parseAsString.withDefault('').withOptions({
+      scroll: true, // Bad for filters - user loses their place!
+    }),
+  )
 
   return (
-    <select value={filter} onChange={e => setFilter(e.target.value)}>
+    <select value={filter} onChange={(e) => setFilter(e.target.value)}>
       <option value="">All</option>
       <option value="active">Active</option>
     </select>
@@ -40,18 +43,21 @@ export default function SearchPage() {
   const [filter, setFilter] = useQueryState('filter', parseAsString.withDefault(''))
 
   // Scroll for pagination - user sees new content from top
-  const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1).withOptions({
-    scroll: true,
-    history: 'push'
-  }))
+  const [page, setPage] = useQueryState(
+    'page',
+    parseAsInteger.withDefault(1).withOptions({
+      scroll: true,
+      history: 'push',
+    }),
+  )
 
   return (
     <div>
-      <select value={filter} onChange={e => setFilter(e.target.value)}>
+      <select value={filter} onChange={(e) => setFilter(e.target.value)}>
         <option value="">All</option>
         <option value="active">Active</option>
       </select>
-      <button onClick={() => setPage(p => p + 1)}>Next Page</button>
+      <button onClick={() => setPage((p) => p + 1)}>Next Page</button>
     </div>
   )
 }

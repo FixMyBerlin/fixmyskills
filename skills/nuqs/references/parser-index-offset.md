@@ -25,8 +25,10 @@ export default function Pagination() {
 
   return (
     <div>
-      <p>Page {page}: {currentItem}</p>
-      <button onClick={() => setPage(p => p + 1)}>Next</button>
+      <p>
+        Page {page}: {currentItem}
+      </p>
+      <button onClick={() => setPage((p) => p + 1)}>Next</button>
     </div>
   )
 }
@@ -39,10 +41,7 @@ export default function Pagination() {
 import { useQueryState, parseAsIndex } from 'nuqs'
 
 export default function Pagination() {
-  const [pageIndex, setPageIndex] = useQueryState(
-    'page',
-    parseAsIndex.withDefault(0)
-  )
+  const [pageIndex, setPageIndex] = useQueryState('page', parseAsIndex.withDefault(0))
   // URL: ?page=1 (user-friendly, 1-indexed)
   // State: 0 (code-friendly, 0-indexed)
 
@@ -51,20 +50,24 @@ export default function Pagination() {
 
   return (
     <div>
-      <p>Page {pageIndex + 1}: {currentItem}</p>
-      <button onClick={() => setPageIndex(i => i + 1)}>Next</button>
+      <p>
+        Page {pageIndex + 1}: {currentItem}
+      </p>
+      <button onClick={() => setPageIndex((i) => i + 1)}>Next</button>
     </div>
   )
 }
 ```
 
 **How it works:**
+
 - URL `?page=1` → State `0`
 - URL `?page=5` → State `4`
 - State `0` → URL `?page=1`
 - State `4` → URL `?page=5`
 
 **Benefits:**
+
 - No off-by-one bugs
 - Array indices work directly
 - URLs are human-friendly

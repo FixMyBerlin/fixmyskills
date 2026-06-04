@@ -56,7 +56,7 @@ const trackSearch = async (term: string) => {
   const searchString = await setQuery(term)
   analytics.track('search', {
     term,
-    url: `?${searchString}`
+    url: `?${searchString}`,
   })
 }
 ```
@@ -66,7 +66,7 @@ const trackSearch = async (term: string) => {
 ```tsx
 const [coords, setCoords] = useQueryStates({
   lat: parseAsFloat,
-  lng: parseAsFloat
+  lng: parseAsFloat,
 })
 
 const shareLocation = async () => {

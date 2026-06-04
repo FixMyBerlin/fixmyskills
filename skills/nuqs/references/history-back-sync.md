@@ -32,9 +32,12 @@ export default function Pagination() {
 import { useQueryState, parseAsInteger } from 'nuqs'
 
 export default function Pagination() {
-  const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1).withOptions({
-    history: 'push'
-  }))
+  const [page, setPage] = useQueryState(
+    'page',
+    parseAsInteger.withDefault(1).withOptions({
+      history: 'push',
+    }),
+  )
   // User: page 1 → 2 → 3
   // Back button: page becomes 2 (automatic)
   // UI re-renders with new page value
@@ -42,7 +45,7 @@ export default function Pagination() {
   return (
     <div>
       <p>Page {page}</p>
-      <button onClick={() => setPage(p => p + 1)}>Next</button>
+      <button onClick={() => setPage((p) => p + 1)}>Next</button>
     </div>
   )
 }

@@ -31,14 +31,9 @@ import { render, type RenderOptions } from '@testing-library/react'
 
 export function renderWithNuqs(
   ui: React.ReactElement,
-  { searchParams = {}, ...options }: RenderOptions & { searchParams?: Record<string, string> } = {}
+  { searchParams = {}, ...options }: RenderOptions & { searchParams?: Record<string, string> } = {},
 ) {
-  return render(
-    <NuqsTestingAdapter searchParams={searchParams}>
-      {ui}
-    </NuqsTestingAdapter>,
-    options
-  )
+  return render(<NuqsTestingAdapter searchParams={searchParams}>{ui}</NuqsTestingAdapter>, options)
 }
 
 // components/Pagination.test.tsx

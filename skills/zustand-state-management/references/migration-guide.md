@@ -70,6 +70,7 @@ const increment = useStore((state) => state.increment)
 ```
 
 **Benefits**:
+
 - ~90% less boilerplate
 - No provider wrapper
 - No action types/creators
@@ -132,6 +133,7 @@ const increment = useStore((state) => state.increment)
 ```
 
 **Benefits**:
+
 - No provider needed
 - No context null checks
 - No wrapper components
@@ -148,10 +150,14 @@ const increment = useStore((state) => state.increment)
 
 ```typescript
 // ❌ v4
-const useStore = create<Store>((set) => ({ /* ... */ }))
+const useStore = create<Store>((set) => ({
+  /* ... */
+}))
 
 // ✅ v5
-const useStore = create<Store>()((set) => ({ /* ... */ }))
+const useStore = create<Store>()((set) => ({
+  /* ... */
+}))
 //                            ^^ Double parentheses required
 ```
 
@@ -162,7 +168,12 @@ const useStore = create<Store>()((set) => ({ /* ... */ }))
 import { persist } from 'zustand/middleware'
 
 const useStore = create(
-  persist((set) => ({ /* ... */ }), { name: 'storage' })
+  persist(
+    (set) => ({
+      /* ... */
+    }),
+    { name: 'storage' },
+  ),
 )
 
 // ✅ v5
@@ -170,12 +181,14 @@ import { persist, createJSONStorage } from 'zustand/middleware'
 
 const useStore = create<Store>()(
   persist(
-    (set) => ({ /* ... */ }),
+    (set) => ({
+      /* ... */
+    }),
     {
       name: 'storage',
       storage: createJSONStorage(() => localStorage),
-    }
-  )
+    },
+  ),
 )
 ```
 
@@ -215,26 +228,26 @@ import { shallow } from 'zustand/shallow'
 
 ### Redux → Zustand
 
-| Redux | Zustand |
-|-------|---------|
-| Actions | Direct functions in store |
-| Action types | Not needed |
-| Reducers | Inline in `set()` calls |
-| `useSelector` | Direct store selectors |
-| `useDispatch` | Direct function calls |
-| Provider | Not needed |
-| Middleware | Built-in (`persist`, `devtools`) |
-| DevTools | `devtools` middleware |
+| Redux         | Zustand                          |
+| ------------- | -------------------------------- |
+| Actions       | Direct functions in store        |
+| Action types  | Not needed                       |
+| Reducers      | Inline in `set()` calls          |
+| `useSelector` | Direct store selectors           |
+| `useDispatch` | Direct function calls            |
+| Provider      | Not needed                       |
+| Middleware    | Built-in (`persist`, `devtools`) |
+| DevTools      | `devtools` middleware            |
 
 ### Context → Zustand
 
-| Context | Zustand |
-|---------|---------|
-| `createContext` | `create()` |
-| Provider | Not needed |
-| `useContext` | Direct store access |
-| State | Store state |
-| Updaters | Store actions |
+| Context         | Zustand             |
+| --------------- | ------------------- |
+| `createContext` | `create()`          |
+| Provider        | Not needed          |
+| `useContext`    | Direct store access |
+| State           | Store state         |
+| Updaters        | Store actions       |
 
 ---
 
@@ -244,10 +257,14 @@ import { shallow } from 'zustand/shallow'
 
 ```typescript
 // ❌ WRONG
-create<Store>((set) => ({ /* ... */ }))
+create<Store>((set) => ({
+  /* ... */
+}))
 
 // ✅ CORRECT
-create<Store>()((set) => ({ /* ... */ }))
+create<Store>()((set) => ({
+  /* ... */
+}))
 ```
 
 ### 2. Creating Objects in Selectors
@@ -265,15 +282,22 @@ const b = useStore((state) => state.b)
 
 ```typescript
 // ❌ WRONG - Missing createJSONStorage
-persist((set) => ({ /* ... */ }), { name: 'storage' })
+persist(
+  (set) => ({
+    /* ... */
+  }),
+  { name: 'storage' },
+)
 
 // ✅ CORRECT
 persist(
-  (set) => ({ /* ... */ }),
+  (set) => ({
+    /* ... */
+  }),
   {
     name: 'storage',
     storage: createJSONStorage(() => localStorage),
-  }
+  },
 )
 ```
 

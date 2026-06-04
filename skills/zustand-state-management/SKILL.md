@@ -24,6 +24,7 @@ npm install zustand
 ```
 
 **TypeScript Store** (CRITICAL: use `create<T>()()` double parentheses):
+
 ```typescript
 import { create } from 'zustand'
 
@@ -48,10 +49,11 @@ export const useBearActions = () => useBearStore((state) => state.actions)
 ```
 
 **Use in Components**:
+
 ```tsx
 // ✅ Atomic selectors - only re-renders when bears changes
 const bears = useBears()
-const { increase } = useBearActions()  // Actions never change, safe to destructure
+const { increase } = useBearActions() // Actions never change, safe to destructure
 ```
 
 ---
@@ -59,6 +61,7 @@ const { increase } = useBearActions()  // Actions never change, safe to destruct
 ## Core Patterns
 
 **Basic Store** (JavaScript):
+
 ```javascript
 const useStore = create((set) => ({
   count: 0,
@@ -67,6 +70,7 @@ const useStore = create((set) => ({
 ```
 
 **TypeScript Store** (Recommended - follows best practices):
+
 ```typescript
 interface CounterStore {
   count: number
@@ -89,14 +93,15 @@ export const useCounterActions = () => useCounterStore((state) => state.actions)
 ```
 
 **Persistent Store** (survives page reloads):
+
 ```typescript
 import { persist, createJSONStorage } from 'zustand/middleware'
 
 const useStore = create<UserPreferences>()(
-  persist(
-    (set) => ({ theme: 'system', setTheme: (theme) => set({ theme }) }),
-    { name: 'user-preferences', storage: createJSONStorage(() => localStorage) },
-  ),
+  persist((set) => ({ theme: 'system', setTheme: (theme) => set({ theme }) }), {
+    name: 'user-preferences',
+    storage: createJSONStorage(() => localStorage),
+  }),
 )
 ```
 
@@ -148,9 +153,7 @@ const fish = useFish()
 
 // ✅ ALTERNATIVE - Use useShallow if you really need both values
 import { useShallow } from 'zustand/react/shallow'
-const { bears, fish } = useBearStore(
-  useShallow((state) => ({ bears: state.bears, fish: state.fish }))
-)
+const { bears, fish } = useBearStore(useShallow((state) => ({ bears: state.bears, fish: state.fish })))
 ```
 
 **Why**: Zustand uses strict equality checks. Returning a new object/array always triggers a re-render, even if values haven't changed. Atomic selectors only re-render when that specific value changes.
@@ -202,7 +205,7 @@ const { increasePopulation, eatFish } = useBearActions()
 interface BearStore {
   bears: number
   actions: {
-    increasePopulation: (by: number) => void  // Event: "increase population"
+    increasePopulation: (by: number) => void // Event: "increase population"
   }
 }
 
@@ -217,7 +220,7 @@ const useBearStore = create<BearStore>()((set) => ({
 function Component() {
   const bears = useBears()
   const setBears = useBearStore((state) => state.setBears)
-  
+
   // Logic should be in store, not component
   const handleIncrease = () => setBears(bears + 5)
 }
@@ -266,21 +269,16 @@ const useUiStore = create<UiStore>()((set) => ({
   isLoading: false,
   size: { width: 0, height: 0 },
   actions: {
-    startLoading: () =>
-      set((state) => (Object.is(state.isLoading, true) ? state : { isLoading: true })),
-    finishLoading: () =>
-      set((state) => (Object.is(state.isLoading, false) ? state : { isLoading: false })),
+    startLoading: () => set((state) => (Object.is(state.isLoading, true) ? state : { isLoading: true })),
+    finishLoading: () => set((state) => (Object.is(state.isLoading, false) ? state : { isLoading: false })),
     updateSize: (next) =>
-      set((state) =>
-        state.size.width === next.width && state.size.height === next.height
-          ? state
-          : { size: next },
-      ),
+      set((state) => (state.size.width === next.width && state.size.height === next.height ? state : { size: next })),
   },
 }))
 ```
 
 **Why**:
+
 - Prevents unnecessary update propagation to subscribers.
 - Keeps action semantics explicit (better than `setIfChanged(get, set, key, value)` style helpers).
 - Works naturally with Zustand's selector model and strict equality.
@@ -292,7 +290,7 @@ Zustand stores often combine better with React Query or URL state than with othe
 ```typescript
 // ✅ GOOD - Zustand + React Query
 export const useFilteredTodos = () => {
-  const filters = useAppliedFilters()  // From Zustand store
+  const filters = useAppliedFilters() // From Zustand store
   return useQuery({
     queryKey: ['todos', filters],
     queryFn: () => getTodos(filters),
@@ -344,6 +342,7 @@ This skill prevents **6** documented issues:
 **Error**: `"Text content does not match server-rendered HTML"` or `"Hydration failed"`
 
 **Source**:
+
 - [DEV Community: Persist middleware in Next.js](https://dev.to/abdulsamad/how-to-use-zustands-persist-middleware-in-nextjs-4lb5)
 - GitHub Discussions #2839
 
@@ -351,6 +350,7 @@ This skill prevents **6** documented issues:
 Persist middleware reads from localStorage on client but not on server, causing state mismatch.
 
 **Prevention**:
+
 ```typescript
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
@@ -402,6 +402,7 @@ function MyComponent() {
 The currying syntax `create<T>()()` is required for middleware to work with TypeScript inference.
 
 **Prevention**:
+
 ```typescript
 // ❌ WRONG - Single parentheses
 const useStore = create<MyStore>((set) => ({
@@ -426,6 +427,7 @@ const useStore = create<MyStore>()((set) => ({
 Wrong import path or version mismatch between zustand and build tools.
 
 **Prevention**:
+
 ```typescript
 // ✅ CORRECT imports for v5
 import { create } from 'zustand'
@@ -442,11 +444,13 @@ import { persist, createJSONStorage } from 'zustand/middleware'
 ### Issue #4: Infinite Render Loop
 
 **Error**: Component re-renders infinitely, browser freezes
+
 ```
 Uncaught Error: Maximum update depth exceeded. This can happen when a component repeatedly calls setState inside componentWillUpdate or componentDidUpdate.
 ```
 
 **Source**:
+
 - GitHub Discussions #2642
 - [Issue #2863](https://github.com/pmndrs/zustand/issues/2863)
 
@@ -456,6 +460,7 @@ Creating new object references in selectors causes Zustand to think state change
 **v5 Breaking Change**: Zustand v5 made this error MORE explicit compared to v4. In v4, this behavior was "non-ideal" but could go unnoticed. In v5, you'll immediately see the "Maximum update depth exceeded" error.
 
 **Prevention**:
+
 ```typescript
 // ❌ WRONG - Creates new object every time, causes infinite renders
 const { bears, fishes } = useStore((state) => ({
@@ -475,9 +480,7 @@ const fishes = useFishes()
 // ✅ ALTERNATIVE - Use useShallow only if you really need both values
 // (Prefer atomic selectors when possible)
 import { useShallow } from 'zustand/react/shallow'
-const { bears, fishes } = useStore(
-  useShallow((state) => ({ bears: state.bears, fishes: state.fishes }))
-)
+const { bears, fishes } = useStore(useShallow((state) => ({ bears: state.bears, fishes: state.fishes })))
 ```
 
 **Best Practice**: Prefer atomic selectors (Option 1) over `useShallow`. They're simpler, more explicit, and perform better. Only use `useShallow` when you truly need multiple values together.
@@ -492,6 +495,7 @@ const { bears, fishes } = useStore(
 Combining multiple slices requires explicit type annotations for middleware compatibility.
 
 **Prevention**:
+
 ```typescript
 import { create, StateCreator } from 'zustand'
 
@@ -508,21 +512,16 @@ interface FishSlice {
 
 // Create slices with proper types
 const createBearSlice: StateCreator<
-  BearSlice & FishSlice,  // Combined store type
-  [],                      // Middleware mutators (empty if none)
-  [],                      // Chained middleware (empty if none)
-  BearSlice               // This slice's type
+  BearSlice & FishSlice, // Combined store type
+  [], // Middleware mutators (empty if none)
+  [], // Chained middleware (empty if none)
+  BearSlice // This slice's type
 > = (set) => ({
   bears: 0,
   addBear: () => set((state) => ({ bears: state.bears + 1 })),
 })
 
-const createFishSlice: StateCreator<
-  BearSlice & FishSlice,
-  [],
-  [],
-  FishSlice
-> = (set) => ({
+const createFishSlice: StateCreator<BearSlice & FishSlice, [], [], FishSlice> = (set) => ({
   fishes: 0,
   addFish: () => set((state) => ({ fishes: state.fishes + 1 })),
 })
@@ -539,6 +538,7 @@ const useStore = create<BearSlice & FishSlice>()((...a) => ({
 **Error**: Inconsistent state during concurrent rehydration attempts
 
 **Source**:
+
 - [GitHub PR #3336](https://github.com/pmndrs/zustand/pull/3336)
 - [Release v5.0.10](https://github.com/pmndrs/zustand/releases/tag/v5.0.10)
 
@@ -559,27 +559,29 @@ npm install zustand@latest  # Ensure v5.0.10+
 ## Middleware
 
 **Persist** (localStorage):
+
 ```typescript
 import { persist, createJSONStorage } from 'zustand/middleware'
 
 const useStore = create<MyStore>()(
-  persist(
-    (set) => ({ data: [], addItem: (item) => set((state) => ({ data: [...state.data, item] })) }),
-    {
-      name: 'my-storage',
-      partialize: (state) => ({ data: state.data }),  // Only persist 'data'
-    },
-  ),
+  persist((set) => ({ data: [], addItem: (item) => set((state) => ({ data: [...state.data, item] })) }), {
+    name: 'my-storage',
+    partialize: (state) => ({ data: state.data }), // Only persist 'data'
+  }),
 )
 ```
 
 **Devtools** (Redux DevTools):
+
 ```typescript
 import { devtools } from 'zustand/middleware'
 
 const useStore = create<CounterStore>()(
   devtools(
-    (set) => ({ count: 0, increment: () => set((s) => ({ count: s.count + 1 }), undefined, 'increment') }),
+    (set) => ({
+      count: 0,
+      increment: () => set((s) => ({ count: s.count + 1 }), undefined, 'increment'),
+    }),
     { name: 'CounterStore' },
   ),
 )
@@ -588,8 +590,19 @@ const useStore = create<CounterStore>()(
 **v4→v5 Migration Note**: In Zustand v4, devtools was imported from `'zustand/middleware/devtools'`. In v5, use `'zustand/middleware'` (as shown above). If you see "Module not found: Can't resolve 'zustand/middleware/devtools'", update your import path.
 
 **Combining Middlewares** (order matters):
+
 ```typescript
-const useStore = create<MyStore>()(devtools(persist((set) => ({ /* ... */ }), { name: 'storage' }), { name: 'MyStore' }))
+const useStore = create<MyStore>()(
+  devtools(
+    persist(
+      (set) => ({
+        /* ... */
+      }),
+      { name: 'storage' },
+    ),
+    { name: 'MyStore' },
+  ),
+)
 ```
 
 ---
@@ -597,11 +610,13 @@ const useStore = create<MyStore>()(devtools(persist((set) => ({ /* ... */ }), { 
 ## Common Patterns
 
 **Computed/Derived Values** (in selector, not stored):
+
 ```typescript
-const count = useStore((state) => state.items.length)  // Computed on read
+const count = useStore((state) => state.items.length) // Computed on read
 ```
 
 **Async Actions**:
+
 ```typescript
 const useAsyncStore = create<AsyncStore>()((set) => ({
   data: null,
@@ -615,6 +630,7 @@ const useAsyncStore = create<AsyncStore>()((set) => ({
 ```
 
 **Resetting Store**:
+
 ```typescript
 const initialState = { count: 0, name: '' }
 const useStore = create<ResettableStore>()((set) => ({
@@ -624,6 +640,7 @@ const useStore = create<ResettableStore>()((set) => ({
 ```
 
 **Selector with Params**:
+
 ```typescript
 const todo = useStore((state) => state.todos.find((t) => t.id === id))
 ```
@@ -643,30 +660,44 @@ const todo = useStore((state) => state.todos.find((t) => t.id === id))
 ## Advanced Topics
 
 **Vanilla Store** (Without React):
+
 ```typescript
 import { createStore } from 'zustand/vanilla'
 
-const store = createStore<CounterStore>()((set) => ({ count: 0, increment: () => set((s) => ({ count: s.count + 1 })) }))
+const store = createStore<CounterStore>()((set) => ({
+  count: 0,
+  increment: () => set((s) => ({ count: s.count + 1 })),
+}))
 const unsubscribe = store.subscribe((state) => console.log(state.count))
 store.getState().increment()
 ```
 
 **Custom Middleware**:
+
 ```typescript
 const logger: Logger = (f, name) => (set, get, store) => {
-  const loggedSet: typeof set = (...a) => { set(...a); console.log(`[${name}]:`, get()) }
+  const loggedSet: typeof set = (...a) => {
+    set(...a)
+    console.log(`[${name}]:`, get())
+  }
   return f(loggedSet, get, store)
 }
 ```
 
 **Immer Middleware** (Mutable Updates):
+
 ```typescript
 import { immer } from 'zustand/middleware/immer'
 
-const useStore = create<TodoStore>()(immer((set) => ({
-  todos: [],
-  addTodo: (text) => set((state) => { state.todos.push({ id: Date.now().toString(), text }) }),
-})))
+const useStore = create<TodoStore>()(
+  immer((set) => ({
+    todos: [],
+    addTodo: (text) =>
+      set((state) => {
+        state.todos.push({ id: Date.now().toString(), text })
+      }),
+  })),
+)
 ```
 
 **v5.0.3→v5.0.4 Migration Note**: If upgrading from v5.0.3 to v5.0.4+ and immer middleware stops working, verify you're using the import path shown above (`zustand/middleware/immer`). Some users reported issues after the v5.0.4 update that were resolved by confirming the correct import.
@@ -683,10 +714,12 @@ import { unstable_ssrSafe } from 'zustand/middleware'
 const useStore = create<Store>()(
   unstable_ssrSafe(
     persist(
-      (set) => ({ /* state */ }),
-      { name: 'my-store' }
-    )
-  )
+      (set) => ({
+        /* state */
+      }),
+      { name: 'my-store' },
+    ),
+  ),
 )
 ```
 

@@ -16,10 +16,7 @@ nuqs offers two array formats with different URL representations. Choose based o
 import { useQueryState, parseAsArrayOf, parseAsString } from 'nuqs'
 
 export default function TagFilter() {
-  const [tags, setTags] = useQueryState(
-    'tags',
-    parseAsArrayOf(parseAsString).withDefault([])
-  )
+  const [tags, setTags] = useQueryState('tags', parseAsArrayOf(parseAsString).withDefault([]))
   // URL: ?tags=react,nextjs
   // But backend expects: ?tag=react&tag=nextjs
   // API receives single string "react,nextjs" instead of array!
@@ -35,7 +32,7 @@ import { useQueryState, parseAsNativeArrayOf, parseAsString } from 'nuqs'
 export default function TagFilter() {
   const [tags, setTags] = useQueryState(
     'tag', // Note: singular key name
-    parseAsNativeArrayOf(parseAsString).withDefault([])
+    parseAsNativeArrayOf(parseAsString).withDefault([]),
   )
   // URL: ?tag=react&tag=nextjs
   // Backend correctly receives array ['react', 'nextjs']
@@ -51,9 +48,9 @@ export default function TagFilter() {
 
 **When to use each:**
 
-| Format | URL Example | Use When |
-|--------|-------------|----------|
-| `parseAsArrayOf` | `?ids=1,2,3` | Compact URLs, numeric IDs, custom backends |
+| Format                 | URL Example    | Use When                                   |
+| ---------------------- | -------------- | ------------------------------------------ |
+| `parseAsArrayOf`       | `?ids=1,2,3`   | Compact URLs, numeric IDs, custom backends |
 | `parseAsNativeArrayOf` | `?tag=a&tag=b` | Standard form encoding, PHP/Rails backends |
 
 Reference: [nuqs Array Parsers](https://nuqs.dev/docs/parsers)

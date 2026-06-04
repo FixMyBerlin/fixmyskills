@@ -38,12 +38,12 @@ Short reference for Better Auth setup and route protection in TanStack Start.
 
 ## 4. Typical route protection patterns
 
-| Area | Protection | Pattern |
-|------|------------|---------|
-| **Public home** | Optional redirect | `beforeLoad` reads post–sign-in redirect cookie; no auth required |
-| **Admin layout** | Admin only | Parent `beforeLoad` calls `getIsAdminFn()`; redirect to sign-in with `callbackURL` |
-| **Resource page** | Public + member | `beforeLoad`: URL normalization + authorization server fn → `isAuthorized` in context; page shows content or “access denied” |
-| **API routes** | Per-handler | No `beforeLoad`; each handler calls `getAppSession(request.headers)` or API key check |
+| Area              | Protection        | Pattern                                                                                                                      |
+| ----------------- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **Public home**   | Optional redirect | `beforeLoad` reads post–sign-in redirect cookie; no auth required                                                            |
+| **Admin layout**  | Admin only        | Parent `beforeLoad` calls `getIsAdminFn()`; redirect to sign-in with `callbackURL`                                           |
+| **Resource page** | Public + member   | `beforeLoad`: URL normalization + authorization server fn → `isAuthorized` in context; page shows content or “access denied” |
+| **API routes**    | Per-handler       | No `beforeLoad`; each handler calls `getAppSession(request.headers)` or API key check                                        |
 
 ---
 

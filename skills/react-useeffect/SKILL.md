@@ -16,13 +16,16 @@ Effects are an **escape hatch** from React. They let you synchronize with **exte
 ```tsx
 // Avoid for useEffect (anonymous — hard to skim and debug)
 useEffect(() => {
-  document.title = `${count} items`;
-}, [count]);
+  document.title = `${count} items`
+}, [count])
 
 // Prefer — intent at the call site; named stacks in errors and DevTools
-useEffect(function updateDocumentTitle() {
-  document.title = `${count} items`;
-}, [count]);
+useEffect(
+  function updateDocumentTitle() {
+    document.title = `${count} items`
+  },
+  [count],
+)
 ```
 
 Equivalent at a glance: `useEffect(function connectToInventoryWebSocket() { ... }, [warehouseId])` vs `useEffect(() => { ... }, [warehouseId])`.
@@ -53,13 +56,13 @@ useEffect(function pollServerForUpdates() {
 
 Naming is a **design review at the keyboard**. Use it together with [Anti-Patterns](./anti-patterns.md) (examples and fixes live there — avoid duplicating that material here).
 
-| Signal | Meaning | Where to look |
-|--------|---------|----------------|
-| Name needs **“and”** / **“also”** | Unrelated concerns in one effect | Split into separate effects, each with one name |
-| Name like **`syncDerivedValue`**, **`updateStateFromState`**, **`setXBasedOnY`** | Likely derived state or state-to-state sync | [Anti-Patterns §1](./anti-patterns.md#1-redundant-state-for-derived-values) — derive during render; `useMemo` if expensive |
-| Name like **`notifyParentOfChange`**, **`reportStateToParent`** | Parent updates driven by child state | [Anti-Patterns §6–7](./anti-patterns.md#6-notifying-parent-via-effect) — event handler, lift data, or controlled pattern |
-| Name like **`resetFormOnSubmitFlag`** | User intent expressed via state hop | [Anti-Patterns §4](./anti-patterns.md#4-event-specific-logic-in-effect) — handle in the event handler |
-| Clear, **external** verbs: `connectTo…`, `subscribeTo…`, `initialize…`, `synchronize…` (with browser, network, map SDK, etc.) | Often legitimate Effect territory | Still name them; add cleanup when needed |
+| Signal                                                                                                                        | Meaning                                     | Where to look                                                                                                              |
+| ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| Name needs **“and”** / **“also”**                                                                                             | Unrelated concerns in one effect            | Split into separate effects, each with one name                                                                            |
+| Name like **`syncDerivedValue`**, **`updateStateFromState`**, **`setXBasedOnY`**                                              | Likely derived state or state-to-state sync | [Anti-Patterns §1](./anti-patterns.md#1-redundant-state-for-derived-values) — derive during render; `useMemo` if expensive |
+| Name like **`notifyParentOfChange`**, **`reportStateToParent`**                                                               | Parent updates driven by child state        | [Anti-Patterns §6–7](./anti-patterns.md#6-notifying-parent-via-effect) — event handler, lift data, or controlled pattern   |
+| Name like **`resetFormOnSubmitFlag`**                                                                                         | User intent expressed via state hop         | [Anti-Patterns §4](./anti-patterns.md#4-event-specific-logic-in-effect) — handle in the event handler                      |
+| Clear, **external** verbs: `connectTo…`, `subscribeTo…`, `initialize…`, `synchronize…` (with browser, network, map SDK, etc.) | Often legitimate Effect territory           | Still name them; add cleanup when needed                                                                                   |
 
 If the honest name sounds like **internal React bookkeeping**, the code often belongs in render, an event handler, or a different pattern — see the linked sections.
 
@@ -67,14 +70,14 @@ If the honest name sounds like **internal React bookkeeping**, the code often be
 
 ## Quick reference
 
-| Situation | DON'T | DO |
-|-----------|-------|-----|
-| Derived state from props/state | `useState` + `useEffect` | Calculate during render |
-| Expensive calculations | `useEffect` to cache | `useMemo` |
-| Reset state on prop change | `useEffect` with `setState` | `key` prop |
-| User event responses | `useEffect` watching state | Event handler directly |
-| Notify parent of changes | `useEffect` calling `onChange` | Call in event handler |
-| Fetch data | `useEffect` without cleanup | `useEffect` with cleanup OR framework |
+| Situation                      | DON'T                          | DO                                    |
+| ------------------------------ | ------------------------------ | ------------------------------------- |
+| Derived state from props/state | `useState` + `useEffect`       | Calculate during render               |
+| Expensive calculations         | `useEffect` to cache           | `useMemo`                             |
+| Reset state on prop change     | `useEffect` with `setState`    | `key` prop                            |
+| User event responses           | `useEffect` watching state     | Event handler directly                |
+| Notify parent of changes       | `useEffect` calling `onChange` | Call in event handler                 |
+| Fetch data                     | `useEffect` without cleanup    | `useEffect` with cleanup OR framework |
 
 ---
 

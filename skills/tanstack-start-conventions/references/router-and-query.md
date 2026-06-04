@@ -8,11 +8,11 @@ How we combine route loaders with React Query. Setup lives in `router.tsx` (`que
 
 ## When to use what
 
-| Need                                                                     | Pattern                                                                                                          |
-| ------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| Shared or refetchable data (invalidation, window focus, multiple routes) | `*QueryOptions` in `src/server/…`, loader primes cache, component uses `useQuery` / `useSuspenseQuery`       |
-| Data only for one route, no Query invalidation (most admin CRUD)         | Loader returns serializable data → `routeApi.useLoaderData()`                                                    |
-| Redirects, auth, light context                                           | `beforeLoad` only — see [client-server-boundaries.md](client-server-boundaries.md) |
+| Need                                                                     | Pattern                                                                                                |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
+| Shared or refetchable data (invalidation, window focus, multiple routes) | `*QueryOptions` in `src/server/…`, loader primes cache, component uses `useQuery` / `useSuspenseQuery` |
+| Data only for one route, no Query invalidation (most admin CRUD)         | Loader returns serializable data → `routeApi.useLoaderData()`                                          |
+| Redirects, auth, light context                                           | `beforeLoad` only — see [client-server-boundaries.md](client-server-boundaries.md)                     |
 
 Do **not** read Query-backed data only via `useLoaderData`. Query needs an observer (`useQuery` / `useSuspenseQuery`) for refetch, invalidation, and cache retention.
 

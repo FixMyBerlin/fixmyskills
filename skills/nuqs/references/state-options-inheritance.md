@@ -20,14 +20,14 @@ export default function SearchPage() {
     ...parseAsString,
     shallow: false,
     throttleMs: 500,
-    history: 'push'
+    history: 'push',
   })
 
   const [filter, setFilter] = useQueryState('filter', {
     ...parseAsString,
     shallow: false,
     throttleMs: 500,
-    history: 'push'
+    history: 'push',
   })
 
   // Repeated configuration for each parameter
@@ -43,17 +43,17 @@ import { parseAsString, parseAsInteger } from 'nuqs'
 const serverSyncOptions = {
   shallow: false,
   throttleMs: 500,
-  history: 'push' as const
+  history: 'push' as const,
 }
 
 export const searchParams = {
   query: parseAsString.withDefault('').withOptions(serverSyncOptions),
   filter: parseAsString.withDefault('').withOptions(serverSyncOptions),
-  page: parseAsInteger.withDefault(1).withOptions(serverSyncOptions)
+  page: parseAsInteger.withDefault(1).withOptions(serverSyncOptions),
 }
 
 // components/SearchPage.tsx
-'use client'
+;('use client')
 import { useQueryState } from 'nuqs'
 import { searchParams } from '@/lib/searchParams'
 
@@ -69,10 +69,7 @@ export default function SearchPage() {
 **Options can be chained:**
 
 ```tsx
-parseAsInteger
-  .withDefault(1)
-  .withOptions({ shallow: false })
-  .withOptions({ throttleMs: 300 }) // Merges with previous options
+parseAsInteger.withDefault(1).withOptions({ shallow: false }).withOptions({ throttleMs: 300 }) // Merges with previous options
 ```
 
 Reference: [nuqs Options](https://nuqs.dev/docs/options)

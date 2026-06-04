@@ -31,15 +31,15 @@ Auth-specific flows: skill `tanstack-start-auth`.
 
 ## Non-negotiable rules
 
-| Topic | Rule |
-|-------|------|
-| Server-only modules | `*.server.ts` — never imported by routes/components; use `createServerOnlyFn` inside |
-| Callable from client | `*.functions.ts` with `createServerFn`; name exports `*Fn` |
-| API route files | No `server-only` import marker on the route file; server-only logic inside handlers or tree-shaken imports |
-| Query-backed UI data | Loader primes cache; component uses `useQuery` / `useSuspenseQuery` — not `useLoaderData` alone |
-| API search params | Do **not** use `validateSearch` on API routes; `safeParse` in `GET` from `request.url` with explicit 4xx JSON |
-| Validation | Zod for path params and UI search everywhere |
-| SSR | Set `ssr` explicitly on every route; default full SSR unless a leaf needs `data-only` or `false` |
+| Topic                | Rule                                                                                                          |
+| -------------------- | ------------------------------------------------------------------------------------------------------------- |
+| Server-only modules  | `*.server.ts` — never imported by routes/components; use `createServerOnlyFn` inside                          |
+| Callable from client | `*.functions.ts` with `createServerFn`; name exports `*Fn`                                                    |
+| API route files      | No `server-only` import marker on the route file; server-only logic inside handlers or tree-shaken imports    |
+| Query-backed UI data | Loader primes cache; component uses `useQuery` / `useSuspenseQuery` — not `useLoaderData` alone               |
+| API search params    | Do **not** use `validateSearch` on API routes; `safeParse` in `GET` from `request.url` with explicit 4xx JSON |
+| Validation           | Zod for path params and UI search everywhere                                                                  |
+| SSR                  | Set `ssr` explicitly on every route; default full SSR unless a leaf needs `data-only` or `false`              |
 
 ## Quick decisions
 

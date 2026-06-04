@@ -20,7 +20,7 @@ export default function Counter() {
   // Something's not working, but no way to see what nuqs is doing
   // Have to guess and add console.logs everywhere
 
-  return <button onClick={() => setCount(c => c + 1)}>{count}</button>
+  return <button onClick={() => setCount((c) => c + 1)}>{count}</button>
 }
 ```
 
@@ -44,6 +44,7 @@ delete localStorage.debug
 **Performance timing markers:**
 
 Debug mode also records User Timing markers visible in the Performance tab:
+
 - `nuqs:parse` - Time to parse URL parameters
 - `nuqs:serialize` - Time to serialize state to URL
 - `nuqs:update` - Time for URL update

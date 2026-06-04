@@ -26,7 +26,7 @@ const parseAsFilters = createParser<Filters>({
   },
   serialize({ minPrice, maxPrice }) {
     return `${minPrice}-${maxPrice}`
-  }
+  },
   // Missing eq - uses reference equality
 })
 
@@ -55,7 +55,7 @@ const parseAsFilters = createParser<Filters>({
   },
   eq(a, b) {
     return a.minPrice === b.minPrice && a.maxPrice === b.maxPrice
-  }
+  },
 })
 
 // Now same values don't trigger unnecessary updates
@@ -75,7 +75,7 @@ const parseAsIdList = createParser<number[]>({
   },
   eq(a, b) {
     return a.length === b.length && a.every((v, i) => v === b[i])
-  }
+  },
 })
 ```
 
@@ -87,7 +87,7 @@ import isEqual from 'lodash/isEqual' // or deep-equal
 const parseAsConfig = createParser<Config>({
   parse: JSON.parse,
   serialize: JSON.stringify,
-  eq: isEqual // Deep equality comparison
+  eq: isEqual, // Deep equality comparison
 })
 ```
 

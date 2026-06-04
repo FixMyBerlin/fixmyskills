@@ -19,7 +19,9 @@ import { BrowserRouter } from 'react-router-dom'
 function App() {
   return (
     <BrowserRouter>
-      <NuqsAdapter> {/* This won't work with React Router */}
+      <NuqsAdapter>
+        {' '}
+        {/* This won't work with React Router */}
         <Routes />
       </NuqsAdapter>
     </BrowserRouter>
@@ -47,14 +49,14 @@ function App() {
 
 **Available adapters:**
 
-| Framework | Import Path |
-|-----------|-------------|
-| Next.js App Router | `nuqs/adapters/next/app` |
-| Next.js Pages Router | `nuqs/adapters/next/pages` |
-| React Router v6 | `nuqs/adapters/react-router/v6` |
-| React Router v7 | `nuqs/adapters/react-router/v7` |
-| Remix | `nuqs/adapters/remix` |
-| Plain React | `nuqs/adapters/react` |
-| Testing | `nuqs/adapters/testing` |
+| Framework            | Import Path                     |
+| -------------------- | ------------------------------- |
+| Next.js App Router   | `nuqs/adapters/next/app`        |
+| Next.js Pages Router | `nuqs/adapters/next/pages`      |
+| React Router v6      | `nuqs/adapters/react-router/v6` |
+| React Router v7      | `nuqs/adapters/react-router/v7` |
+| Remix                | `nuqs/adapters/remix`           |
+| Plain React          | `nuqs/adapters/react`           |
+| Testing              | `nuqs/adapters/testing`         |
 
 Reference: [nuqs Adapters](https://nuqs.dev/docs/adapters)

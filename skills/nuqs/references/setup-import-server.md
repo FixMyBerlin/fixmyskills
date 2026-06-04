@@ -17,7 +17,7 @@ import { createSearchParamsCache, parseAsString } from 'nuqs'
 // Error: This import adds 'use client' to your server code
 
 export const searchParamsCache = createSearchParamsCache({
-  q: parseAsString.withDefault('')
+  q: parseAsString.withDefault(''),
 })
 ```
 
@@ -25,16 +25,12 @@ export const searchParamsCache = createSearchParamsCache({
 
 ```tsx
 // lib/searchParams.ts
-import {
-  createSearchParamsCache,
-  parseAsString,
-  parseAsInteger
-} from 'nuqs/server'
+import { createSearchParamsCache, parseAsString, parseAsInteger } from 'nuqs/server'
 // No 'use client' directive - safe for Server Components
 
 export const searchParamsCache = createSearchParamsCache({
   q: parseAsString.withDefault(''),
-  page: parseAsInteger.withDefault(1)
+  page: parseAsInteger.withDefault(1),
 })
 ```
 
@@ -63,10 +59,10 @@ export default async function SearchPage({ searchParams }: PageProps) {
 
 **What to import from where:**
 
-| Import | Source | Use In |
-|--------|--------|--------|
-| `useQueryState`, `useQueryStates` | `nuqs` | Client Components |
-| `createSearchParamsCache` | `nuqs/server` | Server Components |
-| Parsers (`parseAsString`, etc.) | `nuqs/server` for server, `nuqs` for client | Either |
+| Import                            | Source                                      | Use In            |
+| --------------------------------- | ------------------------------------------- | ----------------- |
+| `useQueryState`, `useQueryStates` | `nuqs`                                      | Client Components |
+| `createSearchParamsCache`         | `nuqs/server`                               | Server Components |
+| Parsers (`parseAsString`, etc.)   | `nuqs/server` for server, `nuqs` for client | Either            |
 
 Reference: [nuqs Server-Side](https://nuqs.dev/docs/server-side)

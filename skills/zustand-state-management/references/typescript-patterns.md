@@ -10,10 +10,14 @@ Advanced TypeScript patterns and troubleshooting. Load when encountering complex
 
 ```typescript
 // ✅ CORRECT
-const useStore = create<Store>()((set) => ({ /* ... */ }))
+const useStore = create<Store>()((set) => ({
+  /* ... */
+}))
 
 // ❌ WRONG
-const useStore = create<Store>((set) => ({ /* ... */ }))
+const useStore = create<Store>((set) => ({
+  /* ... */
+}))
 ```
 
 **Why**: Currying syntax enables middleware type inference.
@@ -59,10 +63,10 @@ interface BearSlice {
 
 // Create slice with proper types
 const createBearSlice: StateCreator<
-  BearSlice & FishSlice,  // Combined store type
-  [],                      // Middleware mutators
-  [],                      // Chained middleware
-  BearSlice               // This slice
+  BearSlice & FishSlice, // Combined store type
+  [], // Middleware mutators
+  [], // Chained middleware
+  BearSlice // This slice
 > = (set) => ({
   bears: 0,
   addBear: () => set((state) => ({ bears: state.bears + 1 })),
@@ -88,15 +92,10 @@ const useStore = create<Store>()(
   devtools(
     (set) => ({
       count: 0,
-      increment: () =>
-        set(
-          (state) => ({ count: state.count + 1 }),
-          undefined,
-          'increment'
-        ),
+      increment: () => set((state) => ({ count: state.count + 1 }), undefined, 'increment'),
     }),
-    { name: 'Store' }
-  )
+    { name: 'Store' },
+  ),
 )
 ```
 
@@ -107,9 +106,11 @@ import { persist } from 'zustand/middleware'
 
 const useStore = create<Store>()(
   persist(
-    (set) => ({ /* ... */ }),
-    { name: 'storage' }
-  )
+    (set) => ({
+      /* ... */
+    }),
+    { name: 'storage' },
+  ),
 )
 ```
 
@@ -119,11 +120,13 @@ const useStore = create<Store>()(
 const useStore = create<Store>()(
   devtools(
     persist(
-      (set) => ({ /* ... */ }),
-      { name: 'storage' }
+      (set) => ({
+        /* ... */
+      }),
+      { name: 'storage' },
     ),
-    { name: 'Store' }
-  )
+    { name: 'Store' },
+  ),
 )
 ```
 
@@ -137,17 +140,12 @@ import { devtools } from 'zustand/middleware'
 
 const createBearSlice: StateCreator<
   BearSlice & FishSlice,
-  [['zustand/devtools', never]],  // Add devtools mutator
+  [['zustand/devtools', never]], // Add devtools mutator
   [],
   BearSlice
 > = (set) => ({
   bears: 0,
-  addBear: () =>
-    set(
-      (state) => ({ bears: state.bears + 1 }),
-      undefined,
-      'bear/add'
-    ),
+  addBear: () => set((state) => ({ bears: state.bears + 1 }), undefined, 'bear/add'),
 })
 ```
 
@@ -174,8 +172,7 @@ const total = useStore(selectTotal)
 ### Parameterized Selector
 
 ```typescript
-const selectById = (id: string) => (state: Store) =>
-  state.items.find((item) => item.id === id)
+const selectById = (id: string) => (state: Store) => state.items.find((item) => item.id === id)
 
 const item = useStore(selectById('123'))
 // Type: Item | undefined
@@ -231,14 +228,18 @@ function useBearStore<T>(selector: (state: BearStore) => T): T {
 
 ```typescript
 // ❌ WRONG
-const useStore = create<Store>((set) => ({ /* ... */ }))
+const useStore = create<Store>((set) => ({
+  /* ... */
+}))
 ```
 
 **Solution**: Use double parentheses
 
 ```typescript
 // ✅ CORRECT
-const useStore = create<Store>()((set) => ({ /* ... */ }))
+const useStore = create<Store>()((set) => ({
+  /* ... */
+}))
 ```
 
 ### Error: StateCreator types fail
@@ -256,7 +257,7 @@ const createSlice: StateCreator<CombinedStore, [], [], MySlice>
 // ✅ CORRECT
 const createSlice: StateCreator<
   CombinedStore,
-  [['zustand/devtools', never]],  // Add this
+  [['zustand/devtools', never]], // Add this
   [],
   MySlice
 >

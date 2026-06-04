@@ -20,13 +20,7 @@ export default function SearchBox() {
   // history: 'replace' (default)
   // Typing "react" doesn't create 5 history entries
 
-  return (
-    <input
-      value={query}
-      onChange={e => setQuery(e.target.value)}
-      placeholder="Search..."
-    />
-  )
+  return <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search..." />
 }
 ```
 
@@ -37,22 +31,21 @@ export default function SearchBox() {
 import { useQueryState, parseAsString } from 'nuqs'
 
 export default function SearchBox() {
-  const [query, setQuery] = useQueryState('q', parseAsString.withDefault('').withOptions({
-    history: 'push' // Don't do this!
-  }))
+  const [query, setQuery] = useQueryState(
+    'q',
+    parseAsString.withDefault('').withOptions({
+      history: 'push', // Don't do this!
+    }),
+  )
   // Typing "react" creates entries: r, re, rea, reac, react
   // Back button is unusable
 
-  return (
-    <input
-      value={query}
-      onChange={e => setQuery(e.target.value)}
-    />
-  )
+  return <input value={query} onChange={(e) => setQuery(e.target.value)} />
 }
 ```
 
 **Typical use cases for history:replace (default):**
+
 - Search input text
 - Slider/range values
 - Real-time filter changes
@@ -77,7 +70,7 @@ export default function SearchForm() {
 
   return (
     <form onSubmit={handleSubmit}>
-      <input value={input} onChange={e => setInput(e.target.value)} />
+      <input value={input} onChange={(e) => setInput(e.target.value)} />
       <button type="submit">Search</button>
     </form>
   )

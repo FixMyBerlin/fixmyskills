@@ -20,11 +20,7 @@ export default function Pagination() {
   // page is string | null, not number
   // page + 1 = "11" not 2 when page is "1"
 
-  return (
-    <button onClick={() => setPage(String(Number(page) + 1))}>
-      Next Page
-    </button>
-  )
+  return <button onClick={() => setPage(String(Number(page) + 1))}>Next Page</button>
 }
 ```
 
@@ -39,15 +35,12 @@ export default function Pagination() {
   // page is number | null
   // Arithmetic works correctly
 
-  return (
-    <button onClick={() => setPage((p) => (p ?? 0) + 1)}>
-      Next Page
-    </button>
-  )
+  return <button onClick={() => setPage((p) => (p ?? 0) + 1)}>Next Page</button>
 }
 ```
 
 **Available parsers:**
+
 - `parseAsInteger` - integers
 - `parseAsFloat` - decimal numbers
 - `parseAsBoolean` - true/false

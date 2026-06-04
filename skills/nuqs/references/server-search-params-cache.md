@@ -31,15 +31,11 @@ export default async function SearchPage({ searchParams }: PageProps) {
 
 ```tsx
 // lib/searchParams.ts
-import {
-  createSearchParamsCache,
-  parseAsString,
-  parseAsInteger
-} from 'nuqs/server'
+import { createSearchParamsCache, parseAsString, parseAsInteger } from 'nuqs/server'
 
 export const searchParamsCache = createSearchParamsCache({
   q: parseAsString.withDefault(''),
-  page: parseAsInteger.withDefault(1)
+  page: parseAsInteger.withDefault(1),
 })
 
 // app/search/page.tsx
@@ -69,7 +65,11 @@ export function ResultsHeader() {
   const query = searchParamsCache.get('q')
   const page = searchParamsCache.get('page')
 
-  return <h1>Results for "{query}" (Page {page})</h1>
+  return (
+    <h1>
+      Results for "{query}" (Page {page})
+    </h1>
+  )
 }
 ```
 

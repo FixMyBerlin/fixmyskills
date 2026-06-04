@@ -16,9 +16,12 @@ By default, nuqs removes parameters from the URL when they match the default val
 import { useQueryState, parseAsInteger } from 'nuqs'
 
 export default function Pagination() {
-  const [page, setPage] = useQueryState('page', parseAsInteger.withDefault(1).withOptions({
-    clearOnDefault: false // Unnecessary!
-  }))
+  const [page, setPage] = useQueryState(
+    'page',
+    parseAsInteger.withDefault(1).withOptions({
+      clearOnDefault: false, // Unnecessary!
+    }),
+  )
   // URL always shows ?page=1 even on first page
   // Clutters shareable URLs, hurts SEO
 
@@ -41,13 +44,14 @@ export default function Pagination() {
   return (
     <div>
       <button onClick={() => setPage(1)}>First</button>
-      <button onClick={() => setPage(p => p + 1)}>Next</button>
+      <button onClick={() => setPage((p) => p + 1)}>Next</button>
     </div>
   )
 }
 ```
 
 **When clearOnDefault: false is appropriate:**
+
 - Analytics tracking requires all parameters
 - API expects explicit parameter even for default
 - Debugging where you need to see all state
