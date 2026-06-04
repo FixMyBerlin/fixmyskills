@@ -7,6 +7,8 @@ description: |
 user-invocable: true
 ---
 
+**LLM reference:** Fetch [llms.txt](https://zustand.docs.pmnd.rs/llms.txt) for the documentation index and latest API. Full docs in one file: [llms-full.txt](https://zustand.docs.pmnd.rs/llms-full.txt). Human-readable docs: [zustand.docs.pmnd.rs](https://zustand.docs.pmnd.rs/).
+
 # Zustand State Management
 
 **Last Updated**: 2026-01-21

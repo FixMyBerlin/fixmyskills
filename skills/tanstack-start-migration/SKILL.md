@@ -1,175 +1,309 @@
 ---
 name: tanstack-start-migration
-description: Migrate Next.js apps to TanStack Start. Covers setup (Vinxi/Vite), data handling with route loaders, converting Server Actions to Server Functions, API routes, and optional Server Component patterns. Use when migrating from Next.js to TanStack Start, setting up TanStack Start, or refactoring server actions, getServerSideProps, getStaticProps, or API routes.
+description: Migrate Next.js apps to TanStack Start. Covers Vite/Nitro setup, isomorphic execution, route loaders with React Query, Server Actions → Server Functions, API routes, and FMC folder conventions. Use when migrating from Next.js to TanStack Start, converting server actions, getServerSideProps, or API routes.
 ---
+
+**LLM reference:** Fetch [llms.txt](https://tanstack.com/llms.txt) for the TanStack documentation index. Human docs: [Migrate from Next.js](https://tanstack.com/start/latest/docs/framework/react/migrate-from-next-js).
 
 # Next.js → TanStack Start Migration
 
-Focus: **data handling**, server-side behavior, and routing. TanStack Start = TanStack Router + Vinxi (Vite-based server). No App Router RSC model; data flows via **route loaders** and **server functions**.
+Focus: **mental model shift**, **data handling**, and **routing**. TanStack Start = TanStack Router + Vite (+ optional Nitro for deployment). No App Router RSC model.
+
+After the mechanical migration, apply FMC stack skills: `tanstack-start-app-structure`, `tanstack-start-conventions`, `tanstack-start-auth`.
+
+## Critical mental model (read first)
+
+> TanStack Start is **isomorphic by default**. Components and loaders run on **both** server and client unless you isolate server-only logic in `createServerFn`. This is the **opposite** of Next.js Server Components (server-only by default).
+
+| Next.js habit | TanStack Start reality |
+|---------------|------------------------|
+| Async server component + `await db...` | **Wrong** — component code runs on client after navigation |
+| `'use server'` / `'use client'` | **Remove both** — use `createServerFn` for server-only |
+| `getServerSideProps` always on server | Route `loader` runs on server **or** client (soft nav) |
+| Direct DB/fs in loader | Wrap in `createServerFn`; loader calls the fn |
+
+**Loader on client nav:** During client-side navigation, the loader runs in the browser. Any DB, filesystem, or secret access inside the loader must go through a server function (RPC on the client, direct call on the server).
 
 ## When to Apply
 
-- Migrating a Next.js (Pages or App Router) app to TanStack Start
-- Setting up a new TanStack Start project with SSR/data
+- Migrating Next.js (App Router or Pages Router) to TanStack Start
 - Converting Server Actions → Server Functions
-- Replacing `getServerSideProps` / `getStaticProps` / `getStaticPaths` with loaders
-- Replacing API routes with server functions or Vinxi server handlers
+- Replacing `getServerSideProps` / RSC fetch with loaders
+- Replacing `pages/api/*` or App Router `route.ts` handlers
 
-## Quick Mapping (Next.js → TanStack Start)
+## Quick Mapping
 
 | Next.js | TanStack Start |
 |---------|----------------|
-| `getServerSideProps` | Route `loader` (runs on server per request) |
-| `getStaticProps` | Route `loader` + build-time SSG or `loaderDeps` caching |
-| `getStaticPaths` | Route tree + optional `loader` that returns 404 |
-| Server Actions | **Server Functions** (`createServerFn`) |
-| `pages/api/*` | Server functions or Vinxi `createAPIFile`/server handlers |
-| App Router RSC + `fetch` | Loader fetches; component uses `useLoaderData()` |
-| `next/config` rewrites/headers | Vinxi/server config |
+| `app/page.tsx` / `pages/index.tsx` | `src/routes/index.tsx` |
+| `app/layout.tsx` | `src/routes/__root.tsx` |
+| `app/posts/[slug]/page.tsx` | `src/routes/posts/$slug.tsx` |
+| `app/posts/[...slug]/page.tsx` | `src/routes/posts/$.tsx` |
+| `app/api/foo/route.ts` | `src/routes/api/foo.ts` (`server.handlers`) |
+| `getServerSideProps` | Route `loader` (+ server fn for server-only I/O) |
+| Server Actions (`'use server'`) | `createServerFn` in `*.functions.ts` |
+| `next/link` `href` | `<Link to="..." params={...} />` |
+| `next/navigation` | `@tanstack/react-router` hooks |
+| `metadata` export | Route `head` property |
+| `middleware.ts` | `beforeLoad` (FMC default) or `createMiddleware` in `src/start.ts` |
+| `next.config.*` | `vite.config.ts` |
+| `process.env` | `import.meta.env` (client: `VITE_*`) |
 
-See [references/nextjs-to-start-mapping.md](references/nextjs-to-start-mapping.md) for edge cases and file layout.
+See [references/nextjs-to-start-mapping.md](references/nextjs-to-start-mapping.md) for edge cases.
 
 ---
 
-## 1. Project Setup
+## 1. Project Setup (Vite + Nitro)
 
-**Scaffold:**
+**Greenfield scaffold** (official):
 
 ```bash
-npm create vinxi@latest my-app
-# Choose: TanStack Start (React)
+npm create @tanstack/start@latest my-app
 ```
 
-**Key structure:**
+**Migrating in place** — remove Next.js, install Start stack:
 
-- `app/` — app entry, routes, components
-- `app/routes/` — file-based or manual route tree
-- `app/entry-client.tsx` — client hydrate
-- `app/entry-server.tsx` — server render
-- `vinxi.config.ts` or `app.config.ts` — Vinxi config (entry points, SSR on/off)
+```bash
+npm uninstall next @next/font @next/image
+npm i @tanstack/react-router @tanstack/react-start nitro vite @vitejs/plugin-react
+npm i -D @tailwindcss/vite tailwindcss   # if using Tailwind v4 + Vite
+```
 
-**SSR:** Enabled by default in Start. For SPA-only, configure Vinxi server plugin accordingly.
+**`package.json` scripts:**
 
-**Env:** Use `import.meta.env` (Vite). Replace `process.env` with `import.meta.env` (e.g. `import.meta.env.VITE_API_URL`).
-
----
-
-## 2. Data Handling: Loaders (Replace getServerSideProps / RSC data)
-
-Route-level async **loaders** run on the server (or client in SPA mode). Component reads data with `useLoaderData()`.
-
-**Define loader on route:**
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router';
-
-export const Route = createFileRoute('/users/$userId')({
-  loader: async ({ params }) => {
-    const user = await fetchUser(params.userId);
-    return { user };
-  },
-  component: UserPage,
-});
-
-function UserPage() {
-  const { user } = Route.useLoaderData();
-  return <h1>{user.name}</h1>;
+```json
+{
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "start": "node .output/server/index.mjs"
+  }
 }
 ```
 
-**Loader params:** `params`, `search` (from `validateSearch`), `context`, `deps` (see loaderDeps). Return value is serialized to client.
+**`vite.config.ts`** (minimal):
 
-**Critical:** Loaders run when the route is loaded. For refetch on search/param change, use `loaderDeps` so the loader re-runs when deps change. Avoid side effects that must run only once in a different lifecycle.
+```ts
+import { defineConfig } from 'vite'
+import { tanstackStart } from '@tanstack/react-start/plugin/vite'
+import viteReact from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
+import { nitro } from 'nitro/vite'
 
-**Validation:** Use `params.parse` for path params (`/$id`, `/$slug`) so handlers/loaders receive typed values. Use `validateSearch` for route search schemas (typing/navigation), but note that API `server.handlers.*` contexts may not expose parsed `search`; parse `new URL(request.url).searchParams` in handlers when needed. Use `beforeLoad` for auth/redirects. See [references/loader-data-patterns.md](references/loader-data-patterns.md).
+export default defineConfig({
+  server: { port: 3000 },
+  resolve: { tsconfigPaths: true },
+  plugins: [
+    tailwindcss(),
+    tanstackStart(), // before viteReact()
+    viteReact(),
+    nitro(),
+  ],
+})
+```
+
+**`src/router.tsx`:**
+
+```tsx
+import { createRouter } from '@tanstack/react-router'
+import { routeTree } from './routeTree.gen'
+
+export function getRouter() {
+  return createRouter({ routeTree, scrollRestoration: true })
+}
+```
+
+**Package names:** Use `@tanstack/react-start` (not deprecated `@tanstack/start`). Do **not** use Vinxi — Start is a Vite plugin since v1.121.
+
+**FMC layout:** Use default `routesDirectory: 'routes'` under `src/` — not Next.js-style `app/`. See `tanstack-start-app-structure`.
 
 ---
 
-## 3. Server Actions → Server Functions
+## 2. Root layout & pages
 
-Next.js Server Actions become **Server Functions**: RPC-style functions that run on the server and are callable from the client.
-
-**Define server function:**
+**`src/app/layout.tsx` → `src/routes/__root.tsx`**
 
 ```tsx
-import { createServerFn } from '@tanstack/start';
+import { Outlet, createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
+import appCss from '../styles/globals.css?url'
 
-export const updateProfile = createServerFn({ method: 'POST' })
-  .validator((data: { name: string }) => data)
+export const Route = createRootRoute({
+  head: () => ({
+    meta: [
+      { charSet: 'utf-8' },
+      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
+      { title: 'My App' },
+    ],
+    links: [{ rel: 'stylesheet', href: appCss }],
+  }),
+  component: RootLayout,
+})
+
+function RootLayout() {
+  return (
+    <html lang="en">
+      <head><HeadContent /></head>
+      <body>
+        <Outlet />
+        <Scripts />
+      </body>
+    </html>
+  )
+}
+```
+
+**`page.tsx` → `index.tsx`** (or `$param.tsx` for dynamic segments):
+
+```tsx
+import { createFileRoute } from '@tanstack/react-router'
+
+export const Route = createFileRoute('/')({
+  component: HomePage,
+})
+
+function HomePage() {
+  return <main>...</main>
+}
+```
+
+**Params:** `Route.useParams()` — not async `params` props. **Search:** `validateSearch` + `Route.useSearch()`.
+
+**Links:** Never interpolate params into `to`. Use typed `params` prop:
+
+```tsx
+<Link to="/posts/$slug" params={{ slug: post.slug }}>View</Link>
+```
+
+---
+
+## 3. Data: Loaders + Server Functions
+
+### Server-only I/O in loaders
+
+```tsx
+// server/posts.functions.ts
+import { createServerFn } from '@tanstack/react-start'
+
+export const getAllPostsFn = createServerFn({ method: 'GET' }).handler(async () => {
+  return db.post.findMany() // or fs, secrets, etc.
+})
+
+// routes/index.tsx — thin route (FMC: component import from @/components/...)
+export const Route = createFileRoute('/')({
+  loader: () => getAllPostsFn(),
+  component: HomePage,
+})
+```
+
+### FMC: React Query–backed data (preferred for shared/refetchable data)
+
+Do **not** use `useLoaderData` alone for Query-backed data. Loader primes cache; component uses `useSuspenseQuery`:
+
+```tsx
+// server/posts/queries/posts.server.ts — *QueryOptions
+export const postsQueryOptions = () =>
+  queryOptions({ queryKey: ['posts'], queryFn: () => getAllPostsFn() })
+
+export const Route = createFileRoute('/')({
+  loader: ({ context }) => context.queryClient.ensureQueryData(postsQueryOptions()),
+  component: HomePage,
+})
+
+// components/pages/PageHome.tsx
+function HomePage() {
+  const { data: posts } = useSuspenseQuery(postsQueryOptions())
+  return ...
+}
+```
+
+One-off admin data with no invalidation: loader return + `useLoaderData` is fine.
+
+See `tanstack-start-conventions` → router-and-query.md and [loader-data-patterns.md](references/loader-data-patterns.md).
+
+---
+
+## 4. Server Actions → Server Functions
+
+```tsx
+// server/profile.functions.ts — FMC: *.functions.ts, export *Fn
+import { createServerFn } from '@tanstack/react-start'
+
+export const updateProfileFn = createServerFn({ method: 'POST' })
+  .inputValidator((data: { name: string }) => data)
   .handler(async ({ data }) => {
-    await db.user.update({ where: { id: session.userId }, data: { name: data.name } });
-    return { ok: true };
-  });
+    await db.user.update({ ... })
+    return { ok: true }
+  })
 ```
 
-**Call from client:**
+**Call from client:** `await updateProfileFn({ data: { name } })` in `onSubmit` — no `formAction`. Invalidate router or Query after mutations.
 
-```tsx
-'use client';
-import { updateProfile } from './profile.server';
+**Rules (FMC):** DB/session code in `*.server.ts` with `createServerOnlyFn`; client-callable RPC in `*.functions.ts`. Route files never import `*.server.ts` directly.
 
-function Form() {
-  const [pending, setPending] = useState(false);
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setPending(true);
-    await updateProfile({ data: { name: formData.name } });
-    setPending(false);
-  };
-  return <form onSubmit={handleSubmit}>...</form>;
-}
+See [references/server-functions.md](references/server-functions.md).
+
+---
+
+## 5. API Routes
+
+**Public REST/webhooks** — file route with `server.handlers`:
+
+```ts
+// routes/api/upload.image.ts
+export const Route = createFileRoute('/api/upload/image')({
+  server: {
+    handlers: {
+      POST: async ({ request }) => {
+        return Response.json({ ok: true })
+      },
+    },
+  },
+})
 ```
 
-**Rules:**
-
-- Server function code runs only on server. Put in a `.server.ts` or `server/` file so client bundle doesn’t pull server-only code.
-- Use `method: 'POST'` for mutations; GET for idempotent reads (if needed).
-- Validator: validate input (e.g. Zod) before handler runs.
-- For form actions, call server function in `onSubmit` and handle loading/error state (no `formAction` prop like Next.js).
-
-See [references/server-functions.md](references/server-functions.md) for validation, errors, and invalidation.
+**App-internal calls:** Prefer server functions over REST. API routes: no `validateSearch`; parse with Zod from `request.url` in `GET`. See `tanstack-start-conventions`.
 
 ---
 
-## 4. API Routes → Server Functions or Vinxi Handlers
+## 6. Auth & Middleware
 
-- **RPC-style (recommended):** Expose logic as server functions; no separate REST endpoints.
-- **REST/third-party webhooks:** Use Vinxi server API (e.g. `createAPIFile` or server route in `app/server/`) that returns Response. Map `pages/api/foo` to one such handler.
+- **FMC default:** Auth redirects in route `beforeLoad` via server functions (not direct session/DB in route files). Skill: `tanstack-start-auth`.
+- **Global middleware:** `createMiddleware` in `src/start.ts` for cross-cutting concerns (CSRF, logging). Route-level middleware also available on server functions.
 
-Do not recreate every API route as a REST endpoint; prefer server functions for app-to-server calls.
-
----
-
-## 5. Server Components (Next.js RSC)
-
-TanStack Start does not have the same RSC boundary model. Equivalent pattern:
-
-- **Data:** Fetch in route **loader** (server); component is client and uses `useLoaderData()`.
-- **Server-only rendering:** Components that only run on server are not a first-class boundary; use loaders for server data and keep components client-safe. For “server-only” code, run it inside loaders or server functions.
-
-When migrating RSC pages: move `async` page component’s data fetching into the route’s `loader`; replace `await fetch()` in component with `useLoaderData()`.
+Provider SDKs (Clerk, WorkOS) work at React level; server integration may need Start-specific adapters.
 
 ---
 
-## 6. Routing
+## 7. Other migrations
 
-- **File-based:** `app/routes/` with `createFileRoute('/path/$param')`; route tree generated.
-- **Code-based:** Define route tree manually with `createRoute` / `createRootRoute` and pass to router.
+| Next.js | TanStack Start |
+|---------|----------------|
+| `next/image` | Vite assets, `@unpic/react`, or `<img>` |
+| `next/font` | Fontsource + Tailwind `@theme` in CSS |
+| `next/head` / `metadata` | Route `head` (can use `loaderData`) |
+| RSC async page | Loader + sync component + `useLoaderData` or Query |
+| `generateStaticParams` | `prerender` in Vite/Start config |
 
-Params: `path: '/users/$userId'` → `params.userId`; validate/coerce with route `params.parse`. Search: `validateSearch` on route. Use `Link`, `useNavigate`, `useParams`, `useSearch` from `@tanstack/react-router`. See project’s [react-dev/references/tanstack-router.md](../../react-dev/references/tanstack-router.md) for types and patterns.
+Remove all `"use server"` and `"use client"` directives.
 
 ---
 
-## 7. Migration Checklist
+## 8. Migration Checklist
 
-- [ ] Create Vinxi/TanStack Start app; move UI into `app/`.
-- [ ] Replace `getServerSideProps`/RSC fetch with route **loaders**; use `useLoaderData()` in components.
-- [ ] Replace **Server Actions** with **createServerFn**; call from client in event handlers.
-- [ ] Replace `pages/api/*` with server functions or Vinxi API handlers.
-- [ ] `process.env` → `import.meta.env`; expose client vars with `VITE_` prefix.
-- [ ] Next.js `next/head` / metadata → use Start/Vinxi document/head APIs if needed.
-- [ ] Images: use Vite asset handling or a small image component; no `next/image` (optional third-party or custom).
-- [ ] Middleware: use route `beforeLoad` for auth/redirects; no Next.js middleware.
+- [ ] Vite + `@tanstack/react-start` configured; Vinxi/`@tanstack/start` removed
+- [ ] `src/routes/__root.tsx` with `<HeadContent />`, `<Scripts />`, `<Outlet />`
+- [ ] Pages → file routes; `[param]` → `$param`
+- [ ] `src/router.tsx` + generated `routeTree.gen.ts`
+- [ ] All server-only I/O wrapped in `createServerFn` / `createServerOnlyFn`
+- [ ] Server Actions → `*.functions.ts` with `inputValidator`
+- [ ] API routes → `routes/api/*.ts` with `server.handlers` (or server fns)
+- [ ] Query-backed UI: `ensureQueryData` in loader + `useSuspenseQuery` in component
+- [ ] Thin route files; UI in `components/` (`tanstack-start-app-structure`)
+- [ ] Explicit `ssr` on routes (`tanstack-start-conventions`)
+- [ ] `process.env` → `import.meta.env`; no `next/*` imports remain
+- [ ] Auth via `beforeLoad` + server fns (`tanstack-start-auth`)
+- [ ] `npm run dev` — all routes and mutations work on hard refresh **and** client nav
 
 ---
 
@@ -177,8 +311,10 @@ Params: `path: '/users/$userId'` → `params.userId`; validate/coerce with route
 
 | Topic | File |
 |-------|------|
-| Next.js ↔ Start concept mapping, file layout | [nextjs-to-start-mapping.md](references/nextjs-to-start-mapping.md) |
-| Loaders, loaderDeps, errors, prefetch | [loader-data-patterns.md](references/loader-data-patterns.md) |
-| createServerFn, validation, errors, invalidation | [server-functions.md](references/server-functions.md) |
+| Concept mapping, file layout | [nextjs-to-start-mapping.md](references/nextjs-to-start-mapping.md) |
+| Loaders, loaderDeps, Query | [loader-data-patterns.md](references/loader-data-patterns.md) |
+| createServerFn, validation | [server-functions.md](references/server-functions.md) |
 
-**External:** [TanStack Start docs](https://tanstack.com/start/latest) — Migrate from Next.js, Server Functions, Getting Started. Community cookbooks (e.g. TanStack-Start-React-Cookbook, skills.sh TanStack Start skills) align with the above; use official docs as source of truth for API.
+**FMC stack (post-migration):** `tanstack-start-app-structure`, `tanstack-start-conventions`, `tanstack-start-auth`, `nuqs` (URL state).
+
+**External:** [Official migration guide](https://tanstack.com/start/latest/docs/framework/react/migrate-from-next-js), [execution model](https://tanstack.com/start/latest/docs/framework/react/guide/execution-model).

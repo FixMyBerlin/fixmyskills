@@ -12,6 +12,8 @@ Common installation paths:
 - Manual global: `~/.claude/skills/playwright-skill`
 - Project-specific: `<project>/.claude/skills/playwright-skill`
 
+**Official docs:** [playwright.dev/docs](https://playwright.dev/docs/intro) — Playwright does not publish `llms.txt` / `llms-full.txt` on the docs site ([tracked request](https://github.com/microsoft/playwright/issues/39895)). For agent browser automation, see [Playwright MCP](https://playwright.dev/docs/getting-started-mcp).
+
 # Playwright Browser Automation
 
 General-purpose browser automation skill supporting two use cases:

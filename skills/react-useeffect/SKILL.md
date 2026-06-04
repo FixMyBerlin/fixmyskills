@@ -3,6 +3,8 @@ name: react-useeffect
 description: React useEffect best practices from official docs and naming discipline. Use when writing/reviewing useEffect, naming effects, useState for derived values, data fetching, or state synchronization. Strong recommendation to name every effect; teaches when NOT to use Effect and better alternatives.
 ---
 
+**LLM reference:** Fetch [llms.txt](https://react.dev/llms.txt) for the React documentation index and latest API. Key page for this skill: [You Might Not Need an Effect](https://react.dev/learn/you-might-not-need-an-effect).
+
 # useEffect — naming, scope, and when to skip
 
 Effects are an **escape hatch** from React. They let you synchronize with **external systems**. If there is no external system involved, you usually should not use an Effect.

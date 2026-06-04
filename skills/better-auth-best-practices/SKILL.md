@@ -5,7 +5,7 @@ description: Skill for integrating Better Auth - the comprehensive TypeScript au
 
 # Better Auth Integration Guide
 
-**Always consult [better-auth.com/docs](https://better-auth.com/docs) for code examples and latest API.**
+**LLM reference:** Fetch [llms.txt](https://better-auth.com/llms.txt) for the documentation index, code examples, and latest API. Human-readable docs: [better-auth.com/docs](https://better-auth.com/docs).
 
 Better Auth is a TypeScript-first, framework-agnostic auth framework supporting email/password, OAuth, magic links, passkeys, and more via plugins.
 
@@ -161,6 +161,5 @@ For separate client/server projects: `createAuthClient<typeof auth>()`.
 
 - [Docs](https://better-auth.com/docs)
 - [Options Reference](https://better-auth.com/docs/reference/options)
-- [LLMs.txt](https://better-auth.com/llms.txt)
 - [GitHub](https://github.com/better-auth/better-auth)
 - [Init Options Source](https://github.com/better-auth/better-auth/blob/main/packages/core/src/types/init-options.ts)
