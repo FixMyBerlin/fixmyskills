@@ -6,17 +6,17 @@ Tilda-geo–specific skills (processing, topic-docs, static datasets, etc.) live
 
 ## Skills catalog
 
-| Skill                                                                | Description                                                                        |
-| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
-| [nuqs](skills/nuqs/)                                                 | URL query state — prefer TanStack `validateSearch`; nuqs for Next.js / shared libs |
-| [playwright-skill](skills/playwright-skill/)                         | TanStack Start E2E (TILDA patterns), smoke tests, stubbed auth, ad-hoc automation  |
-| [react-dev](skills/react-dev/)                                       | React 19 + TypeScript (Compiler, oxlint); FMC TanStack Start — not routing/server  |
-| [react-useeffect](skills/react-useeffect/)                           | useEffect best practices, naming discipline, and alternatives                      |
-| [tanstack-start-migration](skills/tanstack-start-migration/)         | Migrate Next.js apps to TanStack Start                                             |
-| [tanstack-start-conventions](skills/tanstack-start-conventions/)     | TanStack Start/Router: boundaries, Query loaders, SSR, API vs UI validation        |
-| [tanstack-start-auth](skills/tanstack-start-auth/)                   | Better Auth config + TanStack Start routes, sessions, cookies (FMC/TILDA)          |
-| [tanstack-start-app-structure](skills/tanstack-start-app-structure/) | Portable `app/src` folder layout (thin routes, Layout/Page, server domains)        |
-| [zustand-state-management](skills/zustand-state-management/)         | Zustand v5 conventions: `*-store.ts` layout, custom hooks, atomic selectors        |
+| Skill                                                                | Description                                                                        | Command                                                                                                      |
+| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| [nuqs](skills/nuqs/)                                                 | URL query state — prefer TanStack `validateSearch`; nuqs for Next.js / shared libs | `npx skills add FixMyBerlin/fixmyskills --skill nuqs -a cursor -y`                                           |
+| [playwright-skill](skills/playwright-skill/)                         | TanStack Start E2E (TILDA patterns), smoke tests, stubbed auth, ad-hoc automation  | `npx skills add FixMyBerlin/fixmyskills --skill playwright-skill -a cursor -y`<br>then `bun run setup` in the skill dir |
+| [react-dev](skills/react-dev/)                                       | React 19 + TypeScript (Compiler, oxlint); FMC TanStack Start — not routing/server  | `npx skills add FixMyBerlin/fixmyskills --skill react-dev -a cursor -y`                                      |
+| [react-useeffect](skills/react-useeffect/)                           | useEffect best practices, naming discipline, and alternatives                      | `npx skills add FixMyBerlin/fixmyskills --skill react-useeffect -a cursor -y`                                |
+| [tanstack-start-migration](skills/tanstack-start-migration/)         | Migrate Next.js apps to TanStack Start                                             | `npx skills add FixMyBerlin/fixmyskills --skill tanstack-start-migration -a cursor -y`                       |
+| [tanstack-start-conventions](skills/tanstack-start-conventions/)     | TanStack Start/Router: boundaries, Query loaders, SSR, API vs UI validation        | `npx skills add FixMyBerlin/fixmyskills --skill tanstack-start-conventions -a cursor -y`                     |
+| [tanstack-start-auth](skills/tanstack-start-auth/)                   | Better Auth config + TanStack Start routes, sessions, cookies (FMC/TILDA)          | `npx skills add FixMyBerlin/fixmyskills --skill tanstack-start-auth -a cursor -y`                            |
+| [tanstack-start-app-structure](skills/tanstack-start-app-structure/) | Portable `app/src` folder layout (thin routes, Layout/Page, server domains)        | `npx skills add FixMyBerlin/fixmyskills --skill tanstack-start-app-structure -a cursor -y`                 |
+| [zustand-state-management](skills/zustand-state-management/)         | Zustand v5 conventions: `*-store.ts` layout, custom hooks, atomic selectors        | `npx skills add FixMyBerlin/fixmyskills --skill zustand-state-management -a cursor -y`                       |
 
 ## Install
 
