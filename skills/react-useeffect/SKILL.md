@@ -1,6 +1,6 @@
 ---
 name: react-useeffect
-description: React useEffect best practices from official docs and naming discipline. Use when writing/reviewing useEffect, naming effects, useState for derived values, data fetching, or state synchronization. Strong recommendation to name every effect; teaches when NOT to use Effect and better alternatives.
+description: React useEffect best practices from official docs and naming discipline. Use when writing/reviewing useEffect, useEffectEvent, React Compiler or eslint-plugin-react-hooks effect rules, naming effects, derived state, data fetching, or state synchronization. Teaches when NOT to use Effect, legitimate external sync, and better alternatives.
 ---
 
 **LLM reference:** Fetch [llms.txt](https://react.dev/llms.txt) for the React documentation index and latest API. Key page for this skill: [You Might Not Need an Effect](https://react.dev/learn/you-might-not-need-an-effect).
@@ -70,14 +70,14 @@ If the honest name sounds like **internal React bookkeeping**, the code often be
 
 ## Quick reference
 
-| Situation                      | DON'T                          | DO                                    |
-| ------------------------------ | ------------------------------ | ------------------------------------- |
-| Derived state from props/state | `useState` + `useEffect`       | Calculate during render               |
-| Expensive calculations         | `useEffect` to cache           | `useMemo`                             |
-| Reset state on prop change     | `useEffect` with `setState`    | `key` prop                            |
-| User event responses           | `useEffect` watching state     | Event handler directly                |
-| Notify parent of changes       | `useEffect` calling `onChange` | Call in event handler                 |
-| Fetch data                     | `useEffect` without cleanup    | `useEffect` with cleanup OR framework |
+| Situation                      | DON'T                          | DO                                                                                  |
+| ------------------------------ | ------------------------------ | ----------------------------------------------------------------------------------- |
+| Derived state from props/state | `useState` + `useEffect`       | Calculate during render                                                             |
+| Expensive calculations         | `useEffect` to cache           | Compute in render; `useMemo` only if needed (often unnecessary with React Compiler) |
+| Reset state on prop change     | `useEffect` with `setState`    | `key` prop                                                                          |
+| User event responses           | `useEffect` watching state     | Event handler directly                                                              |
+| Notify parent of changes       | `useEffect` calling `onChange` | Call in event handler                                                               |
+| Fetch data                     | `useEffect` without cleanup    | `useEffect` with cleanup OR framework                                               |
 
 ---
 
@@ -87,6 +87,30 @@ If the honest name sounds like **internal React bookkeeping**, the code often be
 - **Subscriptions** to external stores (`useSyncExternalStore` when it fits)
 - **Analytics/logging** tied to display
 - **Data fetching** with proper cleanup (or the framework’s mechanism)
+
+**Strict Mode (dev):** Effects run setup twice on mount to surface missing cleanup. Add teardown for subscriptions, timers, and fetches — see [Anti-Patterns §8–9](./anti-patterns.md#8-fetching-without-cleanup-race-condition).
+
+---
+
+## React Compiler and ESLint
+
+- **Render work:** Prefer deriving values during render. With [React Compiler](https://react.dev/learn/react-compiler) enabled, skip manual `useMemo` unless profiling shows a need or Compiler is off.
+- **Effects:** Compiler does not replace Effects for **external** synchronization. Changed memoization can change when effects re-run — fix effect design (deps, splits, `useEffectEvent`) rather than disabling the compiler.
+- **Lint:** Use `eslint-plugin-react-hooks@latest` (`recommended` preset). Rules such as `set-state-in-effect` align with [Anti-Patterns](./anti-patterns.md). Remove standalone `eslint-plugin-react-compiler` if present.
+
+---
+
+## Legitimate effects: `useEffectEvent`
+
+When setup must stay subscribed (connection, interval, listener) but part of the callback should read **latest** props/state without re-running setup, extract non-reactive logic with `useEffectEvent`:
+
+- Name like user-visible events: `onConnected`, `onTick` — not `onMount` / `onUpdate`.
+- Call only from Effects (or other Effect Events in the same component); never during render, in event handlers, or as props to children.
+- Omit from the Effect dependency array (enforced by lint).
+
+Do **not** use `useEffectEvent` to hide dependencies that should re-trigger the Effect.
+
+Example and patterns: [Alternatives §9](./alternatives.md#9-useeffectevent-for-non-reactive-effect-logic). Docs: [Separating Events from Effects](https://react.dev/learn/separating-events-from-effects), [`useEffectEvent`](https://react.dev/reference/react/useEffectEvent).
 
 ---
 
@@ -111,7 +135,7 @@ Need to respond to something?
 │   └── Use EFFECT (external sync, analytics)
 ├── Props/state changed and need derived value?
 │   └── CALCULATE DURING RENDER
-│       └── Expensive? Use useMemo
+│       └── Expensive? useMemo only if needed (Compiler often makes this unnecessary)
 └── Need to reset state when prop changes?
     └── Use KEY PROP on component
 ```
@@ -121,5 +145,7 @@ Need to respond to something?
 ## References
 
 - React — [You Might Not Need an Effect](https://react.dev/learn/you-might-not-need-an-effect)
+- React — [Separating Events from Effects](https://react.dev/learn/separating-events-from-effects) · [`useEffectEvent`](https://react.dev/reference/react/useEffectEvent)
+- React — [React Compiler](https://react.dev/learn/react-compiler) · [Compiler 1.0 blog](https://react.dev/blog/2025/10/07/react-compiler-1)
 - Neciu Dan — [Start naming your useEffect functions](https://neciudan.dev/name-your-effects) (naming discipline, splitting when names resist, overlap with “you might not need an effect”)
 - Kyle Shevlin — [useEncapsulation](https://kyleshevlin.com/use-encapsulation/) (custom hooks; still name effects inside hooks)

@@ -1,130 +1,81 @@
 ---
-paths: "**/*.ts", "**/*.tsx", "**/*store*.ts", "**/*state*.ts"
+paths: "**/*-store.ts", "**/*-store.tsx", "**/stores/**/*.ts", "**/stores/**/*.tsx"
 ---
 
-# Zustand v5 Corrections
+# Zustand v5 (FMC)
 
-Claude's training may reference v4 patterns. This project uses **Zustand v5**.
+Project uses **Zustand v5**. API details: https://zustand.docs.pmnd.rs/llms.txt
 
-## TypeScript: Double Parentheses Required
+## File naming
+
+- Store files: `{domain}-store.ts` (kebab-case), e.g. `map-filters-store.ts`
+- One concern per file; colocate with the feature
+- Do **not** name files `store.ts`, `useFooStore.ts`, or `zustand.ts`
+
+## Exports
+
+- **Never export** the `create()` hook (`useMapFiltersStore`)
+- Export only: `useAppliedFilters`, `useMapFiltersActions`, etc.
+
+## Store shape
 
 ```typescript
-/* ❌ v4 syntax (breaks middleware types) */
-const useStore = create<MyState>((set) => ({
-  count: 0,
-  increment: () => set((s) => ({ count: s.count + 1 })),
+interface MapFiltersStore {
+  applied: string[]
+  actions: {
+    addFilter: (filter: string) => void
+  }
+}
+
+const useMapFiltersStore = create<MapFiltersStore>()((set) => ({
+  applied: [],
+  actions: {
+    addFilter: (filter) => set((state) => ({ applied: [...state.applied, filter] })),
+  },
 }))
 
-/* ✅ v5 syntax: create<T>()(...) */
-const useStore = create<MyState>()((set) => ({
-  count: 0,
-  increment: () => set((s) => ({ count: s.count + 1 })),
-}))
+export const useAppliedFilters = () => useMapFiltersStore((s) => s.applied)
+export const useMapFiltersActions = () => useMapFiltersStore((s) => s.actions)
 ```
 
-## Persist: Import from Middleware
+## TypeScript
 
 ```typescript
-/* ❌ Wrong import */
-import { persist, createJSONStorage } from 'zustand'
+/* ❌ */
+const useStore = create<MyStore>((set) => ({ ... }))
 
-/* ✅ Import from middleware */
+/* ✅ */
+const useStore = create<MyStore>()((set) => ({ ... }))
+```
+
+## Selectors
+
+```typescript
+/* ❌ — new object every time */
+const { a, b } = useStore((s) => ({ a: s.a, b: s.b }))
+
+/* ✅ — atomic hooks (preferred) */
+const a = useA()
+const b = useB()
+
+/* ✅ — rare multi-field need */
+import { useShallow } from 'zustand/shallow'
+const { a, b } = useStore(useShallow((s) => ({ a: s.a, b: s.b })))
+```
+
+## Persist
+
+```typescript
 import { create } from 'zustand'
 import { persist, createJSONStorage } from 'zustand/middleware'
-
-const useStore = create<MyState>()(
-  persist(
-    (set) => ({
-      /* ... */
-    }),
-    {
-      name: 'my-store',
-      storage: createJSONStorage(() => localStorage),
-    },
-  ),
-)
 ```
 
-## Selectors: Don't Create Objects
+SSR/hydration: see official **Setup with Next.js** / **SSR and Hydration** in llms.txt — do not invent one-off patterns.
 
-```typescript
-/* ❌ Creates new object every render (infinite re-renders) */
-const { count, increment } = useStore((s) => ({
-  count: s.count,
-  increment: s.increment,
-}))
+## State ownership
 
-/* ✅ Option 1: Select separately */
-const count = useStore((s) => s.count)
-const increment = useStore((s) => s.increment)
-
-/* ✅ Option 2: Use shallow comparator */
-import { useShallow } from 'zustand/shallow'
-const { count, increment } = useStore(useShallow((s) => ({ count: s.count, increment: s.increment })))
-```
-
-## Next.js Hydration Mismatch
-
-```typescript
-/* ❌ "Text content does not match" error */
-// Persist reads localStorage on client, not server
-
-/* ✅ Add hydration check */
-interface MyState {
-  count: number
-  _hasHydrated: boolean
-  setHasHydrated: (state: boolean) => void
-}
-
-const useStore = create<MyState>()(
-  persist(
-    (set) => ({
-      count: 0,
-      _hasHydrated: false,
-      setHasHydrated: (state) => set({ _hasHydrated: state }),
-    }),
-    {
-      name: 'my-store',
-      onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true)
-      },
-    }
-  )
-)
-
-// In component:
-const hasHydrated = useStore((s) => s._hasHydrated)
-if (!hasHydrated) return <Loading />
-```
-
-## Slices Pattern: Explicit Types
-
-```typescript
-/* ✅ Complex but necessary for middleware */
-import { StateCreator } from 'zustand'
-
-interface BearSlice {
-  bears: number
-  addBear: () => void
-}
-
-const createBearSlice: StateCreator<
-  BearSlice & FishSlice, // Combined state
-  [],
-  [],
-  BearSlice // This slice
-> = (set) => ({
-  bears: 0,
-  addBear: () => set((s) => ({ bears: s.bears + 1 })),
-})
-```
-
-## Quick Fixes
-
-| If Claude suggests...         | Use instead...                        |
-| ----------------------------- | ------------------------------------- |
-| `create<T>((set) => ...)`     | `create<T>()((set) => ...)`           |
-| Import persist from 'zustand' | Import from 'zustand/middleware'      |
-| Object in selector            | Select separately or use `useShallow` |
-| Next.js hydration error       | Add `_hasHydrated` pattern            |
-| Simple slices types           | Use explicit `StateCreator` types     |
+| Need                   | Use                    |
+| ---------------------- | ---------------------- |
+| Server/API data        | TanStack Query         |
+| URL state              | nuqs                   |
+| Client UI global state | Zustand (`*-store.ts`) |

@@ -308,6 +308,7 @@ Remove all `"use server"` and `"use client"` directives.
 - [ ] `process.env` → `import.meta.env`; no `next/*` imports remain
 - [ ] Auth via `beforeLoad` + server fns (`tanstack-start-auth`)
 - [ ] `npm run dev` — all routes and mutations work on hard refresh **and** client nav
+- [ ] E2E smoke: `playwright-skill` — `tests/smoke/`, `VITE_PLAYWRIGHT_ENABLED`, stubbed auth (see tilda-geo `app/tests/`)
 
 ---
 
@@ -319,6 +320,6 @@ Remove all `"use server"` and `"use client"` directives.
 | Loaders, loaderDeps, Query   | [loader-data-patterns.md](references/loader-data-patterns.md)       |
 | createServerFn, validation   | [server-functions.md](references/server-functions.md)               |
 
-**FMC stack (post-migration):** `tanstack-start-app-structure`, `tanstack-start-conventions`, `tanstack-start-auth`, `nuqs` (URL state).
+**FMC stack (post-migration):** `tanstack-start-app-structure`, `tanstack-start-conventions`, `tanstack-start-auth`, `playwright-skill` (E2E smoke and patterns). URL state: router `validateSearch` first; skill `nuqs` only for shared libs or legacy patterns.
 
 **External:** [Official migration guide](https://tanstack.com/start/latest/docs/framework/react/migrate-from-next-js), [execution model](https://tanstack.com/start/latest/docs/framework/react/guide/execution-model).

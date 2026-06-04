@@ -48,17 +48,17 @@ Under `server/<domain>/`:
 
 Details: `tanstack-start-conventions` → client-server-boundaries.
 
-## URL state (nuqs)
+## URL state (search params)
 
-- Colocate parsers and hooks under the feature (e.g. `components/.../hooks/useQueryState/`).
-- Place **`NuqsAdapter`** only on layouts that need URL search state — everything below is effectively a client boundary for nuqs.
-- Register search params in a central registry if redirects/normalization must preserve them.
+- **Default:** route `validateSearch` (Zod) + `Route.useSearch()` — see `tanstack-start-conventions` (`params-search-ui-vs-api.md`).
+- **nuqs only** for shared/third-party components that already use `useQueryState`; then `NuqsAdapter` from `nuqs/adapters/tanstack-router` on the smallest layout subtree that needs it (experimental; prefer router search for app-owned state).
+- Colocate Zod search schemas with the route or feature; colocate nuqs parsers/hooks only where nuqs is required.
 
-Install nuqs guidance from your project or `npx skills add FixMyBerlin/fixmyskills -s nuqs -a cursor -y` when available.
+Skill `nuqs` covers Next.js and nuqs interop; do not reach for nuqs on greenfield TanStack routes.
 
 ## Client state (Zustand)
 
-- Stores in dedicated files near the feature; export **custom hooks only**, not the raw store.
+- One concern per `{domain}-store.ts` next to the feature; export **custom hooks only**, not the raw `use*Store` from `create`.
 - Patterns: skill `zustand-state-management`.
 
 ## Route file naming

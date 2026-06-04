@@ -1,45 +1,53 @@
 ---
 name: tanstack-start-auth
 description: >-
-  Protect TanStack Start routes with Better Auth: session via Headers in beforeLoad
-  and server functions, admin gates, optional API keys with timing-safe compare.
-  Use when adding auth checks, session helpers, sign-in flows, or secured API routes.
+  Better Auth on TanStack Start: betterAuth() config, plugins, adapters, sessions,
+  and FMC route protection (beforeLoad, headers, manual cookies, OAuth sign-in).
+  Use for auth.ts, Better Auth, sign-in flows, session helpers, or secured routes/APIs.
 disable-model-invocation: true
 ---
 
-# TanStack Start auth (Better Auth)
+# TanStack Start + Better Auth
 
-Route protection and session access patterns for TanStack Start + Better Auth.
+Single skill for **library configuration** and **Start-specific wiring** in FMC apps (TILDA, Trassenscout migration, etc.).
 
 ## When to apply
 
-- Adding `beforeLoad` auth or role checks
-- Reading session in server functions or API handlers
-- Wiring sign-in / OAuth callback URLs
-- Session + API key dual auth on export or automation endpoints
+- Creating or changing `betterAuth()` / `createAuthClient()` config
+- Mounting `/api/auth/*`, cookie forwarding, OAuth sign-in routes
+- `beforeLoad` gates, `requireAdmin`, session in server functions or API handlers
+- API key + session dual auth on automation endpoints
 
-## Primary reference
+## References (read as needed)
 
-Read [references/auth.md](references/auth.md) for full patterns.
+| Topic                                                     | File                                                                 |
+| --------------------------------------------------------- | -------------------------------------------------------------------- |
+| TanStack routes, cookies, session helpers, TILDA patterns | [references/auth.md](references/auth.md)                             |
+| betterAuth options, DB, plugins, sessions, hooks          | [references/better-auth-config.md](references/better-auth-config.md) |
+
+**Live docs:** [better-auth.com/docs](https://better-auth.com/docs) · [llms.txt](https://better-auth.com/llms.txt)
 
 ## Related skills
 
-- `tanstack-start-conventions` — `.server.ts` / `.functions.ts`, why routes call server Fns in `beforeLoad`
-- `better-auth-best-practices` — Better Auth config (install: `npx skills add FixMyBerlin/fixmyskills -s better-auth-best-practices -a cursor -y`)
+- `tanstack-start-conventions` — `.server.ts` / `.functions.ts`, boundaries, SSR
+- `tanstack-start-app-structure` — `src/server/auth/` layout
+- `playwright-skill` — E2E stubbed auth (TILDA)
 
 ## Non-negotiable rules
 
 1. Session helpers always receive `headers: Headers` from the current request.
-2. Route `beforeLoad` does not call the DB/session directly — use server functions with `getRequestHeaders()`.
-3. API routes: enforce auth inside each handler (no route-level `beforeLoad`).
-4. Compare API secrets with timing-safe equality.
+2. Route `beforeLoad` does not call DB/session directly — server functions + `getRequestHeaders()`.
+3. **Do not** add `tanstackStartCookies()` in FMC apps — use `forwardAuthAndApplyCookies` ([auth.md](references/auth.md)).
+4. API routes: auth inside each handler (no route-level `beforeLoad`).
+5. Admin/role checks with cookie cache: `getSession({ query: { disableCookieCache: true } })`.
+6. Compare API secrets with timing-safe equality.
 
 ## Quick patterns
 
 ```ts
 // beforeLoad (via server fn)
 const session = await getSessionForRouteFn()
-if (!session) throw redirect({ to: '/api/sign-in/...', search: { callbackURL: location.href } })
+if (!session) throw redirect({ to: '/api/sign-in/osm', search: { callbackURL: location.href } })
 
 // API handler
 const session = await getAppSession(request.headers)
@@ -48,3 +56,11 @@ const session = await getAppSession(request.headers)
 const headers = getRequestHeaders()
 await requireAdmin(headers)
 ```
+
+## Setup snapshot
+
+1. `betterAuth()` in `auth.server.ts` (Prisma/Drizzle adapter, plugins)
+2. `createAuthClient()` with matching client plugins
+3. `/api/auth/$` → `forwardAuthAndApplyCookies(request)`
+4. `session.server.ts` helpers taking `Headers`
+5. CLI migrate/generate after plugin changes — details in [better-auth-config.md](references/better-auth-config.md)

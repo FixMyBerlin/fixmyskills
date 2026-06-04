@@ -243,17 +243,42 @@ function SearchResults({ query }) {
 function SearchResults({ query }) {
   const [results, setResults] = useState([])
 
-  useEffect(() => {
-    let ignore = false
+  useEffect(
+    function fetchSearchResults() {
+      let ignore = false
 
-    fetchResults(query).then((json) => {
-      if (!ignore) setResults(json)
-    })
+      fetchResults(query).then((json) => {
+        if (!ignore) setResults(json)
+      })
 
-    return () => {
-      ignore = true
-    }
-  }, [query])
+      return function cancelFetchSearchResults() {
+        ignore = true
+      }
+    },
+    [query],
+  )
+}
+
+// ALSO GOOD: AbortController (preferred when fetch supports signal)
+function SearchResults({ query }) {
+  const [results, setResults] = useState([])
+
+  useEffect(
+    function fetchSearchResults() {
+      const controller = new AbortController()
+
+      fetchResults(query, { signal: controller.signal })
+        .then((json) => setResults(json))
+        .catch((err) => {
+          if (err.name !== 'AbortError') throw err
+        })
+
+      return function abortFetchSearchResults() {
+        controller.abort()
+      }
+    },
+    [query],
+  )
 }
 ```
 
@@ -274,7 +299,7 @@ function App() {
 let didInit = false
 
 function App() {
-  useEffect(() => {
+  useEffect(function initializeAppOnce() {
     if (!didInit) {
       didInit = true
       loadDataFromLocalStorage()

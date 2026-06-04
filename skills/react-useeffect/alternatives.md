@@ -4,45 +4,36 @@ For **useEffect**, prefer named function expressions at the call site (see the m
 
 ## 1. Calculate During Render (Derived State)
 
-For values derived from props or state, just compute them:
+For values derived from props or state, compute during render — do not mirror into state with an Effect.
 
-```tsx
-function Form() {
-  const [firstName, setFirstName] = useState('Taylor')
-  const [lastName, setLastName] = useState('Swift')
+**Canonical bad/good example:** [Anti-Patterns §1](./anti-patterns.md#1-redundant-state-for-derived-values).
 
-  // Runs every render - that's fine and intentional
-  const fullName = firstName + ' ' + lastName
-  const isValid = firstName.length > 0 && lastName.length > 0
-}
-```
-
-**When to use**: The value can be computed from existing props/state.
+**When to use:** The value is a pure function of existing props/state.
 
 ---
 
 ## 2. useMemo for Expensive Calculations
 
-When computation is expensive, memoize it:
+When computation is genuinely expensive and React Compiler is off (or not helping), memoize:
 
 ```tsx
 import { useMemo } from 'react'
 
 function TodoList({ todos, filter }) {
-  const visibleTodos = useMemo(() => getFilteredTodos(todos, filter), [todos, filter])
+  const visibleTodos = useMemo(
+    function filterVisibleTodos() {
+      return getFilteredTodos(todos, filter)
+    },
+    [todos, filter],
+  )
 }
 ```
 
-**How to know if it's expensive**:
+**Canonical bad/good example:** [Anti-Patterns §2](./anti-patterns.md#2-filteringtransforming-data-in-effect).
 
-```tsx
-console.time('filter')
-const visibleTodos = getFilteredTodos(todos, filter)
-console.timeEnd('filter')
-// If > 1ms, consider memoizing
-```
+**How to know if it's expensive:** Profile with `console.time` around the calculation; if consistently > ~1ms, consider memoizing.
 
-**Note**: React Compiler can auto-memoize, reducing manual useMemo needs.
+**React Compiler:** With [React Compiler](https://react.dev/learn/react-compiler) enabled, prefer plain render-time calculation first; add manual `useMemo` only when profiling shows a need.
 
 ---
 
@@ -69,6 +60,8 @@ function Profile({ userId }) {
 ```
 
 **When to use**: You want a "fresh start" when an identity prop changes.
+
+**Canonical example:** [Anti-Patterns §3](./anti-patterns.md#3-resetting-state-on-prop-change).
 
 ---
 
@@ -137,33 +130,15 @@ function handleCheckoutClick() {
 }
 ```
 
+**Canonical example:** [Anti-Patterns §4](./anti-patterns.md#4-event-specific-logic-in-effect).
+
 ---
 
 ## 6. useSyncExternalStore for External Stores
 
-For subscribing to external data (browser APIs, third-party stores):
+For subscribing to external data (browser APIs, third-party stores), prefer `useSyncExternalStore` over a manual Effect + `useState`:
 
 ```tsx
-// Instead of manual Effect subscription
-function useOnlineStatus() {
-  const [isOnline, setIsOnline] = useState(true)
-
-  useEffect(() => {
-    function update() {
-      setIsOnline(navigator.onLine)
-    }
-    window.addEventListener('online', update)
-    window.addEventListener('offline', update)
-    return () => {
-      window.removeEventListener('online', update)
-      window.removeEventListener('offline', update)
-    }
-  }, [])
-
-  return isOnline
-}
-
-// Use purpose-built hook
 import { useSyncExternalStore } from 'react'
 
 function subscribe(callback) {
@@ -216,29 +191,30 @@ function useData(url) {
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
-    let ignore = false
-    setLoading(true)
+  useEffect(
+    function fetchDataFromUrl() {
+      const controller = new AbortController()
+      setLoading(true)
 
-    fetch(url)
-      .then((res) => res.json())
-      .then((json) => {
-        if (!ignore) {
+      fetch(url, { signal: controller.signal })
+        .then((res) => res.json())
+        .then((json) => {
           setData(json)
           setError(null)
-        }
-      })
-      .catch((err) => {
-        if (!ignore) setError(err)
-      })
-      .finally(() => {
-        if (!ignore) setLoading(false)
-      })
+        })
+        .catch((err) => {
+          if (err.name !== 'AbortError') setError(err)
+        })
+        .finally(() => {
+          setLoading(false)
+        })
 
-    return () => {
-      ignore = true
-    }
-  }, [url])
+      return function abortFetchDataFromUrl() {
+        controller.abort()
+      }
+    },
+    [url],
+  )
 
   return { data, error, loading }
 }
@@ -249,19 +225,58 @@ function SearchResults({ query }) {
 }
 ```
 
-**Better**: Use framework's data fetching (React Query, SWR, Next.js, etc.)
+**Better:** Use framework data fetching (TanStack Query, SWR, route loaders, etc.).
+
+**Race conditions:** See [Anti-Patterns §8](./anti-patterns.md#8-fetching-without-cleanup-race-condition) for `ignore` flag vs `AbortController`.
+
+---
+
+## 9. useEffectEvent for Non-Reactive Effect Logic
+
+Use when an Effect’s **setup** should not re-run for every prop change, but the callback must still read **latest** values (timers, listeners, connections).
+
+```tsx
+import { useEffect, useEffectEvent } from 'react'
+
+function ChatRoom({ roomId, theme }) {
+  const onConnected = useEffectEvent(() => {
+    showNotification('Connected!', theme) // theme is latest; does not re-connect
+  })
+
+  useEffect(
+    function connectToChatRoom() {
+      const connection = createConnection(roomId)
+      connection.on('connected', onConnected)
+      connection.connect()
+      return function disconnectFromChatRoom() {
+        connection.disconnect()
+      }
+    },
+    [roomId], // theme omitted — read via onConnected
+  )
+}
+```
+
+**Rules:**
+
+- Name Effect Events after user-visible events (`onConnected`, `onTick`), not lifecycle (`onMount`).
+- Declare next to the Effect that uses them; do not pass to children or other hooks.
+- Do not use to skip dependencies that should re-run the Effect.
+
+Docs: [Separating Events from Effects](https://react.dev/learn/separating-events-from-effects) · [`useEffectEvent`](https://react.dev/reference/react/useEffectEvent).
 
 ---
 
 ## Summary: When to Use What
 
-| Need                           | Solution                             |
-| ------------------------------ | ------------------------------------ |
-| Value from props/state         | Calculate during render              |
-| Expensive calculation          | `useMemo`                            |
-| Reset all state on prop change | `key` prop                           |
-| Respond to user action         | Event handler                        |
-| Sync with external system      | `useEffect` with cleanup             |
-| Subscribe to external store    | `useSyncExternalStore`               |
-| Share state between components | Lift state up                        |
-| Fetch data                     | Custom hook with cleanup / framework |
+| Need                           | Solution                                                 |
+| ------------------------------ | -------------------------------------------------------- |
+| Value from props/state         | Calculate during render                                  |
+| Expensive calculation          | Render-time calc; `useMemo` if profiling requires it     |
+| Reset all state on prop change | `key` prop                                               |
+| Respond to user action         | Event handler                                            |
+| Sync with external system      | Named `useEffect` with cleanup                           |
+| Latest props in stable Effect  | `useEffectEvent` (non-reactive slice only)               |
+| Subscribe to external store    | `useSyncExternalStore`                                   |
+| Share state between components | Lift state up                                            |
+| Fetch data                     | Framework / custom hook with cleanup (`AbortController`) |

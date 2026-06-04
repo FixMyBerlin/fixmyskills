@@ -1,118 +1,128 @@
 ---
 name: nuqs
-description: nuqs (type-safe URL query state) best practices for Next.js applications. This skill should be used when writing, reviewing, or refactoring code that uses nuqs for URL state management. Triggers on tasks involving useQueryState, useQueryStates, search params, URL state, query parameters, nuqs parsers, or Next.js routing with state.
+description: nuqs (type-safe URL query state) for Next.js and legacy/shared components. Prefer TanStack Router validateSearch on TanStack Start/Router apps. Use when writing nuqs hooks, parsers, NuqsAdapter setup, or Next.js URL state — not for greenfield TanStack route search params.
 ---
 
 **LLM reference:** Fetch [llms.txt](https://nuqs.dev/llms.txt) for the documentation index and latest API. Full docs in one file: [llms-full.txt](https://nuqs.dev/llms-full.txt). Human-readable docs: [nuqs.dev/docs](https://nuqs.dev/docs).
 
-# Community nuqs Best Practices for Next.js
+Do **not** duplicate upstream API reference in this skill — use `llms.txt` / `llms-full.txt` for parsers, options, server cache, testing adapter, and troubleshooting.
 
-Comprehensive guide for type-safe URL query state management with nuqs in Next.js applications. Contains 42 rules across 8 categories, prioritized by impact to guide code generation, refactoring, and code review.
+---
 
-## When to Apply
+## When NOT to use nuqs (read first)
 
-Reference these guidelines when:
+**On TanStack Router or TanStack Start, prefer the router’s built-in search params** unless you have a concrete reason to add nuqs.
 
-- Implementing URL-based state with nuqs
-- Setting up nuqs in a Next.js project
-- Configuring parsers for URL parameters
-- Integrating URL state with Server Components
-- Optimizing URL update performance
-- Debugging nuqs-related issues
+| Situation                                            | Use instead                                                                                 |
+| ---------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| App-owned filters, tabs, pagination, sort on a route | Route `validateSearch` (Zod) + `Route.useSearch()`, `loaderDeps`, typed `<Link search={…}>` |
+| Loaders / `beforeLoad` need query state              | Same parsers in `validateSearch`; `search` is typed in loader args                          |
+| FMC TanStack Start stack                             | Skill `tanstack-start-conventions` → `references/params-search-ui-vs-api.md`                |
+| API routes under `routes/api/*`                      | Parse `request.url` in `GET` with Zod — **not** route `validateSearch`                      |
 
-## Rule Categories by Priority
+**Use nuqs on TanStack only when:**
 
-| Priority | Category                 | Impact     | Prefix      |
-| -------- | ------------------------ | ---------- | ----------- |
-| 1        | Parser Configuration     | CRITICAL   | `parser-`   |
-| 2        | Adapter & Setup          | CRITICAL   | `setup-`    |
-| 3        | State Management         | HIGH       | `state-`    |
-| 4        | Server Integration       | HIGH       | `server-`   |
-| 5        | Performance Optimization | MEDIUM     | `perf-`     |
-| 6        | History & Navigation     | MEDIUM     | `history-`  |
-| 7        | Debugging & Testing      | LOW-MEDIUM | `debug-`    |
-| 8        | Advanced Patterns        | LOW        | `advanced-` |
+- A dependency or shared package already exposes `useQueryState` / `useQueryStates` (integrate via `createStandardSchemaV1` — see [nuqs TanStack adapter](https://nuqs.dev/docs/adapters#tanstack-router)).
+- You are maintaining Next.js code that already uses nuqs.
 
-## Quick Reference
+**Upstream caveat (2025):** TanStack Router adapter is **experimental** and **does not fully cover TanStack Start**. For new Start apps, default to `validateSearch`, not `NuqsAdapter`.
 
-### 1. Parser Configuration (CRITICAL)
+---
 
-- [`parser-use-typed-parsers`](references/parser-use-typed-parsers.md) - Use typed parsers for non-string values
-- [`parser-with-default`](references/parser-with-default.md) - Use withDefault for non-nullable state
-- [`parser-enum-validation`](references/parser-enum-validation.md) - Use enum parsers for constrained values
-- [`parser-array-format`](references/parser-array-format.md) - Choose correct array parser format
-- [`parser-json-validation`](references/parser-json-validation.md) - Validate JSON parser input
-- [`parser-date-format`](references/parser-date-format.md) - Select appropriate date parser
-- [`parser-index-offset`](references/parser-index-offset.md) - Use parseAsIndex for 1-based URL display
-- [`parser-hex-colors`](references/parser-hex-colors.md) - Use parseAsHex for color values
+## When to use nuqs
 
-### 2. Adapter & Setup (CRITICAL)
+- **Next.js** (App or Pages Router): primary fit — `NuqsAdapter` + client hooks + optional `nuqs/server` cache for RSC.
+- **Shared libraries** consumed by Next.js apps that standardize on nuqs parsers/hooks.
+- **Tests** of nuqs-powered components: `NuqsTestingAdapter` from `nuqs/adapters/testing` (see upstream [Testing](https://nuqs.dev/docs/testing.md)).
 
-- [`setup-nuqs-adapter`](references/setup-nuqs-adapter.md) - Wrap app with NuqsAdapter
-- [`setup-use-client`](references/setup-use-client.md) - Add 'use client' directive for hooks
-- [`setup-import-server`](references/setup-import-server.md) - Import server utilities from nuqs/server
-- [`setup-nextjs-version`](references/setup-nextjs-version.md) - Ensure compatible Next.js version
-- [`setup-shared-parsers`](references/setup-shared-parsers.md) - Define shared parsers in dedicated file
+---
 
-### 3. State Management (HIGH)
+## FMC conventions
 
-- [`state-use-query-states`](references/state-use-query-states.md) - Use useQueryStates for related parameters
-- [`state-functional-updates`](references/state-functional-updates.md) - Use functional updates for derived state
-- [`state-clear-with-null`](references/state-clear-with-null.md) - Clear URL parameters with null
-- [`state-controlled-inputs`](references/state-controlled-inputs.md) - Handle controlled input value properly
-- [`state-avoid-derived`](references/state-avoid-derived.md) - Avoid derived state from URL parameters
-- [`state-options-inheritance`](references/state-options-inheritance.md) - Use withOptions for parser-level configuration
-- [`state-setter-return`](references/state-setter-return.md) - Use setter return value for URL access
+**TanStack Start** (preferred URL state):
 
-### 4. Server Integration (HIGH)
+- Colocate Zod search schemas with the route or feature; wire `validateSearch` on the owning route file.
+- See `tanstack-start-app-structure` for folder layout; avoid `NuqsAdapter` unless a subtree truly needs nuqs hooks.
 
-- [`server-search-params-cache`](references/server-search-params-cache.md) - Use createSearchParamsCache for Server Components
-- [`server-shallow-false`](references/server-shallow-false.md) - Use shallow:false to trigger server re-renders
-- [`server-use-transition`](references/server-use-transition.md) - Integrate useTransition for loading states
-- [`server-parse-before-get`](references/server-parse-before-get.md) - Call parse() before get() in Server Components
-- [`server-share-parsers`](references/server-share-parsers.md) - Share parsers between client and server
-- [`server-next15-async`](references/server-next15-async.md) - Handle async searchParams in Next.js 15+
+**Next.js + nuqs:**
 
-### 5. Performance Optimization (MEDIUM)
+- Colocate parsers and hooks under the feature (e.g. `components/.../hooks/useQueryState/`).
+- Place **`NuqsAdapter`** only on layouts that need URL search state — everything below is effectively a client boundary for nuqs.
+- Register search params in a central registry if redirects/normalization must preserve them.
 
-- [`perf-throttle-updates`](references/perf-throttle-updates.md) - Throttle rapid URL updates
-- [`perf-clear-on-default`](references/perf-clear-on-default.md) - Use clearOnDefault for clean URLs
-- [`perf-avoid-rerender`](references/perf-avoid-rerender.md) - Memoize components using URL state
-- [`perf-serialize-utility`](references/perf-serialize-utility.md) - Use createSerializer for link URLs
-- [`perf-debounce-search`](references/perf-debounce-search.md) - Debounce search input before URL update
+**State split:** URL-shareable state → router search or nuqs; ephemeral UI → Zustand (`zustand-state-management`).
 
-### 6. History & Navigation (MEDIUM)
+---
 
-- [`history-push-navigation`](references/history-push-navigation.md) - Use history:push for navigation-like state
-- [`history-replace-ephemeral`](references/history-replace-ephemeral.md) - Use history:replace for ephemeral state
-- [`history-scroll-behavior`](references/history-scroll-behavior.md) - Control scroll behavior on URL changes
-- [`history-back-sync`](references/history-back-sync.md) - Handle browser back/forward navigation
+## Next.js setup (summary)
 
-### 7. Debugging & Testing (LOW-MEDIUM)
+Upstream detail: [Installation](https://nuqs.dev/docs/installation.md) · [Adapters](https://nuqs.dev/docs/adapters.md).
 
-- [`debug-enable-logging`](references/debug-enable-logging.md) - Enable debug logging for troubleshooting
-- [`debug-common-errors`](references/debug-common-errors.md) - Diagnose common nuqs errors
-- [`debug-testing`](references/debug-testing.md) - Test components with URL state
+| Concern                      | Rule                                                                                               |
+| ---------------------------- | -------------------------------------------------------------------------------------------------- |
+| Minimum Next.js (App Router) | **14.2.0+** (v2 dropped older 14.x shallow-routing hacks)                                          |
+| Provider                     | `NuqsAdapter` from `nuqs/adapters/next/app` or `.../next/pages`                                    |
+| Client hooks                 | `import { useQueryState, … } from 'nuqs'` in `'use client'` components                             |
+| Server / RSC                 | `import { createSearchParamsCache, … } from 'nuqs/server'` — **never** `nuqs` in Server Components |
+| Shared parsers               | Define once; import parsers from `nuqs/server` on server, `nuqs` on client                         |
+| RSC refresh on URL change    | `shallow: false` (v2: `startTransition: true` does **not** imply `shallow: false`)                 |
+| Next.js 15+ `searchParams`   | `searchParams` is a `Promise` — await before `createSearchParamsCache.parse()`                     |
 
-### 8. Advanced Patterns (LOW)
+**Adapters (v2+):** `next/app`, `next/pages`, `next` (unified), `react`, `remix`, `react-router/v6`, `react-router/v7`, `tanstack-router` (experimental), `testing`.
 
-- [`advanced-custom-parsers`](references/advanced-custom-parsers.md) - Create custom parsers for complex types
-- [`advanced-url-keys`](references/advanced-url-keys.md) - Use urlKeys for shorter URLs
-- [`advanced-eq-function`](references/advanced-eq-function.md) - Implement eq function for object parsers
-- [`advanced-framework-adapters`](references/advanced-framework-adapters.md) - Use framework-specific adapters
+---
 
-## How to Use
+## TanStack Router + nuqs (interop only)
 
-Read individual reference files for detailed explanations and code examples:
+When you must run nuqs hooks alongside the router:
 
-- [Section definitions](references/_sections.md) - Category structure and impact levels
-- [Rule template](assets/templates/_template.md) - Template for adding new rules
+```tsx
+import { createFileRoute, Link } from '@tanstack/react-router'
+import { createStandardSchemaV1, parseAsIndex, parseAsString, useQueryStates } from 'nuqs'
 
-## Reference Files
+const searchParams = {
+  searchQuery: parseAsString.withDefault(''),
+  pageIndex: parseAsIndex.withDefault(0),
+}
 
-| File                                                            | Description                            |
-| --------------------------------------------------------------- | -------------------------------------- |
-| [AGENTS.md](AGENTS.md)                                          | Complete compiled guide with all rules |
-| [references/\_sections.md](references/_sections.md)             | Category definitions and ordering      |
-| [assets/templates/\_template.md](assets/templates/_template.md) | Template for new rules                 |
-| [metadata.json](metadata.json)                                  | Version and reference information      |
+export const Route = createFileRoute('/search')({
+  validateSearch: createStandardSchemaV1(searchParams, { partialOutput: true }),
+  component: RouteComponent,
+})
+
+function RouteComponent() {
+  const [{ searchQuery, pageIndex }] = useQueryStates(searchParams)
+  return <Link to="/search" search={{ searchQuery: 'foo' }} />
+}
+```
+
+**Limits:** Only trivial parser types for type-safe `<Link search>`; `urlKeys` not supported with TanStack integration. Prefer native `validateSearch` for app code.
+
+Root layout (only if needed): `NuqsAdapter` from `nuqs/adapters/tanstack-router` wrapping `<Outlet />` in `__root.tsx`.
+
+---
+
+## High-impact gotchas (not in every tutorial)
+
+These are easy to miss; full behavior is in upstream docs.
+
+1. **Typed parsers** — URL values are strings; use `parseAsInteger`, `parseAsBoolean`, etc., or you get string math and hydration issues.
+2. **`withDefault`** — Prefer over nullable state when a param should always have a value in UI.
+3. **`useQueryStates`** — Batch related params (filters, lat/lng/zoom) to avoid multiple history entries.
+4. **`null` setter** — Removes param from URL; pair with `value={q ?? ''}` for controlled inputs.
+5. **`clearOnDefault`** — Default `true` keeps URLs short; set `false` only if the param must stay visible at default.
+6. **`createSearchParamsCache`** — Call `parse(searchParams)` once at the page, then `get()` in child Server Components.
+7. **`parseAsJson`** — Requires a runtime validator in v2+ (type inference).
+8. **Debug** — `localStorage.debug = 'nuqs'` (v2 dropped `next-usequerystate` substring).
+9. **Package** — ESM-only; import server utilities from `nuqs/server`, not `nuqs/parsers` (removed in v2).
+
+---
+
+## Related FMC skills
+
+| Skill                          | Role                                                |
+| ------------------------------ | --------------------------------------------------- |
+| `tanstack-start-conventions`   | `validateSearch`, loaders, API vs UI search         |
+| `tanstack-start-app-structure` | Where URL state and adapters live                   |
+| `tanstack-start-migration`     | Next → Start; search params mental model            |
+| `react-dev`                    | TanStack Router patterns including `validateSearch` |
