@@ -84,12 +84,12 @@ export function SignSupportsLayer() {
 
 ## When to use which API
 
-| Case | Approach |
-| ---- | -------- |
-| Small fixed set of icons (placeholder, legend markers) | **`useMapImages`** — register on mount |
+| Case                                                     | Approach                                            |
+| -------------------------------------------------------- | --------------------------------------------------- |
+| Small fixed set of icons (placeholder, legend markers)   | **`useMapImages`** — register on mount              |
 | Icons built at runtime from feature data (unbounded ids) | **`styleimagemissing`** + `addImage` in `useEffect` |
-| Icons in style sprite JSON | Fix the style build — no runtime handler |
-| Dev-only missing sprite audit | `console.warn` in `styleimagemissing` (tilda) |
+| Icons in style sprite JSON                               | Fix the style build — no runtime handler            |
+| Dev-only missing sprite audit                            | `console.warn` in `styleimagemissing` (tilda)       |
 
 Guard with **`mainMap`**; prefer **`useMapLoaded()`** so the style exists before `addImage`.
 

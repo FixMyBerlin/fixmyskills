@@ -2,15 +2,14 @@
 
 Symbol layers reference icons by id (`icon-image`). When an id is not in the style sprite, MapLibre emits **`styleimagemissing`**. Fix with **proactive** registration, a **reactive** handler, or a **style/sprite** fix.
 
-
 ## Choose a strategy
 
-| Strategy | When | FMC example |
-| -------- | ---- | ----------- |
-| **Proactive `addImage`** | Fixed, known icon ids | vzk `useMapImages` → `NO_SIGN_ICON` placeholder — [map-images-proactive.md](map-images-proactive.md) |
-| **Reactive `styleimagemissing`** | Dynamic / unbounded ids from feature data | vzk sign supports: `icon-image` = aggregation JSON → generate canvas → `addImage` |
-| **Style / sprite fix** | Id should be in the built sprite | tilda atlas styles |
-| **Dev warn only** | Find missing ids during development | tilda `RegionMap` |
+| Strategy                         | When                                      | FMC example                                                                                          |
+| -------------------------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| **Proactive `addImage`**         | Fixed, known icon ids                     | vzk `useMapImages` → `NO_SIGN_ICON` placeholder — [map-images-proactive.md](map-images-proactive.md) |
+| **Reactive `styleimagemissing`** | Dynamic / unbounded ids from feature data | vzk sign supports: `icon-image` = aggregation JSON → generate canvas → `addImage`                    |
+| **Style / sprite fix**           | Id should be in the built sprite          | tilda atlas styles                                                                                   |
+| **Dev warn only**                | Find missing ids during development       | tilda `RegionMap`                                                                                    |
 
 ## Proactive — `useMapImages` (vzk-bw)
 

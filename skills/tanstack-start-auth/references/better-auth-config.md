@@ -8,11 +8,11 @@ Library reference for `betterAuth()` / `createAuthClient()`. For TanStack Start 
 
 ## Setup workflow
 
-1. Install: `npm install better-auth` (FMC apps often pin e.g. `1.6.x` — match the app `package.json`)
+1. Install: `bun add better-auth` (FMC apps often pin e.g. `1.6.x` — match the app `package.json`)
 2. Set env vars (see below)
 3. Create server auth module (`auth.server.ts`) with database + config
 4. Mount handler in your framework (TanStack Start: [auth.md](auth.md))
-5. Run `npx @better-auth/cli@latest migrate` or `generate` for Prisma/Drizzle
+5. Run `bunx @better-auth/cli@latest migrate` or `generate` for Prisma/Drizzle
 6. Verify: `GET /api/auth/ok` → `{ "status": "ok" }`
 
 ---
@@ -37,9 +37,9 @@ Only set `secret` / `baseURL` in config when env vars are absent.
 
 CLI looks for `auth.ts` in `./`, `./lib`, `./utils`, or `./src` (`--config` for custom path).
 
-- `npx @better-auth/cli@latest migrate` — built-in adapter
-- `npx @better-auth/cli@latest generate` — Prisma/Drizzle schema
-- `npx @better-auth/cli mcp --cursor` — docs MCP for editors
+- `bunx @better-auth/cli@latest migrate` — built-in adapter
+- `bunx @better-auth/cli@latest generate` — Prisma/Drizzle schema
+- `bunx @better-auth/cli mcp --cursor` — docs MCP for editors
 
 Re-run after adding or changing plugins.
 

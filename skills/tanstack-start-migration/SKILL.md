@@ -58,15 +58,15 @@ See [references/nextjs-to-start-mapping.md](references/nextjs-to-start-mapping.m
 **Greenfield scaffold** (official):
 
 ```bash
-npm create @tanstack/start@latest my-app
+bunx create @tanstack/start@latest my-app
 ```
 
 **Migrating in place** — remove Next.js, install Start stack:
 
 ```bash
-npm uninstall next @next/font @next/image
-npm i @tanstack/react-router @tanstack/react-start nitro vite @vitejs/plugin-react
-npm i -D @tailwindcss/vite tailwindcss   # if using Tailwind v4 + Vite
+bun remove next @next/font @next/image
+bun add @tanstack/react-router @tanstack/react-start nitro vite @vitejs/plugin-react
+bun add -d @tailwindcss/vite tailwindcss   # if using Tailwind v4 + Vite
 ```
 
 **`package.json` scripts:**
@@ -77,7 +77,7 @@ npm i -D @tailwindcss/vite tailwindcss   # if using Tailwind v4 + Vite
   "scripts": {
     "dev": "vite dev",
     "build": "vite build",
-    "start": "node .output/server/index.mjs"
+    "start": "bun .output/server/index.mjs"
   }
 }
 ```
@@ -307,7 +307,7 @@ Remove all `"use server"` and `"use client"` directives.
 - [ ] Explicit `ssr` on routes (`tanstack-start-conventions`)
 - [ ] `process.env` → `import.meta.env`; no `next/*` imports remain
 - [ ] Auth via `beforeLoad` + server fns (`tanstack-start-auth`)
-- [ ] `npm run dev` — all routes and mutations work on hard refresh **and** client nav
+- [ ] `bun run dev` — all routes and mutations work on hard refresh **and** client nav
 - [ ] E2E smoke: `playwright-skill` — `tests/smoke/`, `VITE_PLAYWRIGHT_ENABLED`, stubbed auth (see tilda-geo `app/tests/`)
 
 ---

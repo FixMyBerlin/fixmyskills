@@ -217,18 +217,18 @@ cd $SKILL_DIR && bun run setup
 1. For localhost: detect dev servers first:
 
    ```bash
-   cd $SKILL_DIR && node -e "require('./lib/helpers').detectDevServers().then(s => console.log(JSON.stringify(s)))"
+   cd $SKILL_DIR && bun -e "require('./lib/helpers').detectDevServers().then(s => console.log(JSON.stringify(s)))"
    ```
 
 2. Write script to `/tmp/playwright-test-*.js` (never commit ad-hoc scripts to the skill dir).
 3. Parameterize `TARGET_URL` at the top.
-4. Run: `cd $SKILL_DIR && node run.js /tmp/playwright-test-*.js`
+4. Run: `cd $SKILL_DIR && bun run.js /tmp/playwright-test-*.js`
 
 **Headers** (identify automated traffic):
 
 ```bash
 PW_HEADER_NAME=X-Automated-By PW_HEADER_VALUE=playwright-skill \
-  cd $SKILL_DIR && node run.js /tmp/my-script.js
+  cd $SKILL_DIR && bun run.js /tmp/my-script.js
 ```
 
 Multiple headers: `PW_EXTRA_HEADERS='{"X-Automated-By":"playwright-skill"}'`.
@@ -242,7 +242,7 @@ Multiple headers: `PW_EXTRA_HEADERS='{"X-Automated-By":"playwright-skill"}'`.
 ## Checklist (new Start app E2E)
 
 - [ ] `playwright.config.ts` with layered dotenv and `baseURL` matching Vite port
-- [ ] `tests/README.md` documents compose, `.env.test`, and npm scripts
+- [ ] `tests/README.md` documents compose, `.env.test`, and bun scripts
 - [ ] `VITE_PLAYWRIGHT_ENABLED` + `src/.../playwright.ts` hooks
 - [ ] `tests/smoke/` for public routes after migration
 - [ ] Stubbed auth fixtures if admin routes need login
