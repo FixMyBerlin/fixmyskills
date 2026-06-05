@@ -20,15 +20,37 @@ Tilda-geo–specific skills (processing, topic-docs, static datasets, etc.) live
 | [tanstack-start-app-structure](skills/tanstack-start-app-structure/) | Portable `app/src` folder layout (thin routes, Layout/Page, server domains)        | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-start-app-structure -a cursor -y`                              |
 | [zustand-state-management](skills/zustand-state-management/)         | Zustand v5 conventions: `*-store.ts` layout, custom hooks, atomic selectors        | `bunx skills add FixMyBerlin/fixmyskills --skill zustand-state-management -a cursor -y`                                  |
 
-## Install
+## Install & update
 
-List available skills:
+FMC projects use the [Skills CLI](https://skills.sh) (`bunx skills`) to install Cursor agent skills. Project installs are tracked in `skills-lock.json` at the repo root — commit that file so everyone (and CI) gets the same skill versions.
+
+| npm                 | Skills CLI                                  |
+| ------------------- | ------------------------------------------- |
+| `package-lock.json` | `skills-lock.json`                          |
+| `node_modules/`     | `.agents/skills/` (+ agent symlinks/copies) |
+| `npm ci`            | `bunx skills experimental_install`          |
+
+### Restore skills after clone (recommended)
+
+If your project already has a `skills-lock.json`, reinstall every locked skill in one step:
+
+```bash
+bunx skills experimental_install
+```
+
+**What it does:** reads `skills-lock.json`, fetches each skill from its pinned source (e.g. `FixMyBerlin/fixmyskills`), and installs them into `.agents/skills/` with links for Cursor. It is idempotent — safe to run after every clone, in onboarding scripts, or in CI.
+
+**When to use it:** fresh clone, new machine, deleted `.agents/skills/`, or any time you want the exact versions in the lockfile without re-running individual `add` commands.
+
+### Add or change skills
+
+List available skills in this repo:
 
 ```bash
 bunx skills add FixMyBerlin/fixmyskills --list
 ```
 
-Install one skill for Cursor (project scope):
+Install one skill for Cursor (project scope; updates `skills-lock.json`):
 
 ```bash
 bunx skills add FixMyBerlin/fixmyskills --skill zustand-state-management -a cursor -y
@@ -58,7 +80,34 @@ Local development when this repo is a sibling of your project:
 bunx skills add ../skills --skill react-dev -a cursor -y
 ```
 
-**Note:** The Skills CLI installs Cursor project skills to `.agents/skills/` by default. After install, run `bun run setup` inside `playwright-skill` if you use browser automation.
+After adding skills, commit the updated `skills-lock.json`.
+
+### Remove skills
+
+The CLI command is `remove` (alias `rm`) — there is no `uninstall` subcommand:
+
+```bash
+bunx skills remove                        # interactive picker
+bunx skills remove react-dev -y             # remove one skill, skip prompts
+bunx skills remove skill1 skill2 -y         # remove several
+```
+
+**What it does:** deletes the skill from `.agents/skills/` and unlinks it from agent directories (e.g. Cursor).
+
+**Lockfile gap:** `remove` does **not** update `skills-lock.json`. The removed skill stays in the lockfile, so `bunx skills experimental_install` will install it again. Until the CLI fixes this, manually delete the skill entry from `skills-lock.json` (or remove the whole file if empty) and commit that change alongside the removal.
+
+### Update skills to latest versions
+
+Pull newer skill content from the source repos and refresh the lockfile:
+
+```bash
+bunx skills update -p -y                    # all project skills
+bunx skills update react-dev -p -y          # one skill
+```
+
+Commit the updated `skills-lock.json` so the team stays in sync.
+
+**Note:** The Skills CLI installs Cursor project skills to `.agents/skills/` by default. After install, run `bun run setup` inside `playwright-skill` if you use browser automation. `experimental_install` is an experimental CLI command (a stable `skills ci` alias may land later); it is the supported way to restore from `skills-lock.json` today.
 
 ## Development
 
