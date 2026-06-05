@@ -36,7 +36,8 @@ Conventions for `react-map-gl/maplibre` in FixMyBerlin / FMC projects. Import fr
 9. [cursor-handling.md](references/cursor-handling.md) — `cursor` prop from hover state
 10. [initial-view-state.md](references/initial-view-state.md) — uncontrolled `initialViewState` vs URL-driven vs bounds
 11. [map-url-state.md](references/map-url-state.md) — `map=zoom/lat/lng` hook, rounding, nuqs
-12. [style-image-missing.md](references/style-image-missing.md) — `styleimagemissing` in React
+12. [map-images-missing.md](references/map-images-missing.md) — `styleimagemissing` + dynamic icons
+13. [map-images-proactive.md](references/map-images-proactive.md) — proactive `addImage` for known sprites (vzk-bw)
 
 Pair with: skill `nuqs` (URL parsers), skill `zustand-state-management` (map UI store like `useMapLoaded`).
 
