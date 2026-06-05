@@ -63,7 +63,7 @@ There are two separate concepts:
 - **Route `ssr`:** controls route-level server behavior on first request (rendering and `beforeLoad`/`loader` execution).
 - **`@tanstack/react-router-ssr-query`:** controls React Query cache dehydration/hydration/streaming.
 
-Our default is explicit `ssr: true` unless a route needs a more restrictive mode. For project conventions and current route decisions, see [selective-ssr.md](selective-ssr.md).
+Our default is explicit `ssr: true` on UI routes unless a leaf needs a more restrictive mode. **Handler-only API routes** (`server.handlers`, usually `src/routes/api/**` or flat `api/*.ts` in TILDA) use **`ssr: false`**. See [selective-ssr.md](selective-ssr.md).
 
 ## Router + React Query
 

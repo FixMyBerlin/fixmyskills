@@ -97,6 +97,7 @@ const exportSearchSchema = z.object({
 })
 
 export const Route = createFileRoute('/api/items/$itemId/export')({
+  ssr: false,
   // Same validation mechanism as UI: `params.parse` runs when the route matches.
   // For API routes, if Zod `.parse` throws here, callers get a framework error response
   // (not your custom JSON contract). If you need custom JSON for bad params, validate inside `GET` too.
