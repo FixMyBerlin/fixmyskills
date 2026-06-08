@@ -1,8 +1,47 @@
 # TanStack Router: path params & search — UI routes vs API (server) routes
 
-Validation uses **Zod everywhere** in this repo (no optional “pick a validator” — treat Zod as the rule).
+Validation uses **Zod 4** everywhere in FMC TanStack Start apps (no optional “pick a validator” — treat Zod as the rule). Pin `zod@4.4.3`.
 
 TanStack Router follows **two execution paths**: UI routes run matching, `validateSearch`, loaders, and components; **server route handlers** are plain `Request` handlers. Handlers receive **`request`**, **`params`**, and **`context`** only — there is **no** validated `search` object on `GET`.
+
+---
+
+## Zod 4 + `validateSearch`: one schema per route
+
+**Rule:** Define each route’s search schema **once** in or next to the route file. Never duplicate search shapes as hand-written `type` aliases or `as { … }` casts.
+
+**Export** the schema (and `z.infer` type) only when you need it in **two or more places** — e.g. route `validateSearch` plus `navigate({ search })`, a shared helper, or an API `GET` handler. If the schema is only used on that route, an inline `const` in the route file is fine; types still flow via `Route.useSearch()` / `useSearch({ from: … })`.
+
+| Piece                | Pattern                                                                                                                                                      |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Schema               | `const itemSearchSchema = z.object({ … })` in the route file, or `export const …` in `*.search.ts` / a shared lib module when reused                         |
+| Route                | `validateSearch: itemSearchSchema` — Zod 4 implements Standard Schema; **no** `@tanstack/zod-adapter` / `zodValidator()`                                     |
+| Type                 | `type ItemSearch = z.infer<typeof itemSearchSchema>` — export only when imported elsewhere                                                                   |
+| Components           | `Route.useSearch()` or `useSearch({ from: Route.id })` — no manual casts                                                                                     |
+| Revalidate elsewhere | **Same schema object** (must be exported or imported from a shared module): `itemSearchSchema.safeParse(raw)`; use `z.flattenError()` for user-facing errors |
+
+**URL defaults:** Query strings are always strings at the wire. Use `.default()` so `<Link search={…}>` does not require every key, and `.catch(fallback)` so invalid values recover gracefully (replaces Zod 3 adapter `fallback()`):
+
+```ts
+const itemSearchSchema = z.object({
+  tab: z.enum(['overview', 'notes']).default('overview').catch('overview'),
+  page: z.coerce.number().int().positive().default(1).catch(1),
+})
+```
+
+**Anti-patterns:**
+
+```ts
+// ❌ Duplicate type next to schema
+type AuthSearch = { callbackURL?: string }
+const LoginSearchSchema = z.object({ callbackURL: z.string().optional() })
+
+// ❌ Untyped search in child components
+const search = useSearch({ strict: false }) as { from?: string }
+
+// ❌ Inline parse wrapper when schema can be passed directly (Zod 4)
+validateSearch: (search) => itemSearchSchema.parse(search)
+```
 
 ---
 
@@ -28,9 +67,9 @@ const itemParamsSchema = z.object({
   itemId: z.coerce.number().int().positive(),
 })
 
-// Always use Zod for query state (project rule).
+// Always use Zod 4 for query state (project rule). Inline const is fine when only this route uses it.
 const itemSearchSchema = z.object({
-  tab: z.enum(['overview', 'notes']).default('overview'),
+  tab: z.enum(['overview', 'notes']).default('overview').catch('overview'),
 })
 
 export const Route = createFileRoute('/items/$itemId')({
@@ -40,8 +79,8 @@ export const Route = createFileRoute('/items/$itemId')({
   },
 
   // Use `validateSearch` when this route owns `?…` query state (filters, tabs, pagination, etc.).
-  // Zod `.parse` throws on invalid input → same route error behavior as bad path params.
-  validateSearch: (search) => itemSearchSchema.parse(search),
+  // Zod 4: pass schema directly (Standard Schema). Invalid input → route error / `errorComponent`.
+  validateSearch: itemSearchSchema,
 
   // Declare loader dependencies on search so loaders re-run when validated search changes.
   loaderDeps: ({ search: s }) => ({ tab: s.tab }),
@@ -91,8 +130,8 @@ const exportParamsSchema = z.object({
   itemId: z.coerce.number().int().positive(),
 })
 
-// Same Zod rule as UI routes: query string. Export one schema object — reuse everywhere.
-const exportSearchSchema = z.object({
+// Same Zod rule as UI routes: query string. Export when the route and `GET` both validate search.
+export const exportSearchSchema = z.object({
   format: z.enum(['json', 'csv']).default('json'),
 })
 
