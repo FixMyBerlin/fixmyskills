@@ -52,8 +52,10 @@ Prefer installed skill names when present; otherwise fetch from git.
 - **Bun security:** `minimumReleaseAge = 5` in `bunfig.toml` (432000 seconds)
 - **Lint / format:** oxlint and oxfmt with fix flags; Prettier-compatible defaults:
   - class sorting, import sorting, `package.json` sorting
-  - `lineWidth` 100, semicolons `asNeeded`, single quotes
+  - `printWidth` 100, semicolons `asNeeded`, single quotes
   - `'typescript/switch-exhaustiveness-check': 'error'`
+  - Templates: [examples/oxfmt.config.mjs](examples/oxfmt.config.mjs), [examples/oxlint.config.mjs](examples/oxlint.config.mjs)
+  - Setup and per-project tuning: [references/oxc-config.md](references/oxc-config.md)
 
 ## React and TypeScript
 
