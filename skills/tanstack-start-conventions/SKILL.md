@@ -38,7 +38,7 @@ Auth-specific flows: skill `tanstack-start-auth`.
 | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | Server-only modules  | `*.server.ts` — never imported by routes/components; use `createServerOnlyFn` inside                                                     |
 | Callable from client | `*.functions.ts` with `createServerFn`; name exports `*Fn`                                                                               |
-| Public server fns    | `public*.functions.ts` — no auth middleware; rate-limit/token checks in `.server.ts` (see `tanstack-start-auth`)                         |
+| Public server fns    | `public*.functions.ts` — no global auth middleware; rate-limit/token checks in `.server.ts` (see `tanstack-start-auth`)                  |
 | API route files      | No `server-only` import marker on the route file; server-only logic inside handlers or tree-shaken imports                               |
 | Query-backed UI data | Loader primes cache; component uses `useQuery` / `useSuspenseQuery` — not `useLoaderData` alone                                          |
 | API search params    | Do **not** use `validateSearch` on API routes; `safeParse` in `GET` from `request.url` with explicit 4xx JSON                            |
@@ -47,7 +47,7 @@ Auth-specific flows: skill `tanstack-start-auth`.
 
 ## Quick decisions
 
-**`beforeLoad` vs `loader`:** Redirects, auth, light context → `beforeLoad`. Data fetch / Query priming → `loader`.
+**`beforeLoad` vs `loader`:** Redirects, auth, light context → `beforeLoad` (not middleware). Data fetch / Query priming → `loader`.
 
 **Loader vs Query:** Shared, invalidatable, multi-route data → `*QueryOptions` + `ensureQueryData` in loader + `useSuspenseQuery` in UI. One-off admin page data → loader return value + `useLoaderData`.
 
