@@ -8,8 +8,7 @@
     "url": "git+https://github.com/FixMyBerlin/fixmyskills.git"
   },
   "scripts": {
-    "fmt": "oxfmt -c oxfmt.config.mjs '**/*.md' '**/*.mdx' '**/package.json'",
-    "fmt:check": "oxfmt -c oxfmt.config.mjs --check '**/*.md' '**/*.mdx' '**/package.json'",
+    "format": "oxfmt --write -c oxfmt.config.mjs '**/*.md' '**/*.mdx' '**/package.json'",
     "prepare": "husky"
   },
   "devDependencies": {
