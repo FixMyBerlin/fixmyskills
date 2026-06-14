@@ -19,6 +19,7 @@ Stack conventions for TanStack Start apps in this org. Pair with `tanstack-start
 - Splitting code between `.server.ts` and `.functions.ts`
 - Choosing loader vs React Query vs `useLoaderData`
 - Setting route `ssr` or debugging SSR / hydration
+- Installing or changing the TanStack devtools debug panel (Query, Router, Form)
 - Using server components (`renderServerComponent`, `createCompositeComponent`)
 - Validating path params or search (UI vs API)
 
@@ -29,6 +30,7 @@ Stack conventions for TanStack Start apps in this org. Pair with `tanstack-start
 3. [params-search-ui-vs-api.md](references/params-search-ui-vs-api.md) — Zod on UI routes vs API `GET`
 4. [selective-ssr.md](references/selective-ssr.md) — `ssr: true` / `'data-only'` / `false` (handler-only API routes: `false`)
 5. [server-components.md](references/server-components.md) — experimental RSC: FMC conventions, official doc map, selective SSR pairing
+6. [devtools.md](references/devtools.md) — unified TanStack debug panel (`@tanstack/devtools-vite`, `ClientOnly`, inline panels)
 
 Auth-specific flows: skill `tanstack-start-auth`.
 
@@ -44,6 +46,7 @@ Auth-specific flows: skill `tanstack-start-auth`.
 | API search params    | Do **not** use `validateSearch` on API routes; `safeParse` in `GET` from `request.url` with explicit 4xx JSON                            |
 | Validation           | Zod 4 for path params and UI search; export search schema when reused outside the route; `Route.useSearch()` for types — no manual casts |
 | SSR                  | Set `ssr` explicitly on every route; UI default full SSR (`true`); handler-only API routes: `false`; map-heavy UI: `data-only`           |
+| Devtools panel       | `TanStackAppDevtools` in `components/shared/devtools/` — `ClientOnly` + inline panels; prod strip via `@tanstack/devtools-vite` (see [devtools.md](references/devtools.md)) |
 
 ## Quick decisions
 

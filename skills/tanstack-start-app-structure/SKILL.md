@@ -34,7 +34,7 @@ Plus root files such as `router.tsx`. Prefer `shared/` for isomorphic code, `ser
 
 ## Components: Layout vs Page
 
-- **Layouts:** `Layout*.tsx` — route shell, providers (e.g. `NuqsAdapter`), outlet for child page.
+- **Layouts:** `Layout*.tsx` — route shell, providers (e.g. `NuqsAdapter`), outlet for child page. Devtools: [devtools.md](../tanstack-start-conventions/references/devtools.md).
 - **Pages:** `Page*.tsx` — actual screen content.
 - **Deliberate asymmetry:** Route segments may use `_segment` for grouping while `components/` uses a readable folder name (e.g. route `_pages` → `components/pages/`).
 
