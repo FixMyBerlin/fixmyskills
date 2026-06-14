@@ -16,14 +16,15 @@ Portable layout conventions for `app/src` (or equivalent) in TanStack Start proj
 
 Keep a small set of top-level folders:
 
-| Folder        | Purpose                                                                 |
-| ------------- | ----------------------------------------------------------------------- |
-| `components/` | All React/JSX — route files never define components                     |
-| `routes/`     | Route definitions only (thin: `Route` config + single component import) |
-| `server/`     | Server-only modules, `*QueryOptions`, domain helpers                    |
-| `data/`       | Optional static assets (GeoJSON, JSON, etc.)                            |
+| Folder        | Purpose                                                                  |
+| ------------- | ------------------------------------------------------------------------ |
+| `components/` | All React/JSX — route files never define components                      |
+| `routes/`     | Route definitions only (thin: `Route` config + single component import)  |
+| `shared/`     | Isomorphic modules — Zod schemas, URL search, pure utils (no DB/secrets) |
+| `server/`     | Server-only `*.server.ts`, `*.functions.ts`, `*QueryOptions.ts`          |
+| `data/`       | Optional static assets (GeoJSON, JSON, etc.)                             |
 
-Plus root files such as `router.tsx`. Prefer `server/` or `components/shared/` over a vague top-level `lib/`.
+Plus root files such as `router.tsx`. Prefer `shared/` for isomorphic code, `server/` for RPC/DB, or `components/shared/` for React shells — not a vague top-level `lib/`.
 
 ## Routes: thin, no inline UI
 
