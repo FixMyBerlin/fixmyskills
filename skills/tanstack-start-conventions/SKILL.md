@@ -36,16 +36,16 @@ Auth-specific flows: skill `tanstack-start-auth`.
 
 ## Non-negotiable rules
 
-| Topic                | Rule                                                                                                                                     |
-| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| Server-only modules  | `*.server.ts` — never imported by routes/components; use `createServerOnlyFn` inside                                                     |
-| Callable from client | `*.functions.ts` with `createServerFn`; name exports `*Fn`                                                                               |
-| Public server fns    | `public*.functions.ts` — no global auth middleware; rate-limit/token checks in `.server.ts` (see `tanstack-start-auth`)                  |
-| API route files      | No `server-only` import marker on the route file; server-only logic inside handlers or tree-shaken imports                               |
-| Query-backed UI data | Loader primes cache; component uses `useQuery` / `useSuspenseQuery` — not `useLoaderData` alone                                          |
-| API search params    | Do **not** use `validateSearch` on API routes; `safeParse` in `GET` from `request.url` with explicit 4xx JSON                            |
-| Validation           | Zod 4 for path params and UI search; export search schema when reused outside the route; `Route.useSearch()` for types — no manual casts |
-| SSR                  | Set `ssr` explicitly on every route; UI default full SSR (`true`); handler-only API routes: `false`; map-heavy UI: `data-only`           |
+| Topic                | Rule                                                                                                                                                                        |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Server-only modules  | `*.server.ts` — never imported by routes/components; use `createServerOnlyFn` inside                                                                                        |
+| Callable from client | `*.functions.ts` with `createServerFn`; name exports `*Fn`                                                                                                                  |
+| Public server fns    | `public*.functions.ts` — no global auth middleware; rate-limit/token checks in `.server.ts` (see `tanstack-start-auth`)                                                     |
+| API route files      | No `server-only` import marker on the route file; server-only logic inside handlers or tree-shaken imports                                                                  |
+| Query-backed UI data | Loader primes cache; component uses `useQuery` / `useSuspenseQuery` — not `useLoaderData` alone                                                                             |
+| API search params    | Do **not** use `validateSearch` on API routes; `safeParse` in `GET` from `request.url` with explicit 4xx JSON                                                               |
+| Validation           | Zod 4 for path params and UI search; export search schema when reused outside the route; `Route.useSearch()` for types — no manual casts                                    |
+| SSR                  | Set `ssr` explicitly on every route; UI default full SSR (`true`); handler-only API routes: `false`; map-heavy UI: `data-only`                                              |
 | Devtools panel       | `TanStackAppDevtools` in `components/shared/devtools/` — `ClientOnly` + inline panels; prod strip via `@tanstack/devtools-vite` (see [devtools.md](references/devtools.md)) |
 
 ## Quick decisions

@@ -107,13 +107,13 @@ Do **not** inline `<TanStackDevtools>` in the layout file — colocate in `compo
 
 ## Rules (non-negotiable)
 
-| Do | Don't |
-| --- | --- |
-| Wrap in `<ClientOnly fallback={null}>` | Guard with `if (!import.meta.env.DEV) return null` — rely on `@tanstack/devtools-vite` to strip prod |
-| Reference panels **inline** in `plugins` | Wrap panels in local components (e.g. `RouterDevtoolsPanel` with `useRouter()`) — strip plugin won't remove their imports |
-| Use `ReactQueryDevtoolsPanel` inside unified devtools | Mount standalone `<ReactQueryDevtools />` alongside or instead of the unified panel |
-| Use `TanStackRouterDevtoolsPanel` without passing `router` | Pass `router={useRouter()}` — unnecessary; the panel resolves the router from context |
-| Add `devtools()` Vite plugin for prod stripping | Ship devtools behind only a runtime `import.meta.env.DEV` check |
+| Do                                                         | Don't                                                                                                                     |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Wrap in `<ClientOnly fallback={null}>`                     | Guard with `if (!import.meta.env.DEV) return null` — rely on `@tanstack/devtools-vite` to strip prod                      |
+| Reference panels **inline** in `plugins`                   | Wrap panels in local components (e.g. `RouterDevtoolsPanel` with `useRouter()`) — strip plugin won't remove their imports |
+| Use `ReactQueryDevtoolsPanel` inside unified devtools      | Mount standalone `<ReactQueryDevtools />` alongside or instead of the unified panel                                       |
+| Use `TanStackRouterDevtoolsPanel` without passing `router` | Pass `router={useRouter()}` — unnecessary; the panel resolves the router from context                                     |
+| Add `devtools()` Vite plugin for prod stripping            | Ship devtools behind only a runtime `import.meta.env.DEV` check                                                           |
 
 ## Migrating from older FMC layouts
 
