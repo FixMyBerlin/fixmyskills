@@ -8,13 +8,13 @@ TanStack Router follows **two execution paths**: UI routes run matching, `valida
 
 ## Zod 4 + `validateSearch`: one schema per route
 
-**Rule:** Define each route’s search schema **once** in or next to the route file. Never duplicate search shapes as hand-written `type` aliases or `as { … }` casts.
+**Rule:** Define each route’s search schema **once**. Never duplicate search shapes as hand-written `type` aliases or `as { … }` casts.
 
-**Export** the schema (and `z.infer` type) only when you need it in **two or more places** — e.g. route `validateSearch` plus `navigate({ search })`, a shared helper, or an API `GET` handler. If the schema is only used on that route, an inline `const` in the route file is fine; types still flow via `Route.useSearch()` / `useSearch({ from: … })`.
+**Placement:** Inline `const` in the route file when only that route uses the schema. When the schema is imported elsewhere (route `validateSearch` plus `navigate({ search })`, components, or an API `GET` handler), export it from `server/<domain>/searchSchemas.ts` (or `server/shared/<name>Search.ts` for cross-route helpers). Do **not** colocate non-route files under `routes/` (no `-` prefixed helpers).
 
 | Piece                | Pattern                                                                                                                                                      |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Schema               | `const itemSearchSchema = z.object({ … })` in the route file, or `export const …` in `*.search.ts` / a shared lib module when reused                         |
+| Schema               | Inline `const itemSearchSchema = z.object({ … })` in the route file, or `export const …` from `server/<domain>/searchSchemas.ts` when reused                 |
 | Route                | `validateSearch: itemSearchSchema` — Zod 4 implements Standard Schema; **no** `@tanstack/zod-adapter` / `zodValidator()`                                     |
 | Type                 | `type ItemSearch = z.infer<typeof itemSearchSchema>` — export only when imported elsewhere                                                                   |
 | Components           | `Route.useSearch()` or `useSearch({ from: Route.id })` — no manual casts                                                                                     |

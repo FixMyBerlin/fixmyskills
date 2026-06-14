@@ -44,16 +44,19 @@ Under `server/<domain>/`:
 
 - `queries/*.server.ts` — read paths
 - `mutations/*.server.ts` — writes
-- `schemas.ts` — shared Zod/types (optional)
+- `*.inputSchemas.ts` — server-only validation extensions (may import from `shared/<domain>/schemas`)
 - `<domain>.functions.ts` — `createServerFn` exports consumed by routes/components
 
-Details: `tanstack-start-conventions` → client-server-boundaries.
+Domain Zod and URL search schemas live in `shared/<domain>/` (or `shared/<topic>/` for cross-cutting helpers). See `tanstack-start-conventions` → client-server-boundaries.
 
 ## URL state (search params)
 
 - **Default:** route `validateSearch` (Zod) + `Route.useSearch()` — see `tanstack-start-conventions` (`params-search-ui-vs-api.md`).
 - **nuqs only** for shared/third-party components that already use `useQueryState`; then `NuqsAdapter` from `nuqs/adapters/tanstack-router` on the smallest layout subtree that needs it (experimental; prefer router search for app-owned state).
-- Colocate Zod search schemas with the route or feature; colocate nuqs parsers/hooks only where nuqs is required.
+- **Search schema placement** (keep `routes/` for route files only — no `-` prefixed colocated helpers):
+  - **Route-only:** inline `const …SearchSchema = z.object({ … })` in the route file.
+  - **Shared** (route + `navigate({ search })`, components, or multiple routes): `shared/<domain>/searchSchemas.ts`, or `shared/routing/` for cross-cutting params (e.g. back links). Not `*.server.ts` — routes and components import from `shared/`.
+- Colocate nuqs parsers/hooks only where nuqs is required (under `components/`).
 
 Skill `nuqs` covers Next.js and nuqs interop; do not reach for nuqs on greenfield TanStack routes.
 
