@@ -65,3 +65,12 @@ Why:
 - Prefer configuring selective SSR at leaf routes instead of broad parent routes unless all children should inherit that restriction.
 - SSR inheritance is one-way to stricter modes only (`true` -> `'data-only'` -> `false`), so setting `ssr: true` at higher levels is safe because child routes can still become more restrictive later, but a child route cannot become less restrictive than its parent. See TanStack docs: <https://tanstack.com/start/latest/docs/framework/react/guide/selective-ssr#inheritance>.
 - Ensure data-only routes have a useful route `pendingComponent`, because fallback UI is what is rendered server-side for the first matching non-SSR route.
+
+## Server Components + selective SSR
+
+When using experimental RSC, pair route `ssr` with how the RSC is fetched and rendered:
+
+- **`ssr: 'data-only'`** — loader fetches RSC on the server; route component renders on the client (browser APIs, map shells). Typical FMC map-heavy pattern.
+- **`ssr: false`** — loader itself needs browser APIs (e.g. `localStorage`) before creating the RSC.
+
+RSC FMC conventions and official doc links: [server-components.md](server-components.md). Setup, helpers, slots, caching: [TanStack Start Server Components](https://tanstack.com/start/latest/docs/framework/react/guide/server-components).

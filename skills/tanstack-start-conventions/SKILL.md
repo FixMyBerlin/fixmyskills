@@ -2,8 +2,9 @@
 name: tanstack-start-conventions
 description: >-
   TanStack Start and Router conventions for FixMyBerlin/FMC: client/server file
-  suffixes, loaders vs React Query, selective SSR, and UI vs API route param/search
-  validation. Use when working on TanStack Start routes, server functions, loaders,
+  suffixes, loaders vs React Query, selective SSR, experimental server components
+  (RSC), and UI vs API route param/search validation. Use when working on TanStack
+  Start routes, server functions, loaders, renderServerComponent, createCompositeComponent,
   validateSearch, or API routes under routes/api/.
 disable-model-invocation: true
 ---
@@ -18,6 +19,7 @@ Stack conventions for TanStack Start apps in this org. Pair with `tanstack-start
 - Splitting code between `.server.ts` and `.functions.ts`
 - Choosing loader vs React Query vs `useLoaderData`
 - Setting route `ssr` or debugging SSR / hydration
+- Using server components (`renderServerComponent`, `createCompositeComponent`)
 - Validating path params or search (UI vs API)
 
 ## Reference reading order
@@ -26,6 +28,7 @@ Stack conventions for TanStack Start apps in this org. Pair with `tanstack-start
 2. [router-and-query.md](references/router-and-query.md) — Query options, loaders, SSR dehydration
 3. [params-search-ui-vs-api.md](references/params-search-ui-vs-api.md) — Zod on UI routes vs API `GET`
 4. [selective-ssr.md](references/selective-ssr.md) — `ssr: true` / `'data-only'` / `false` (handler-only API routes: `false`)
+5. [server-components.md](references/server-components.md) — experimental RSC: FMC conventions, official doc map, selective SSR pairing
 
 Auth-specific flows: skill `tanstack-start-auth`.
 
@@ -35,6 +38,7 @@ Auth-specific flows: skill `tanstack-start-auth`.
 | -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | Server-only modules  | `*.server.ts` — never imported by routes/components; use `createServerOnlyFn` inside                                                     |
 | Callable from client | `*.functions.ts` with `createServerFn`; name exports `*Fn`                                                                               |
+| Public server fns    | `public*.functions.ts` — no auth middleware; rate-limit/token checks in `.server.ts` (see `tanstack-start-auth`)                         |
 | API route files      | No `server-only` import marker on the route file; server-only logic inside handlers or tree-shaken imports                               |
 | Query-backed UI data | Loader primes cache; component uses `useQuery` / `useSuspenseQuery` — not `useLoaderData` alone                                          |
 | API search params    | Do **not** use `validateSearch` on API routes; `safeParse` in `GET` from `request.url` with explicit 4xx JSON                            |
@@ -48,3 +52,5 @@ Auth-specific flows: skill `tanstack-start-auth`.
 **Loader vs Query:** Shared, invalidatable, multi-route data → `*QueryOptions` + `ensureQueryData` in loader + `useSuspenseQuery` in UI. One-off admin page data → loader return value + `useLoaderData`.
 
 **`ssr`:** Map/canvas-heavy UI but need server auth/data → `'data-only'`. Handler-only API (`server.handlers`) → `false`. Fully client-first UI route → `false` (rare).
+
+**Server components (experimental):** Opt-in RSC layer — not the default FMC data path. See [server-components.md](references/server-components.md).

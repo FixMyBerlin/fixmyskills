@@ -13,7 +13,7 @@ After the mechanical migration, apply FMC stack skills: `tanstack-start-app-stru
 
 ## Critical mental model (read first)
 
-> TanStack Start is **isomorphic by default**. Components and loaders run on **both** server and client unless you isolate server-only logic in `createServerFn`. This is the **opposite** of Next.js Server Components (server-only by default).
+> TanStack Start is **isomorphic by default**. Components and loaders run on **both** server and client unless you isolate server-only logic in `createServerFn`. This is the **opposite** of Next.js Server Components (server-only by default). Experimental RSC exists but is opt-in — see [server-components.md](../tanstack-start-conventions/references/server-components.md).
 
 | Next.js habit                          | TanStack Start reality                                     |
 | -------------------------------------- | ---------------------------------------------------------- |
