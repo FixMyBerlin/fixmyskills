@@ -136,6 +136,12 @@ Stack choices only — map component patterns, layers, events, URL viewport: ski
 
 Turf vs WASM, crates, Vite wiring: skill `rust-wasm-geo`.
 
+## Dependency updates (Dependabot)
+
+- Weekly Monday 07:00 Europe/Berlin; **one open PR at a time** per ecosystem (`open-pull-requests-limit: 1`).
+- Template: [examples/dependabot.yml.template](examples/dependabot.yml.template)
+- Grouping, monorepo tuning, and ignores: [references/dependabot.md](references/dependabot.md)
+
 ## Tests and quality
 
 | Need                            | Skill / tool             |
