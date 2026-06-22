@@ -16,10 +16,9 @@ Tilda-geo–specific skills (processing, topic-docs, static datasets, etc.) live
 | [react-map-gl](skills/react-map-gl/)                                 | react-map-gl/maplibre — MapProvider, layers, URL viewport, tilda-geo patterns              | `bunx skills add FixMyBerlin/fixmyskills --skill react-map-gl -a cursor -y`                                              |
 | [rust-wasm-geo](skills/rust-wasm-geo/)                               | Rust/WASM geo — Turf vs WASM, crates, wasm-bindgen, Vite for FMC geo-heavy apps            | `bunx skills add FixMyBerlin/fixmyskills --skill rust-wasm-geo -a cursor -y`                                             |
 | [tanstack-start-migration](skills/tanstack-start-migration/)         | Migrate Next.js apps to TanStack Start                                                     | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-start-migration -a cursor -y`                                  |
-| [tanstack-start-conventions](skills/tanstack-start-conventions/)     | TanStack Start/Router: boundaries, Query loaders, SSR, API vs UI validation                | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-start-conventions -a cursor -y`                                |
+| [tanstack-start-conventions](skills/tanstack-start-conventions/)     | TanStack Start/Router: app layout, boundaries, Query loaders, SSR, API vs UI validation    | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-start-conventions -a cursor -y`                                |
 | [tanstack-start-auth](skills/tanstack-start-auth/)                   | Better Auth config + TanStack Start routes, sessions, cookies (FMC/TILDA)                  | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-start-auth -a cursor -y`                                       |
 | [tanstack-better-upload](skills/tanstack-better-upload/)             | Better Upload direct-to-S3 in TanStack Start; optional react-dropzone for multi-file UX    | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-better-upload -a cursor -y`                                    |
-| [tanstack-start-app-structure](skills/tanstack-start-app-structure/) | Portable `app/src` folder layout (thin routes, Layout/Page, server domains)                | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-start-app-structure -a cursor -y`                              |
 | [zustand-state-management](skills/zustand-state-management/)         | Zustand v5 conventions: `*-store.ts` layout, custom hooks, atomic selectors                | `bunx skills add FixMyBerlin/fixmyskills --skill zustand-state-management -a cursor -y`                                  |
 | [finish-work](skills/finish-work/)                                   | Pre-commit checks (`bun run check`, `format`) and FMC commit message format                | `bunx skills add FixMyBerlin/fixmyskills --skill finish-work -a cursor -y`                                               |
 
@@ -65,17 +64,16 @@ Install all skills from this repo:
 bunx skills add FixMyBerlin/fixmyskills --all -a cursor -y
 ```
 
-Install the three TanStack Start stack skills (shared across FMC TanStack projects):
+Install the TanStack Start stack skills (shared across FMC TanStack projects):
 
 ```bash
 bunx skills add FixMyBerlin/fixmyskills \
   --skill tanstack-start-conventions \
   --skill tanstack-start-auth \
-  --skill tanstack-start-app-structure \
   -a cursor -y
 ```
 
-TILDA Geo keeps the full project-specific app-structure doc in `docs/TanStack-Start-App-Structure-And-Conventions.md`; use `tanstack-start-app-structure` for the portable summary.
+TILDA Geo keeps the full project-specific doc in `docs/TanStack-Start-App-Structure-And-Conventions.md`; use `tanstack-start-conventions` for the portable summary.
 
 Local development when this repo is a sibling of your project:
 

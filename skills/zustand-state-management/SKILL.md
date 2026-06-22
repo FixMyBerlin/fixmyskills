@@ -29,7 +29,7 @@ Most app state is server or URL state. Add a Zustand store only when you need cl
 
 ## File and export naming
 
-**One store file = one concern.** Colocate with the feature (see `tanstack-start-app-structure`).
+**One store file = one concern.** Colocate with the feature (see `tanstack-start-conventions`).
 
 | Item                       | Convention                                                            | Example                                          |
 | -------------------------- | --------------------------------------------------------------------- | ------------------------------------------------ |
@@ -217,6 +217,5 @@ Official guides worth opening directly: [Updating state](https://zustand.docs.pm
 
 | Topic             | Skill                                        |
 | ----------------- | -------------------------------------------- |
-| App folder layout | `tanstack-start-app-structure`               |
+| App layout, SSR   | `tanstack-start-conventions`               |
 | URL query state   | `nuqs`                                       |
-| Server data       | `tanstack-start-conventions` (Query loaders) |
