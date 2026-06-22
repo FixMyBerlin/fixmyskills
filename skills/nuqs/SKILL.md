@@ -121,8 +121,8 @@ These are easy to miss; full behavior is in upstream docs.
 
 ## Related FMC skills
 
-| Skill                          | Role                                                |
-| ------------------------------ | --------------------------------------------------- |
-| `tanstack-start-conventions`   | Layout, `validateSearch`, loaders, API vs UI search |
-| `tanstack-start-migration`     | Next → Start; search params mental model            |
-| `react-dev`                    | TanStack Router patterns including `validateSearch` |
+| Skill                        | Role                                                |
+| ---------------------------- | --------------------------------------------------- |
+| `tanstack-start-conventions` | Layout, `validateSearch`, loaders, API vs UI search |
+| `tanstack-start-migration`   | Next → Start; search params mental model            |
+| `react-dev`                  | TanStack Router patterns including `validateSearch` |

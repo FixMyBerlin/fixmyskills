@@ -215,7 +215,7 @@ Official guides worth opening directly: [Updating state](https://zustand.docs.pm
 
 ## Related skills
 
-| Topic             | Skill                                        |
-| ----------------- | -------------------------------------------- |
-| App layout, SSR   | `tanstack-start-conventions`               |
-| URL query state   | `nuqs`                                       |
+| Topic           | Skill                        |
+| --------------- | ---------------------------- |
+| App layout, SSR | `tanstack-start-conventions` |
+| URL query state | `nuqs`                       |
