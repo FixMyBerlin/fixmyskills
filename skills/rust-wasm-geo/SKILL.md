@@ -116,4 +116,4 @@ Both: dynamic-import WASM from `wasm.ts` only; never top-level `import` of `.was
 | Route SSR, loaders, boundaries   | `tanstack-start-conventions`                |
 | Folder layout                    | `tanstack-start-app-structure`              |
 | Client UI state around map tools | `zustand-state-management`                  |
-| useEffect / map listeners        | `react-useeffect`                           |
+| useEffect / map listeners        | `react-dev`                                 |

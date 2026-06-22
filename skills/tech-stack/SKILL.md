@@ -34,8 +34,7 @@ Prefer installed skill names when present; otherwise fetch from git.
 | ----------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
 | Rust/WASM geo                             | `rust-wasm-geo`                | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/rust-wasm-geo>                                                    |
 | Maps (react-map-gl)                       | `react-map-gl`                 | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/react-map-gl>                                                     |
-| React TS patterns                         | `react-dev`                    | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/react-dev>                                                        |
-| useEffect discipline                      | `react-useeffect`              | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/react-useeffect>                                                  |
+| React TS patterns, useEffect discipline  | `react-dev`                  | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/react-dev>                                                        |
 | TanStack Start (boundaries, SSR, loaders) | `tanstack-start-conventions`   | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/tanstack-start-conventions>                                       |
 | Router search params (UI routes)          | —                              | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-start-conventions/references/params-search-ui-vs-api.md> |
 | Router + Query loaders                    | —                              | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-start-conventions/references/router-and-query.md>        |
@@ -96,11 +95,7 @@ Optional root `tsconfig.json` with `"references"` to both child configs.
 
 **ES2025:** `target` and `lib` stay in sync. `lib` adds typings only; new ES2025 **runtime** APIs in client bundles are not auto-polyfilled — use deliberately on the client; fine on server/Bun/scripts. Which browsers get that client bundle: [references/browser-target.md](references/browser-target.md).
 
-Component typing, Compiler, and oxlint React rules: skill `react-dev`.
-
-## useEffect
-
-Load skill `react-useeffect` for when to skip Effect, naming, and alternatives. Map camera, clicks, and layers: skill `react-map-gl` (not `useEffect` + `map.on()`).
+Component typing, Compiler, oxlint React rules, and useEffect discipline: skill `react-dev`. Map camera, clicks, and layers: skill `react-map-gl` (not `useEffect` + `map.on()`).
 
 ## Data and state
 

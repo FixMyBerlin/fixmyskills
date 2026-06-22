@@ -101,6 +101,28 @@ function ProductPage({ product, addToCart }) {
 
 **Why it's bad**: Effect fires on page refresh (isInCart is true), showing notification unexpectedly.
 
+### Persist or sync on gesture — not on `isOpen` / transition flags
+
+**Rule:** Persist/sync in the gesture's handler — not in an Effect watching `isOpen`, `isExpanded`, or a transition flag. If animation timing matters, use the library's close-complete callback (still gesture-tied).
+
+```tsx
+// BAD: Effect on isOpen
+useEffect(
+  function persistDraftOnClose() {
+    if (!isOpen) saveSettings(draft)
+  },
+  [isOpen, draft],
+)
+
+// GOOD: same dismiss gesture
+function handleDismiss() {
+  saveSettings(draft)
+  onClose()
+}
+```
+
+**Why it's bad**: Runs on mount, prop-driven close, and remount — not only user dismiss. **Smell:** `persistOnClose`, `syncWhenClosed`, `saveDraftOnDismiss`.
+
 ---
 
 ## 5. Chains of Effects
