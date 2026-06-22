@@ -144,6 +144,7 @@ Turf vs WASM, crates, Vite wiring: skill `rust-wasm-geo`.
 - Weekly Monday 07:00 Europe/Berlin; **one open PR at a time** per ecosystem (`open-pull-requests-limit: 1`).
 - Template: [examples/dependabot.yml.template](examples/dependabot.yml.template)
 - Grouping, monorepo tuning, and ignores: [references/dependabot.md](references/dependabot.md)
+- **Reviewing and merging PRs:** skill `review-dependabot` (changelog triage, risk tiers, rebase merge)
 
 ## CI (GitHub Actions)
 
