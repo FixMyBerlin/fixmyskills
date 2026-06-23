@@ -5,7 +5,7 @@ bun run format
 
 if ! git diff --quiet --exit-code; then
   printf '\n%s\n' \
-    'Oxfmt reformatted markdown files.' \
+    'Oxfmt reformatted files.' \
     'Review the diff, commit the changes, and push again.' \
     >&2
   exit 1
