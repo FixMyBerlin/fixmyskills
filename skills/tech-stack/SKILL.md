@@ -63,6 +63,19 @@ Prefer installed skill names when present; otherwise fetch from git.
 - **UI:** React 19
 - **TypeScript:** Go-native **7.x** (`typescript@7.0.1-rc`, binary `tsc`). Typecheck with `tsc --noEmit`.
 - **Bun + TS 7:** add `typescript` and `@typescript/typescript-*` platform packages to `minimumReleaseAgeExcludes` while on RC. Bun may not hoist optional platform binaries — list `@typescript/typescript-darwin-arm64` and `@typescript/typescript-linux-x64` under `optionalDependencies` (extend for other CI/dev platforms as needed).
+- **Cursor / VS Code:** commit `.vscode/settings.json` in each TypeScript app so the editor uses the workspace `typescript` package and the Go-native language service:
+
+```json
+{
+  "js/ts.experimental.useTsgo": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.native-preview.tsdk": "node_modules/typescript"
+}
+```
+
+After `bun install`, accept **Use Workspace Version** if prompted. Do not add `typescript` to repos that have no TS source (e.g. this skills monorepo).
+
 - **React Compiler:** on by default — see skill `react-dev` for memoization and typing conventions
 - **GeoJSON:** `@types/geojson` for all GeoJSON payloads
 - **Dates / times:** `@date-fns/tz`
