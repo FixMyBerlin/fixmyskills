@@ -26,7 +26,7 @@ Standard FMC workflow before committing. Run commands in the **project root** (o
 
 Runs the project's aggregate verification script. In FMC apps this typically includes:
 
-- **Typecheck** (`tsc --noEmit`, `tsgo`, or project equivalent)
+- **Typecheck** (`bun run type-check` → `tsc --noEmit`; skill `tech-stack`)
 - **Lint** (oxlint with `--deny-warnings`)
 - **Unit tests** (`vitest run`, `test-run`, etc.)
 - **Format check** (some repos use read-only `format-check` / `check-format` inside `check`)
@@ -95,6 +95,7 @@ Run `check` / `format` in each package you changed (`app/`, `processing/`, etc.)
 
 ## Related
 
+- TypeScript 7 RC + editor alignment: skill `tech-stack`
 - Oxlint/oxfmt setup: skill `tech-stack` → [oxc-config.md](../tech-stack/references/oxc-config.md)
 - E2E: skill `playwright-skill`
 - Dependabot merge follow-up: skill `babysit`
