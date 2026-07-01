@@ -21,6 +21,7 @@ Tilda-geo–specific skills (processing, topic-docs, static datasets, etc.) live
 | [tanstack-better-upload](skills/tanstack-better-upload/)         | Better Upload direct-to-S3 in TanStack Start; optional react-dropzone for multi-file UX                | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-better-upload -a cursor -y`                                    |
 | [zustand-state-management](skills/zustand-state-management/)     | Zustand v5 conventions: `*-store.ts` layout, custom hooks, atomic selectors                            | `bunx skills add FixMyBerlin/fixmyskills --skill zustand-state-management -a cursor -y`                                  |
 | [finish-work](skills/finish-work/)                               | Pre-commit checks (`bun run check`) and FMC commit message format                                      | `bunx skills add FixMyBerlin/fixmyskills --skill finish-work -a cursor -y`                                               |
+| [user-changelog](skills/user-changelog/)                         | Weekly end-user release notes from Git (German output in `docs/user-changelog.md`, SHA boundaries)     | `bunx skills add FixMyBerlin/fixmyskills --skill user-changelog -a cursor -y`                                            |
 
 ## Install & update
 
