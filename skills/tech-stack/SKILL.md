@@ -32,21 +32,21 @@ Load [references/llm-resources.md](references/llm-resources.md) **only for the a
 
 Prefer installed skill names when present; otherwise fetch from git.
 
-| Area                                      | Skill                          | GitHub                                                                                                                         |
-| ----------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| Rust/WASM geo                             | `rust-wasm-geo`                | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/rust-wasm-geo>                                                    |
-| Maps (react-map-gl)                       | `react-map-gl`                 | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/react-map-gl>                                                     |
-| React TS patterns, useEffect discipline   | `react-dev`                    | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/react-dev>                                                        |
-| TanStack Start (boundaries, SSR, loaders) | `tanstack-start-conventions`   | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/tanstack-start-conventions>                                       |
-| Router search params (UI routes)          | —                              | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-start-conventions/references/params-search-ui-vs-api.md> |
-| Router + Query loaders                    | —                              | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-start-conventions/references/router-and-query.md>        |
-| Devtools debug panel                      | —                              | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-start-conventions/references/devtools.md>                |
-| App folder layout                         | `tanstack-start-app-structure` | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/tanstack-start-app-structure>                                     |
-| URL state (TanStack Router apps)          | `tanstack-start-conventions`   | `params-search-ui-vs-api.md`                                                                                                   |
-| URL state (Next.js / legacy)              | `nuqs`                         | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/nuqs>                                                             |
-| Client global state                       | `zustand-state-management`     | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/zustand-state-management>                                         |
-| E2E / Playwright                          | `playwright-skill`             | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/playwright-skill>                                                 |
-| Next → Start migration                    | `tanstack-start-migration`     | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/tanstack-start-migration>                                         |
+| Area                                      | Skill                        | GitHub                                                                                                                         |
+| ----------------------------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Rust/WASM geo                             | `rust-wasm-geo`              | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/rust-wasm-geo>                                                    |
+| Maps (react-map-gl)                       | `react-map-gl`               | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/react-map-gl>                                                     |
+| React TS patterns, useEffect discipline   | `react-dev`                  | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/react-dev>                                                        |
+| TanStack Start (boundaries, SSR, loaders) | `tanstack-start-conventions` | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/tanstack-start-conventions>                                       |
+| Router search params (UI routes)          | —                            | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-start-conventions/references/params-search-ui-vs-api.md> |
+| Router + Query loaders                    | —                            | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-start-conventions/references/router-and-query.md>        |
+| Devtools debug panel                      | —                            | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-start-conventions/references/devtools.md>                |
+| App folder layout                         | —                            | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-start-conventions/references/app-structure.md>           |
+| URL state (TanStack Router apps)          | `tanstack-start-conventions` | `params-search-ui-vs-api.md`                                                                                                   |
+| URL state (Next.js / legacy)              | `nuqs`                       | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/nuqs>                                                             |
+| Client global state                       | `zustand-state-management`   | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/zustand-state-management>                                         |
+| E2E / Playwright                          | `playwright-skill`           | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/playwright-skill>                                                 |
+| Next → Start migration                    | `tanstack-start-migration`   | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/tanstack-start-migration>                                         |
 
 ## Runtime and build
 
