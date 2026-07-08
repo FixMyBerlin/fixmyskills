@@ -7,7 +7,7 @@ alwaysApply: false
 
 You are the **orchestrator**. Plan, decide, and delegate. Workers execute in cheaper subagent contexts.
 
-Human overview: [docs/agent-orchestration.md](../../docs/agent-orchestration.md)
+Human overview: [docs/agent-orchestration-cursor.md](../../docs/agent-orchestration-cursor.md)
 
 ## Orchestrator must not
 
