@@ -37,26 +37,16 @@ Claude Code subagent/workflow `model:` only accepts **Claude** models. To use **
 
 Prerequisite: `cursor-agent` on PATH.
 
-**Read-only review / Q&A:**
-
 ```bash
-cursor-agent -p --trust --mode ask --output-format json \
-  --workspace "$(git rev-parse --show-toplevel)" \
-  --model composer-2.5 \
-  "Self-contained prompt."
+WS="--workspace $(git rev-parse --show-toplevel) --model composer-2.5 --output-format json"
+cursor-agent -p --mode ask $WS "Review prompt."   # review / Q&A (read-only)
+cursor-agent -p --force    $WS "Implement prompt." # edits + shell
 ```
 
-**Implementation (writes + shell):**
+`--force` auto-approves tools (headless has no prompt); `--trust` alone only trusts the workspace. `--mode plan` for read-only investigation. Add `--worktree <slug>` for parallel isolated edits.
 
-```bash
-cursor-agent -p --trust --output-format json \
-  --workspace "$(git rev-parse --show-toplevel)" \
-  --model composer-2.5 \
-  "Self-contained prompt."
-```
+**Workflow wrappers:** a workflow stage must be a Claude model — use a thin **Sonnet (low effort)** agent that writes the `cursor-agent` prompt, runs it via Bash, returns structured output. Label stages `composer:task-name`.
 
-**Workflow wrappers:** when a workflow stage must be Claude but the real worker is Composer, use a thin **Sonnet (low effort)** agent that (1) writes the `cursor-agent` prompt, (2) runs it via Bash, (3) returns structured output. Label stages `composer:task-name` so the UI shows the real worker.
+**Timeouts:** long runs may exceed Bash limits — background + poll.
 
-**Timeouts:** long `cursor-agent` runs may exceed Bash limits — background + poll, or explicit timeout.
-
-**Prompts:** self-contained (paths, scope, done criteria). Do not write `cursor-agent` prompts like Claude system messages.
+**Prompts:** self-contained (paths, scope, done criteria) — not Claude-style system messages.

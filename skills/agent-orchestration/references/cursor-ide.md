@@ -2,8 +2,6 @@
 
 **Fable 5** orchestrates in Cursor Agent chat. **Composer 2.5** workers run as subagents with explicit `model:` pins in `.cursor/agents/`.
 
-Install fixmyskills skill once: `bunx skills add FixMyBerlin/fixmyskills --skill agent-orchestration -a cursor -y`
-
 ---
 
 ## What goes where
@@ -79,42 +77,14 @@ Orchestrator may inline only trivial fixes (~10 lines) or when user says “no s
 
 ## Worker model pins
 
-In `.cursor/agents/` frontmatter:
-
-```yaml
-model: composer-2.5[fast=false]
-```
-
-| Value                      | Use                              |
-| -------------------------- | -------------------------------- |
-| `composer-2.5[fast=false]` | Default                          |
-| `composer-2.5[]`           | Alternative base pin             |
-| `inherit` or omitted       | **Avoid** — bills at Fable rates |
-
-Verifier: `readonly: true`.
+`.cursor/agents/` frontmatter: `model: composer-2.5[fast=false]` (default; `composer-2.5[]` is an alternative base pin). Verifier adds `readonly: true`. **Avoid** `inherit`/omitted — bills at Fable rates. Parallel subagents = parallel token spend.
 
 ---
 
-## Cost traps
+## Customize & verify
 
-- `model: inherit` on workers = Fable pricing.
-- Parallel subagents = parallel token spend.
-
----
-
-## Customize
-
-Edit copied files in the target repo (`verifier.md` check commands, rule delegation for MCP, etc.).
-
-Do **not** put orchestration in global Cursor User Rules — use `@orchestrator-worker` per task.
-
----
-
-## Verification
-
-1. `@orchestrator-worker` appears in rule picker.
-2. `/implementer` and `/verifier` listed; frontmatter shows `composer-2.5[fast=false]`.
-3. Fable + delegation prompt spawns workers instead of editing directly.
+- Edit copied files in the target repo (`verifier.md` check commands, rule delegation for MCP, etc.). Do **not** put orchestration in global Cursor User Rules — use `@orchestrator-worker` per task.
+- Verify: `@orchestrator-worker` in rule picker; `/implementer` and `/verifier` show `composer-2.5[fast=false]`; delegation prompt spawns workers instead of editing directly.
 
 ---
 

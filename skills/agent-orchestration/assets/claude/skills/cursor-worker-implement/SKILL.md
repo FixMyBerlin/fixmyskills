@@ -21,12 +21,12 @@ which cursor-agent   # must exist; uses Cursor subscription auth
 ## Workflow
 
 1. Confirm scope with the user if ambiguous.
-2. Write a self-contained prompt (include repo root, files, acceptance criteria).
+2. Write a self-contained prompt (repo root, files, acceptance criteria).
 3. Run from repo root:
 
 ```bash
 REPO="$(git rev-parse --show-toplevel)"
-cursor-agent -p --trust --output-format json \
+cursor-agent -p --force --output-format json \
   --workspace "$REPO" \
   --model composer-2.5 \
   "YOUR_SELF_CONTAINED_PROMPT"
@@ -35,21 +35,7 @@ cursor-agent -p --trust --output-format json \
 4. Parse JSON stdout; summarize files changed, commands run, blockers.
 5. If the parent needs proof, load `cursor-worker-review` or run project checks.
 
-## Parallel / isolated edits
-
-Use a worktree when parallel implementations must not collide:
-
-```bash
-cursor-agent -p --trust --output-format json \
-  --workspace "$REPO" \
-  --worktree "$SLUG" \
-  --model composer-2.5 \
-  "YOUR_SELF_CONTAINED_PROMPT"
-```
-
-## Model pin
-
-- Default: `composer-2.5` (not `composer-2.5-fast` unless user asks).
+`--force` auto-approves edits/shell (headless has no prompt to answer); `--trust` alone only trusts the workspace. Add `--worktree <slug>` for parallel edits that must not collide. Default model `composer-2.5` (not `-fast` unless asked).
 
 ## Timeouts
 

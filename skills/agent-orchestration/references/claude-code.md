@@ -2,8 +2,6 @@
 
 **Fable 5** orchestrates in Claude Code (desktop or CLI). **Composer 2.5** runs bulk work via **`cursor-agent` CLI** (Cursor subscription). Claude Code cannot pin Composer on subagent `model:` — shell out instead.
 
-Install fixmyskills skill once: `bunx skills add FixMyBerlin/fixmyskills --skill agent-orchestration -a cursor -y`
-
 ---
 
 ## What goes where
@@ -56,57 +54,16 @@ Auth uses your **Cursor** subscription — not a separate OpenAI/Codex stack.
 
 ## Daily usage
 
-1. Pick **Fable 5** (effort Low–High; avoid over-reasoning tiers unless needed).
-2. Large tasks:
+Pick **Fable 5** (effort Low–High), then:
 
 ```
-Orchestrate only. Use cursor-worker-implement for edits, cursor-worker-review before done.
+Orchestrate only. cursor-worker-implement for edits, cursor-worker-review before done.
 Do not bulk-edit inline unless trivial (<10 lines).
 ```
 
----
+Delegation: bulk edits → `cursor-worker-implement`; review → `cursor-worker-review`; discovery → Claude subagents or `cursor-agent --mode plan`; user-facing design → Fable/Opus.
 
-## cursor-agent commands
-
-| Task                   | Command shape                                                     |
-| ---------------------- | ----------------------------------------------------------------- |
-| Review / Q&A           | `-p --trust --mode ask --output-format json --model composer-2.5` |
-| Investigation          | `--mode plan` (read-only)                                         |
-| Implementation         | `-p --trust --output-format json --model composer-2.5` (no `ask`) |
-| Isolated parallel work | `--worktree <slug>`                                               |
-| Repo root              | `--workspace "$(git rev-parse --show-toplevel)"`                  |
-
-Example:
-
-```bash
-cursor-agent -p --trust --mode ask --output-format json \
-  --workspace "$(git rev-parse --show-toplevel)" \
-  --model composer-2.5 \
-  "Review uncommitted changes. Report Verified, Issues, Gaps, Verdict."
-```
-
-Prompts must be **self-contained** (paths, scope, done criteria) — not Claude-style system messages.
-
----
-
-## Workflows + wrapper pattern
-
-Workflow stages only accept **Claude** models. To run Composer inside a workflow:
-
-1. Stage uses Sonnet + low effort (cheap wrapper).
-2. Wrapper writes `cursor-agent` prompt, runs via Bash, returns report.
-3. Label stage `composer:task-name` — UI shows Claude; prefix shows real worker.
-
----
-
-## Delegation
-
-| Task                  | Delegate to                                        |
-| --------------------- | -------------------------------------------------- |
-| Bulk implementation   | `cursor-worker-implement` → `cursor-agent`         |
-| Review / verification | `cursor-worker-review` → `cursor-agent --mode ask` |
-| Discovery             | Claude subagents or `cursor-agent --mode plan`     |
-| User-facing design    | Fable or Opus (taste ≥ 7)                          |
+`cursor-agent` command syntax, the workflow wrapper pattern, and the model table live in the copied `CLAUDE.md` snippet and the `cursor-worker-*` skills — not duplicated here.
 
 ---
 
@@ -119,15 +76,7 @@ Workflow stages only accept **Claude** models. To run Composer inside a workflow
 
 ---
 
-## Customize
+## Customize & verify
 
-- Edit `.claude/skills/cursor-worker-*` after init (project check commands, etc.).
-- Global skills: copy to `~/.claude/skills/`; project wins on same name.
-
----
-
-## Verification
-
-1. `which cursor-agent` succeeds.
-2. Claude Code lists `cursor-worker-implement` and `cursor-worker-review`.
-3. Fable delegates to Bash `cursor-agent` instead of inline multi-file edits.
+- Edit `.claude/skills/cursor-worker-*` after init (project check commands, etc.); global copies go in `~/.claude/skills/` (project wins on name).
+- Verify: `which cursor-agent`; Claude Code lists both `cursor-worker-*` skills; Fable delegates to Bash `cursor-agent` instead of editing inline.

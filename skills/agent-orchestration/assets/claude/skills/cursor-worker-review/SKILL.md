@@ -35,21 +35,7 @@ cursor-agent -p --trust --mode ask --output-format json \
 4. **Verify important claims** yourself (spot-check files, re-run checks) before presenting to the user.
 5. If review finds nothing, say so clearly and state what was inspected.
 
-## Investigation (read-only)
-
-For discovery without edits, prefer `--mode plan` or `--mode ask`:
-
-```bash
-cursor-agent -p --trust --mode plan --output-format json \
-  --workspace "$REPO" \
-  --model composer-2.5 \
-  "Investigate: … Return findings only."
-```
-
-## Prompt style
-
-- Self-contained: paths, branch/SHA, scope, expected output sections.
-- Simpler than Claude prompts — `cursor-agent` does not need Claude-style system framing.
+`--mode ask` and `--mode plan` are both read-only (no `--force`); use `--mode plan` for investigation. Prompts are self-contained (paths, branch/SHA, scope, output sections) — simpler than Claude system framing.
 
 ## When parent should use this
 
