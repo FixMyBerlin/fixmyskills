@@ -30,10 +30,10 @@ Prefer **project-local** agents for team repos.
 
 ## What personal workers do not replace
 
-Workers pin Composer models globally, but Fable still needs the orchestrator rule per repo:
+Workers pin Composer models globally, but the orchestrator still needs `@orchestrator-worker` per repo:
 
 ```bash
-bash .agents/skills/agent-orchestration/scripts/init-cursor.sh --no-docs
+bash .agents/skills/agent-orchestration/scripts/init-cursor.sh
 ```
 
 Or paste the delegation block from [cursor-ide.md](cursor-ide.md) each task.

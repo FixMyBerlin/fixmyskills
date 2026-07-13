@@ -1,9 +1,9 @@
 ---
 name: verifier
 description: >-
-  Skeptically validates completed work. Runs relevant checks, inspects diffs, and
-  reports what actually passed vs what was only claimed. Use after implementation
-  or before declaring a task done.
+  Skeptically validates completed work. Always use before declaring a task done.
+  Runs relevant checks, inspects diffs, and reports what actually passed vs what
+  was only claimed.
 model: composer-2.5[fast=false]
 readonly: true
 ---

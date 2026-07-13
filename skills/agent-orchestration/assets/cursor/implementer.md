@@ -1,8 +1,8 @@
 ---
 name: implementer
 description: >-
-  Implements code changes, refactors, and tests once a plan exists. Use for
-  multi-file edits, feature work, and shell commands that modify state. Delegate
+  Implements code changes, refactors, and tests. Always use for multi-file
+  edits, feature work, installs, and shell commands that modify state. Delegate
   proactively when the parent has a clear plan.
 model: composer-2.5[fast=false]
 ---
