@@ -1,8 +1,8 @@
 # package.json script names
 
-Template: [examples/package-json-scripts.mdc.template](../examples/package-json-scripts.mdc.template).
+Template: [examples/package-json-scripts.md.template](../examples/package-json-scripts.md.template).
 
-Copy to `.cursor/rules/package-json-scripts.mdc` on scaffold; tune per app layout.
+Copy to `.cursor/rules/package-json-scripts.md` on scaffold; tune per app layout.
 
 ## Policy
 
@@ -66,5 +66,5 @@ Multi-path lint/format (tilda-geo style): nest under `check-ci:lint-check:*` / `
 
 ```bash
 mkdir -p .cursor/rules
-cp path/to/package-json-scripts.mdc.template .cursor/rules/package-json-scripts.mdc
+cp path/to/package-json-scripts.md.template .cursor/rules/package-json-scripts.md
 ```

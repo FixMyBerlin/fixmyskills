@@ -4,7 +4,7 @@ globs: **/package.json
 alwaysApply: false
 ---
 
-<!-- Copy to .cursor/rules/package-json-scripts.mdc on scaffold — @see references/package-json-scripts.md -->
+<!-- Copy to .cursor/rules/package-json-scripts.md on scaffold — @see references/package-json-scripts.md -->
 
 # package.json script names
 
