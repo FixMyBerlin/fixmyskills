@@ -22,6 +22,8 @@ mkdir -p .github
 cp path/to/dependabot.yml.template .github/dependabot.yml
 ```
 
+Knip / husky tiered setup: [knip.md](knip.md).
+
 ## Commonly tuned per project
 
 - **`browserslist` stack** — keep `browserslist`, `browserslist-to-esbuild`, and `eslint-plugin-compat` as direct `devDependencies` so weekly Bun PRs refresh `caniuse-lite`; Dependabot does not edit query strings — [browser-target.md](browser-target.md).

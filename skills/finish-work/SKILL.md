@@ -13,11 +13,12 @@ Run in the project root, or in each changed monorepo package (`app/`, `processin
 
 ## Workflow
 
-1. Verify: read `scripts.check` in `package.json`, run `bun run check`, fix the root cause, and rerun until green. `lint`/`format` may rewrite files.
-2. Keep fixes together: stage lint/format changes with the functional changes; never make a separate "lint" or "format" commit.
-3. Write the commit message using the format below.
-4. **Default: commit.** Run the commit path below unless the user clearly did not want a commit.
-5. **Draft only when no-commit intent is clear.** Show the message and stop; do not run `git commit`.
+1. Verify: read `scripts.check` in `package.json`, run `bun run check`, fix the root cause, and rerun until green. `lint`/`format` may rewrite files. **`check` excludes knip.**
+2. **Advisory knip:** if `knip-warn` exists, run it — notice only, do not block commit. [knip.md](../tech-stack/references/knip.md).
+3. Keep fixes together: stage lint/format changes with the functional changes; never make a separate "lint" or "format" commit.
+4. Write the commit message using the format below.
+5. **Default: commit.** Run the commit path below unless the user clearly did not want a commit.
+6. **Draft only when no-commit intent is clear.** Show the message and stop; do not run `git commit`.
 
 No-commit intent includes: explicit deferral ("don't commit", "draft only", "message only", "what would the commit be"), check/fix-only asks ("run check", "fix lint", "fix CI" with no wrap-up), review or question-only turns, or the user saying they will commit themselves.
 

@@ -5,8 +5,9 @@ description: >-
   maps, styling, TypeScript editor/CLI alignment, tsconfig templates,
   browserslist client targets, Cursor MCP (Postgres, agent-browser), and
   when to pick sibling skills. Use when scaffolding a new app, evaluating
-  libraries, changing supported browsers or compat lint, setting up Cursor MCP,
-  or making stack/architecture decisions on existing apps.
+  libraries, setting up Bun install/global store or Knip, changing supported
+  browsers or compat lint, setting up Cursor MCP, or making stack/architecture
+  decisions on existing apps.
 ---
 
 # FMC tech stack
@@ -51,9 +52,8 @@ Prefer installed skill names when present; otherwise fetch from git.
 
 ## Runtime and build
 
-- **Runtime / package manager:** [Bun](https://bun.sh)
+- **Runtime / package manager:** [Bun](https://bun.sh) — install policy [bun-install.md](references/bun-install.md) (≥ 1.3.14, global store, Vite dev)
 - **Build:** latest Vite (8+)
-- **Bun security:** `minimumReleaseAge = 5` in `bunfig.toml` (432000 seconds)
 - **Lint / format:** oxlint and oxfmt with fix flags; Prettier-compatible defaults:
   - class sorting, import sorting, `package.json` sorting
   - `printWidth` 100, semicolons `asNeeded`, single quotes
@@ -68,7 +68,7 @@ Prefer installed skill names when present; otherwise fetch from git.
 - **UI:** React 19
 - **TypeScript (default):** `typescript@^7` (native port; [7.0 release](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/)). Typecheck with `tsc --noEmit` via `bun run type-check`. The workspace `typescript` package provides both CLI (`tsc`) and editor language service — do not add a separate compiler binary for type-check. Nightlies: `typescript@next` (not the retired `@typescript/native-preview` package).
 - **Editor/CLI alignment:** `js/ts.tsdk.path` must resolve to the same `devDependencies.typescript` install as `tsc` (package root, not `lib/`). Misalignment makes IDE diagnostics disagree with `bun run type-check`.
-- **Scaffold (TS 7):** `package.json` — `devDependencies.typescript` `^7`, script `"type-check": "tsc --noEmit"` (add `-p` when using split tsconfigs); pin `@typescript/typescript-darwin-arm64` / `@typescript/typescript-linux-x64` in `optionalDependencies` at the same version when CI runs on a different platform than dev (the `typescript` package lists these as optional — extend for other platforms as needed). `bunfig.toml` — `minimumReleaseAgeExcludes = ["typescript", "@typescript/typescript-*"]`. Commit `.vscode/settings.json` (template: [examples/vscode.settings.typescript.json.template](examples/vscode.settings.typescript.json.template)) and recommend the **TypeScript 7** extension in `.vscode/extensions.json` ([examples/vscode.extensions.json.template](examples/vscode.extensions.json.template)).
+- **Scaffold (TS 7):** `package.json` — `devDependencies.typescript` `^7`, script `"type-check": "tsc --noEmit"` (add `-p` when using split tsconfigs); pin `@typescript/typescript-darwin-arm64` / `@typescript/typescript-linux-x64` in `optionalDependencies` at the same version when CI runs on a different platform than dev (the `typescript` package lists these as optional — extend for other platforms as needed). `bunfig.toml` — [bun-install.md](references/bun-install.md). Commit `.vscode/settings.json` (template: [examples/vscode.settings.typescript.json.template](examples/vscode.settings.typescript.json.template)) and recommend the **TypeScript 7** extension in `.vscode/extensions.json` ([examples/vscode.extensions.json.template](examples/vscode.extensions.json.template)).
 - **Monorepos:** when TypeScript lives in a package subfolder, prefix `js/ts.tsdk.path` to that package’s `node_modules/typescript` (e.g. `app/node_modules/typescript` — [tilda-geo](https://github.com/FixMyBerlin/tilda-geo/blob/develop/.vscode/settings.json)).
 - **Cursor / VS Code:** install **TypeScript 7** (`TypeScriptTeam.native-preview` — marketplace ID unchanged). Enable via command palette **TypeScript: Enable TypeScript 7** or the settings template. Copy [examples/vscode.settings.typescript.json.template](examples/vscode.settings.typescript.json.template) into `.vscode/settings.json` (merge with oxc keys from [references/oxc-config.md](references/oxc-config.md)). Toggle back with **Disable TypeScript 7 Language Server** when editor plugins still require TS 6 (Vue, Astro, Svelte, Angular templates — see release notes).
 - **Tooling on TS 6 API:** TypeScript 7.0 has no programmatic compiler API. For typescript-eslint or similar, side-by-side TS 6 via `@typescript/typescript6` and npm aliases — see [release notes](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/#running-side-by-side-with-typescript-60).
@@ -162,11 +162,12 @@ Turf vs WASM, crates, Vite wiring: skill `rust-wasm-geo`.
 
 ## Tests and quality
 
-| Need                            | Skill / tool             |
-| ------------------------------- | ------------------------ |
-| Unit / component tests          | Vitest (always)          |
-| Cross-route, map, or auth flows | `playwright-skill`       |
-| Pure logic / utils only         | Vitest — skip Playwright |
+| Need                            | Skill / tool                  |
+| ------------------------------- | ----------------------------- |
+| Unit / component tests          | Vitest (always)               |
+| Cross-route, map, or auth flows | `playwright-skill`            |
+| Pure logic / utils only         | Vitest — skip Playwright      |
+| Explicit deps / dead exports    | [knip.md](references/knip.md) |
 
 ## Quick decisions
 

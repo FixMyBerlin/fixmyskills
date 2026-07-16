@@ -54,6 +54,8 @@ Do **not** add `eslint-plugin-react-compiler` — use native `react/react-compil
 
 **scripts** — use `--fix --fix-dangerously` on write-mode lint so suggestion/dangerous fixes apply (e.g. removing unused imports). Plain `--fix` only applies safe fixes.
 
+**Script names:** kebab-case (`type-check`, `lint-check`, `knip-warn`). Reserve `:` for [Bun script groups](https://bun.sh/docs/cli/run#filtering) only (`dev:*`, `predev:*`).
+
 ```json
 {
   "scripts": {

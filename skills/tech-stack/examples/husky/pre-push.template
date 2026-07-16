@@ -1,0 +1,10 @@
+#!/usr/bin/env sh
+set -e
+
+. "$(dirname -- "$0")/ensure-bun.sh"
+
+# @see references/knip.md
+bun run check
+bun run knip   # KNIP_STRICT=1 — blocks push on error
+
+# Use `git push --no-verify` to skip (sparingly).

@@ -82,6 +82,8 @@ bun add -d @tailwindcss/vite tailwindcss   # if using Tailwind v4 + Vite
 }
 ```
 
+**`bunfig.toml` + Vite globalStore:** [tech-stack → bun-install.md](https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tech-stack/references/bun-install.md)
+
 **`vite.config.ts`** (minimal):
 
 ```ts
@@ -102,6 +104,8 @@ export default defineConfig({
   ],
 })
 ```
+
+With FMC [bunfig](https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tech-stack/references/bun-install.md): add `server.fs.allow` for the Bun global cache.
 
 **`src/router.tsx`:**
 
