@@ -10,10 +10,10 @@ Derived from [tilda-geo](https://github.com/FixMyBerlin/tilda-geo/blob/develop/.
 | -------------------------- | ---------------------------------- | ------------------------------------------------------------------------- |
 | Schedule                   | Weekly, Monday 07:00 Europe/Berlin | Predictable review window; avoids daily noise                             |
 | `open-pull-requests-limit` | `1` per ecosystem                  | One active Dependabot PR at a time — merge or close before the next opens |
-| `cooldown.default-days`    | `5`                                | Brief pause after a dependency publishes before Dependabot proposes it    |
+| `cooldown.default-days`    | `5`                                | Version updates wait before a PR opens; security updates are not delayed  |
 | Bun groups                 | dev / framework / misc patch       | Bundles related bumps; security updates still get their own group         |
 
-Major version bumps are not grouped — they surface as individual PRs when no other PR is open.
+Major version bumps are not grouped — they surface as individual PRs when no other PR is open. With weekly schedule + cooldown, a new release may not get a PR until the next run after the cooldown period.
 
 ## Scaffold setup
 
