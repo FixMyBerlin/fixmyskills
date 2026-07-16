@@ -22,7 +22,7 @@ mkdir -p .github
 cp path/to/dependabot.yml.template .github/dependabot.yml
 ```
 
-Knip / husky tiered setup: [knip.md](knip.md).
+Knip / husky / verify scripts: [package-json-scripts.md](package-json-scripts.md) · [knip.md](knip.md).
 
 ## Commonly tuned per project
 

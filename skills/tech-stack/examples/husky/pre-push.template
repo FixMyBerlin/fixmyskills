@@ -3,8 +3,7 @@ set -e
 
 . "$(dirname -- "$0")/ensure-bun.sh"
 
-# @see references/knip.md
-bun run check
-bun run knip   # KNIP_STRICT=1 — blocks push on error
+# @see references/package-json-scripts.md
+bun run check-pre-push
 
 # Use `git push --no-verify` to skip (sparingly).

@@ -13,7 +13,7 @@ disable-model-invocation: true
 
 Weekly workflow: summarize changes since the last run as plain German bullet points — **only** what end users can see, do, or notice. Not a technical changelog.
 
-If there are **pending changes** when done (e.g. `docs/user-changelog.md`), use [finish-work](../finish-work/SKILL.md) to run `bun run check` and draft the English commit message before committing.
+If there are **pending changes** when done (e.g. `docs/user-changelog.md`), use [finish-work](../finish-work/SKILL.md) to run `bun run check-pre-commit` and draft the English commit message before committing.
 
 ## File
 
@@ -106,7 +106,7 @@ Good and bad examples: [examples.md](references/examples.md).
 
 ## Step 6: Commit
 
-Only when the user explicitly asks to commit — follow [finish-work](../finish-work/SKILL.md) for `bun run check` and the commit message:
+Only when the user explicitly asks to commit — follow [finish-work](../finish-work/SKILL.md) for `bun run check-pre-commit` and the commit message:
 
 ```bash
 git add docs/user-changelog.md
@@ -129,5 +129,5 @@ Changelog file content stays **German**; the commit subject/body for this doc up
 
 ## Related
 
-- [finish-work](../finish-work/SKILL.md) — check + commit when landing the changelog
+- [finish-work](../finish-work/SKILL.md) — check-pre-commit + commit when landing the changelog
 - [review-dependabot](../review-dependabot/SKILL.md) — do not list Dependabot commits as user changes

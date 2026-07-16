@@ -163,12 +163,12 @@ Turf vs WASM, crates, Vite wiring: skill `rust-wasm-geo`.
 
 ## Tests and quality
 
-| Need                            | Skill / tool                  |
-| ------------------------------- | ----------------------------- |
-| Unit / component tests          | Vitest (always)               |
-| Cross-route, map, or auth flows | `playwright-skill`            |
-| Pure logic / utils only         | Vitest — skip Playwright      |
-| Explicit deps / dead exports    | [knip.md](references/knip.md) |
+| Need                            | Skill / tool                                                                                                 |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| Unit / component tests          | Vitest (always)                                                                                              |
+| Cross-route, map, or auth flows | `playwright-skill`                                                                                           |
+| Pure logic / utils only         | Vitest — skip Playwright                                                                                     |
+| Explicit deps / dead exports    | [knip.md](references/knip.md) · verify scripts [package-json-scripts.md](references/package-json-scripts.md) |
 
 ## Quick decisions
 

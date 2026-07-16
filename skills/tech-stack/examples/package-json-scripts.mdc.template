@@ -20,7 +20,18 @@ Use `:` only for **step scripts** that belong to a group run via `bun run --para
 
 One-off commands run directly — use kebab-case, no colon:
 
-- `migrate-check`, `setup-worktree`, `bleach-full`
+- `migrate-check`, `setup-worktree`, `check-pre-commit`, `check-pre-push`
+
+## Verify scripts
+
+| Script | Role |
+| --- | --- |
+| `check` | Mutating — autofix lint/format + type-check + tests |
+| `check-ci` | Read-only CI — runs `check-ci:*` group |
+| `check-pre-commit` | finish-work skill — `check` + advisory knip |
+| `check-pre-push` | husky — `check` + strict knip |
+
+Full scaffold: tech-stack skill → `references/package-json-scripts.md`.
 
 ## Prefer sequential groups over `&&`
 

@@ -1,8 +1,10 @@
 /** @type {import('knip').KnipConfig} */
 // Copy to project-root knip.config.mjs — tune entry/ignoreBinaries per references/knip.md
-// package.json scripts (@see references/package-json-scripts.md):
+// Verify scripts (@see references/package-json-scripts.md):
 //   "knip": "KNIP_STRICT=1 knip --config knip.config.mjs",
 //   "knip-warn": "knip --config knip.config.mjs",
+//   "check-pre-commit": "bun run check && (bun run knip-warn || true)",
+//   "check-pre-push": "bun run check && bun run knip",
 const strict = process.env.KNIP_STRICT === '1'
 
 export default {
@@ -20,7 +22,6 @@ export default {
   ignore: ['.agents/**'],
   // paths: omit when aliases are only in tsconfig — Knip reads compilerOptions.paths automatically
   ignoreBinaries: ['code', 'gh', 'rg'], // CLIs invoked in scripts but not npm deps — extend per repo
-  // @see references/knip.md — KNIP_STRICT=1 on pre-push
   rules: {
     files: 'error',
     dependencies: 'error',

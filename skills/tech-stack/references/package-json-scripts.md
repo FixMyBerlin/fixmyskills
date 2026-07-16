@@ -2,19 +2,65 @@
 
 Template: [examples/package-json-scripts.mdc.template](../examples/package-json-scripts.mdc.template).
 
-Derived from [tilda-geo](https://github.com/FixMyBerlin/tilda-geo/blob/develop/.cursor/rules/package-json-scripts.mdc). Copy to `.cursor/rules/package-json-scripts.mdc` on scaffold; tune only if the app has unusual script layout.
+Copy to `.cursor/rules/package-json-scripts.mdc` on scaffold; tune per app layout.
 
 ## Policy
 
-| Rule                   | Detail                                                                                                                    |
-| ---------------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| **Standalone scripts** | kebab-case, no `:` — e.g. `type-check`, `lint-check`, `migrate-check`, `knip-warn`                                        |
-| **Colon groups**       | `:` only for step scripts in a Bun group — parent runs `bun run --parallel <group>:*` or `bun run --sequential <group>:*` |
-| **Step naming**        | `<group>:<step>` with numeric prefix when order matters — e.g. `predev:2migration`, `migrate-create:1write`               |
-| **No `&&` chains**     | Split multi-step flows into `<group>:<step>` + orchestrator; use `&&` only inside a single step when rare                 |
-| **Lifecycle hooks**    | Avoid accidental `pre<script>` / `post<script>` names — e.g. `preseed` runs before `seed`                                 |
+| Rule                   | Detail                                                                                                                      |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| **Standalone scripts** | kebab-case, no `:` — e.g. `type-check`, `check-pre-commit`, `migrate-check`                                                 |
+| **Colon groups**       | `:` for Bun group steps — `bun run --parallel <group>:*` or `bun run --sequential <group>:*`                                |
+| **Step naming**        | `<group>:<step>`; numeric prefix when order matters — `predev:2migration`                                                   |
+| **Orchestrators**      | `check-pre-commit`, `check-pre-push`, `check-ci` compose other scripts; `&&` allowed in these few verify orchestrators only |
+| **Lifecycle hooks**    | Avoid accidental `pre<script>` / `post<script>` names                                                                       |
 
 Bun docs: [script filtering](https://bun.sh/docs/cli/run#filtering).
+
+## Verify scripts (canonical)
+
+Who runs what — agents and docs only reference these names:
+
+| Script                 | Who runs it                                           | Role                                                                               |
+| ---------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **`check`**            | Composed by orchestrators                             | **Mutating** — `type-check` + write-mode `lint` + write-mode `format` + `test-run` |
+| **`check-ci`**         | CI (`bun run check-ci`)                               | **Read-only** — `check-ci:*` group; never rewrites files                           |
+| **`check-pre-commit`** | [finish-work](../../finish-work/SKILL.md) skill       | Mutating `check` + advisory knip (`knip-warn \|\| true`)                           |
+| **`check-pre-push`**   | husky [pre-push](../examples/husky/pre-push.template) | Mutating `check` + strict `knip`                                                   |
+| **`check-full`**       | Optional (e.g. trassenscout)                          | `check-pre-push` then `e2e`                                                        |
+
+Without Knip: `check-pre-commit` and `check-pre-push` collapse to `bun run check`.
+
+**Monorepos / repo tails:** extend `check-pre-push` in `package.json` (topic-docs regen, `processing/` check, `migrate-check-test`) — not in husky prose.
+
+### Scaffold (with Knip)
+
+Oxlint/oxfmt leaves: [oxc-config.md](oxc-config.md). Knip config: [knip.md](knip.md).
+
+```json
+{
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "lint": "oxlint --fix --fix-dangerously --deny-warnings -c oxlint.config.mjs .",
+    "format": "oxfmt --write -c oxfmt.config.mjs .",
+    "test-run": "vitest run --passWithNoTests",
+
+    "check": "bun run --parallel type-check lint format test-run",
+
+    "check-ci": "bun run --parallel check-ci:*",
+    "check-ci:type-check": "tsc --noEmit",
+    "check-ci:lint-check": "oxlint --deny-warnings -c oxlint.config.mjs .",
+    "check-ci:format-check": "oxfmt --check -c oxfmt.config.mjs .",
+    "check-ci:test-run": "vitest run --passWithNoTests",
+
+    "knip": "KNIP_STRICT=1 knip --config knip.config.mjs",
+    "knip-warn": "knip --config knip.config.mjs",
+    "check-pre-commit": "bun run check && (bun run knip-warn || true)",
+    "check-pre-push": "bun run check && bun run knip"
+  }
+}
+```
+
+Multi-path lint/format (tilda-geo style): nest under `check-ci:lint-check:*` / `check-ci:format-check:*` instead of top-level `check-lint:*`.
 
 ## Scaffold setup
 
@@ -22,10 +68,3 @@ Bun docs: [script filtering](https://bun.sh/docs/cli/run#filtering).
 mkdir -p .cursor/rules
 cp path/to/package-json-scripts.mdc.template .cursor/rules/package-json-scripts.mdc
 ```
-
-Oxlint/oxfmt script block (`lint`, `lint-check`, `format`, `format-check`): [oxc-config.md](oxc-config.md). Knip script names: [knip.md](knip.md).
-
-## Reference apps
-
-- [tilda-geo `app/package.json`](https://github.com/FixMyBerlin/tilda-geo/blob/develop/app/package.json) — `dev:*`, `predev:*`, `db-pull:*`
-- [trassenscout `package.json`](https://github.com/FixMyBerlin/trassenscout/blob/develop/package.json) — `predev:*`, `migrate-create:*`, `env-check:*`
