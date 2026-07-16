@@ -38,6 +38,22 @@ const { userId } = useParams({ from: userRoute.id })
 const { tab } = useSearch({ from: userRoute.id })
 ```
 
+## Typed `Link` params
+
+Never string-interpolate path segments into `to` — you lose type checking and break param encoding.
+
+```tsx
+// ❌ Wrong
+<Link to={`/posts/${post.slug}`}>View</Link>
+
+// ✅ Correct
+<Link to="/posts/$slug" params={{ slug: post.slug }}>
+  View
+</Link>
+```
+
+Catch-all splat routes (`routes/posts/$.tsx`) expose the remainder via `Route.useParams()` → `_splat`.
+
 ## Search params
 
 - UI routes: Zod `validateSearch` on the route — see `tanstack-start-conventions` / `params-search-ui-vs-api.md`

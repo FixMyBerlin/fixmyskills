@@ -34,8 +34,9 @@ Folder layout, thin routes, Layout/Page naming, and test layout: [app-structure.
 ## Reference reading order
 
 0. [app-structure.md](references/app-structure.md) — `src` folders, thin routes, Layout/Page naming, tests
-
+   0.5 [execution-model.md](references/execution-model.md) — isomorphic execution, loaders on soft nav, server fn boundary
 1. [client-server-boundaries.md](references/client-server-boundaries.md) — file suffixes, import protection, `beforeLoad` vs `loader`
+   1.5 [server-functions.md](references/server-functions.md) — `createServerFn` API, validation, form submit, invalidation
 2. [router-and-query.md](references/router-and-query.md) — Query options, loaders, SSR dehydration
 3. [router-search-serialization.md](references/router-search-serialization.md) — **required** `parseSearch` / `stringifySearch`, pretty JSON URLs, per-param encodings, optional jsurl
 4. [params-search-ui-vs-api.md](references/params-search-ui-vs-api.md) — Zod on UI routes vs API `GET`
@@ -73,9 +74,8 @@ Auth-specific flows: skill `tanstack-start-auth`.
 
 ## Related skills
 
-| Topic             | Skill                      |
-| ----------------- | -------------------------- |
-| Auth / session    | `tanstack-start-auth`      |
-| Zustand           | `zustand-state-management` |
-| Next.js migration | `tanstack-start-migration` |
-| nuqs (Next.js)    | `nuqs`                     |
+| Topic          | Skill                      |
+| -------------- | -------------------------- |
+| Auth / session | `tanstack-start-auth`      |
+| Zustand        | `zustand-state-management` |
+| nuqs (Next.js) | `nuqs`                     |

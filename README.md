@@ -15,7 +15,6 @@ Tilda-geo–specific skills (processing, topic-docs, static datasets, etc.) live
 | [react-dev](skills/react-dev/)                                   | React 19 + TypeScript, Compiler, oxlint, useEffect discipline; FMC TanStack Start — not routing/server                    | `bunx skills add FixMyBerlin/fixmyskills --skill react-dev -a cursor -y`                                                 |
 | [react-map-gl](skills/react-map-gl/)                             | react-map-gl/maplibre — MapProvider, layers, URL viewport, tilda-geo patterns                                             | `bunx skills add FixMyBerlin/fixmyskills --skill react-map-gl -a cursor -y`                                              |
 | [rust-wasm-geo](skills/rust-wasm-geo/)                           | Rust/WASM geo — Turf vs WASM, crates, wasm-bindgen, Vite for FMC geo-heavy apps                                           | `bunx skills add FixMyBerlin/fixmyskills --skill rust-wasm-geo -a cursor -y`                                             |
-| [tanstack-start-migration](skills/tanstack-start-migration/)     | Migrate Next.js apps to TanStack Start                                                                                    | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-start-migration -a cursor -y`                                  |
 | [tanstack-start-conventions](skills/tanstack-start-conventions/) | TanStack Start/Router: app layout, boundaries, Query loaders, SSR, API vs UI validation                                   | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-start-conventions -a cursor -y`                                |
 | [tanstack-start-auth](skills/tanstack-start-auth/)               | Better Auth config + TanStack Start routes, sessions, cookies (FMC/TILDA)                                                 | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-start-auth -a cursor -y`                                       |
 | [tanstack-better-upload](skills/tanstack-better-upload/)         | Better Upload direct-to-S3 in TanStack Start; optional react-dropzone for multi-file UX                                   | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-better-upload -a cursor -y`                                    |
@@ -24,6 +23,10 @@ Tilda-geo–specific skills (processing, topic-docs, static datasets, etc.) live
 | [finish-work](skills/finish-work/)                               | Pre-commit checks (`bun run check`) and FMC commit message format                                                         | `bunx skills add FixMyBerlin/fixmyskills --skill finish-work -a cursor -y`                                               |
 | [agent-orchestration](skills/agent-orchestration/)               | Premium orchestrator + Composer workers — separate Cursor IDE and Claude Code setup (`init-cursor.sh` / `init-claude.sh`) | `bunx skills add FixMyBerlin/fixmyskills --skill agent-orchestration -a cursor -y`                                       |
 | [user-changelog](skills/user-changelog/)                         | Weekly end-user release notes from Git (German output in `docs/user-changelog.md`, SHA boundaries)                        | `bunx skills add FixMyBerlin/fixmyskills --skill user-changelog -a cursor -y`                                            |
+
+### Deprecated skills
+
+Skills under [deprecated/](deprecated/) are archived and **not** installable. After an upstream removal, run `bunx skills update -p` (interactive) to be prompted to uninstall local copies — see [deprecated/README.md](deprecated/README.md).
 
 ## Install & update
 
