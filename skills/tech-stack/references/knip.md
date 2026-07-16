@@ -6,7 +6,7 @@ Load for unused deps/exports, tiered enforcement, or pre-push scaffold.
 
 ## Decisions (not in templates)
 
-- Not in `check`; scripts `knip` (strict, pre-push) + `knip-warn` (advisory) — [knip template](../examples/knip.config.mjs.template), [finish-work](../../finish-work/SKILL.md); names per [oxc-config.md](oxc-config.md)
+- Not in `check`; scripts `knip` (strict, pre-push) + `knip-warn` (advisory) — [knip template](../examples/knip.config.mjs.template), [finish-work](../../finish-work/SKILL.md); names per [package-json-scripts.md](package-json-scripts.md)
 - `knip-warn` still exits non-zero on missing/unlisted deps (always `error`); only exports/types/enumMembers are downgraded to warnings — so in `finish-work` treat its output as advisory regardless of exit code
 - Knip finds **your** unlisted imports; [phantom deps](bun-install.md) are bugs inside third-party `node_modules` (Bun global store)
 

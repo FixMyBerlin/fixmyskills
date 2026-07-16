@@ -19,6 +19,7 @@ Install sibling skills separately: `bunx skills add FixMyBerlin/fixmyskills --sk
 ## When to apply
 
 - Greenfield app scaffold (dependencies, tooling, folder layout)
+- Adding or renaming `package.json` scripts
 - Library or pattern choice (“should we use X?”)
 - Cross-cutting convention review on an existing app
 - Cursor MCP setup for Postgres schema inspection, agent DB queries, or browser exploration MCP
@@ -72,6 +73,7 @@ Prefer installed skill names when present; otherwise fetch from git.
 - **Cursor / VS Code:** install **TypeScript 7** (`TypeScriptTeam.native-preview` — marketplace ID unchanged). Enable via command palette **TypeScript: Enable TypeScript 7** or the settings template. Copy [examples/vscode.settings.typescript.json.template](examples/vscode.settings.typescript.json.template) into `.vscode/settings.json` (merge with oxc keys from [references/oxc-config.md](references/oxc-config.md)). Toggle back with **Disable TypeScript 7 Language Server** when editor plugins still require TS 6 (Vue, Astro, Svelte, Angular templates — see release notes).
 - **Tooling on TS 6 API:** TypeScript 7.0 has no programmatic compiler API. For typescript-eslint or similar, side-by-side TS 6 via `@typescript/typescript6` and npm aliases — see [release notes](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/#running-side-by-side-with-typescript-60).
 - **Cursor MCP (user-level):** `~/.cursor/mcp.json` only — [examples/mcp.json.template](examples/mcp.json.template). Postgres: [references/cursor-mcp.md](references/cursor-mcp.md). Browser exploration: [references/agent-browser-mcp.md](references/agent-browser-mcp.md). Never commit MCP config to a repo.
+- **Cursor rules (app-level):** copy [examples/package-json-scripts.mdc.template](examples/package-json-scripts.mdc.template) → `.cursor/rules/package-json-scripts.mdc` on scaffold — [references/package-json-scripts.md](references/package-json-scripts.md)
 
 **Verify:** `node -e "console.log(require('typescript/package.json').version)"`, `tsc --version`, and `bun run type-check` — all 7.x. In the editor, confirm **TypeScript 7** is enabled (status bar / command palette). Do not add `typescript` to repos that have no TS source (e.g. this skills monorepo).
 

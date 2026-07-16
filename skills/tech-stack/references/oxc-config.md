@@ -52,9 +52,7 @@ Requires oxlint with the `react` plugin enabled (see [examples/oxlint.config.mjs
 
 Do **not** add `eslint-plugin-react-compiler` — use native `react/react-compiler` in oxlint (see above).
 
-**scripts** — use `--fix --fix-dangerously` on write-mode lint so suggestion/dangerous fixes apply (e.g. removing unused imports). Plain `--fix` only applies safe fixes.
-
-**Script names:** kebab-case (`type-check`, `lint-check`, `knip-warn`). Reserve `:` for [Bun script groups](https://bun.sh/docs/cli/run#filtering) only (`dev:*`, `predev:*`).
+**scripts** — use `--fix --fix-dangerously` on write-mode lint so suggestion/dangerous fixes apply (e.g. removing unused imports). Plain `--fix` only applies safe fixes. Script names: [package-json-scripts.md](package-json-scripts.md).
 
 ```json
 {

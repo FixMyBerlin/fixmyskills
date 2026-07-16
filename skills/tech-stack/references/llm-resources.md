@@ -12,6 +12,7 @@ Load **only what the task needs** — do not preload the full list.
 - **nuqs** — <https://nuqs.dev/llms.txt>
 - **Zustand** — <https://zustand.docs.pmnd.rs/llms.txt>
 - **Bun** — [bun-install.md](bun-install.md) · [bun-install-verify.md](bun-install-verify.md) · <https://bun.com/llms.txt>
+- **package.json scripts** — [package-json-scripts.md](package-json-scripts.md)
 - **Vite** — <https://vite.dev/llms.txt>
 - **Vitest** — <https://vitest.dev/llms.txt>
 - **oxlint / oxfmt** — <https://oxc.rs/llms.txt>

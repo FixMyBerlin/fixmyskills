@@ -1,6 +1,6 @@
 /** @type {import('knip').KnipConfig} */
 // Copy to project-root knip.config.mjs — tune entry/ignoreBinaries per references/knip.md
-// package.json scripts (@see references/oxc-config.md — no ":" except Bun groups):
+// package.json scripts (@see references/package-json-scripts.md):
 //   "knip": "KNIP_STRICT=1 knip --config knip.config.mjs",
 //   "knip-warn": "knip --config knip.config.mjs",
 const strict = process.env.KNIP_STRICT === '1'
