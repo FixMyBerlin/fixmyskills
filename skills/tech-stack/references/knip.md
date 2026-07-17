@@ -4,11 +4,11 @@ Load for knip config, `knip` / `knip-warn` scripts, or husky pre-push scaffold.
 
 **Templates:** [knip.config](../examples/knip.config.mjs.template) · [husky pre-push](../examples/husky/pre-push.template) · [ensure-bun.sh](../examples/husky/ensure-bun.sh.template)
 
-**Verify orchestrators** (`check-pre-commit`, `check-pre-push`): [package-json-scripts.md](package-json-scripts.md).
+**Verify orchestrators** (`check`, `check-pre-push`): [package-json-scripts.md](package-json-scripts.md).
 
 ## Decisions (not in templates)
 
-- Knip runs via orchestrators only — not in mutating `check` or read-only `check-ci`
+- Advisory **`knip-warn`** (`|| true`) runs inside mutating **`check`**; strict **`knip`** runs in **`check-pre-push`** — not in read-only **`check-ci`**
 - [Phantom deps](bun-install.md) are bugs inside third-party `node_modules`; Knip catches **your** unlisted imports
 
 ## Customize the template

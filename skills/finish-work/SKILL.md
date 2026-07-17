@@ -1,10 +1,10 @@
 ---
 name: finish-work
 description: >-
-  FMC finish-work workflow: run bun run check-pre-commit, fix failures, commit
-  with a user-facing English message by default, and only show a draft when the
-  user clearly did not want a commit. Use for finish work, run checks, wrap up,
-  land changes, or create commits.
+  FMC finish-work workflow: run bun run check, fix failures, commit with a
+  user-facing English message by default, and only show a draft when the user
+  clearly did not want a commit. Use for finish work, run checks, wrap up, land
+  changes, or create commits.
 ---
 
 # Finish work
@@ -13,7 +13,7 @@ Run in the project root, or in each changed monorepo package (`app/`, `processin
 
 ## Workflow
 
-1. Verify: run `bun run check-pre-commit` if the script exists, else `bun run check`. Fix until green. `lint`/`format` may rewrite files.
+1. Verify: read `scripts.check` in `package.json`, run `bun run check`, fix the root cause, and rerun until green. `lint`/`format` may rewrite files.
 2. Keep fixes together: stage lint/format changes with the functional changes; never make a separate "lint" or "format" commit.
 3. Write the commit message using the format below.
 4. **Default: commit.** Run the commit path below unless the user clearly did not want a commit.
@@ -29,7 +29,7 @@ Safety: no push unless asked. No `--no-verify`. No amend of pushed commits. Do n
 
 Already committed and verify only fixed lint/format: `git commit --amend --no-edit` when HEAD has not been pushed; otherwise stage and ask before amending.
 
-E2E is not in `check-pre-commit`. For UI/routes/auth changes, also run `bun run e2e` (or `check-full` when defined). See [playwright-skill](../playwright-skill/SKILL.md).
+E2E is not in `check`. For UI/routes/auth changes, also run `bun run e2e` (or `check-full` when defined). See [playwright-skill](../playwright-skill/SKILL.md).
 
 Script names: [package-json-scripts.md](../tech-stack/references/package-json-scripts.md).
 

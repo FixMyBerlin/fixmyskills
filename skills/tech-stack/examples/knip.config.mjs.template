@@ -2,9 +2,9 @@
 // Copy to project-root knip.config.mjs — tune entry/ignoreBinaries per references/knip.md
 // Verify scripts (@see references/package-json-scripts.md):
 //   "knip": "KNIP_STRICT=1 knip --config knip.config.mjs",
-//   "knip-warn": "knip --config knip.config.mjs",
-//   "check-pre-commit": "bun run check && (bun run knip-warn || true)",
-//   "check-pre-push": "bun run check && bun run knip",
+//   "knip-warn": "knip --config knip.config.mjs || true",
+//   "check": "bun run --parallel type-check lint format test-run knip-warn",
+//   "check-pre-push": "bun run --parallel type-check lint format test-run knip",
 const strict = process.env.KNIP_STRICT === '1'
 
 export default {

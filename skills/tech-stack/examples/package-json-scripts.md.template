@@ -20,28 +20,23 @@ Use `:` only for **step scripts** that belong to a group run via `bun run --para
 
 One-off commands run directly — use kebab-case, no colon:
 
-- `migrate-check`, `setup-worktree`, `check-pre-commit`, `check-pre-push`
+- `type-check`, `lint-check`, `format-check`, `migrate-check`, `setup-worktree`, `check-pre-push`
 
 ## Verify scripts
 
 | Script | Role |
 | --- | --- |
-| `check` | Mutating — autofix lint/format + type-check + tests |
-| `check-ci` | Read-only CI — runs `check-ci:*` group |
-| `check-pre-commit` | finish-work skill — `check` + advisory knip |
-| `check-pre-push` | husky — `check` + strict knip |
+| `check` | finish-work — `--parallel type-check lint format test-run [knip-warn]` |
+| `check-ci` | Read-only CI — `--parallel type-check lint-check format-check test-run` |
+| `check-pre-push` | husky — parallel leaves (e.g. `type-check-deploy`, strict `knip`) |
 
 Full scaffold: tech-stack skill → `references/package-json-scripts.md`.
 
-## Prefer sequential groups over `&&`
+## Prefer parallel groups over `&&`
 
-Do **not** chain scripts with `&&`. Split steps into `<group>:<step>` and orchestrate with:
+Do **not** chain verify scripts with `&&` (e.g. `check && knip`). List leaf scripts in one `--parallel` orchestrator, or use `<group>:*` when a step has multiple paths.
 
-```json
-"seed": "bun run --sequential seed:*"
-```
-
-Use `&&` only inside a single step when the shell must run multiple commands as one atomic action (rare).
+Use `&&` only inside a single step when the shell must run multiple commands as one atomic action (rare — e.g. `type-check-deploy`).
 
 ## Examples
 
@@ -54,11 +49,15 @@ Use `&&` only inside a single step when the shell must run multiple commands as 
 "seed:1ensure-env": "bun scripts/predev/ensureEnv.ts",
 "seed:4migrate-reset": "bun --env-file=../.env --env-file=../.env.local prisma migrate reset --force",
 
+// ✅ Verify — reuse leaf scripts, no check-ci:* namespace
+"lint-check": "oxlint --deny-warnings -c oxlint.config.mjs .",
+"check-ci": "bun run --parallel type-check lint-check format-check test-run",
+
 // ✅ Standalone
 "migrate-check": "prisma migrate status",
 
-// ❌ && chain across scripts
-"seed": "bun run predev && prisma migrate reset --force && prisma db seed",
+// ❌ && chain across verify scripts
+"check-pre-push": "bun run check && bun run knip",
 
 // ❌ Colon step without a parallel/sequential parent
 "db:reset": "prisma migrate reset --force"

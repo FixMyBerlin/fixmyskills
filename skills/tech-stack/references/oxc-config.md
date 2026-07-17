@@ -52,25 +52,27 @@ Requires oxlint with the `react` plugin enabled (see [examples/oxlint.config.mjs
 
 Do **not** add `eslint-plugin-react-compiler` — use native `react/react-compiler` in oxlint (see above).
 
-**scripts** — use `--fix --fix-dangerously` on write-mode lint so suggestion/dangerous fixes apply (e.g. removing unused imports). Plain `--fix` only applies safe fixes. Verify orchestrators (`check`, `check-ci`, `check-pre-commit`, `check-pre-push`): [package-json-scripts.md](package-json-scripts.md).
+**scripts** — use `--fix --fix-dangerously` on write-mode lint so suggestion/dangerous fixes apply (e.g. removing unused imports). Plain `--fix` only applies safe fixes. Verify orchestrators (`check`, `check-ci`, `check-pre-push`): [package-json-scripts.md](package-json-scripts.md).
 
 ```json
 {
   "scripts": {
     "lint": "oxlint --fix --fix-dangerously --deny-warnings -c oxlint.config.mjs .",
+    "lint-check": "oxlint --deny-warnings -c oxlint.config.mjs .",
     "format": "oxfmt --write -c oxfmt.config.mjs .",
+    "format-check": "oxfmt --check -c oxfmt.config.mjs .",
     "check": "bun run --parallel type-check lint format test-run",
-    "check-ci": "bun run --parallel check-ci:*",
-    "check-ci:lint-check": "oxlint --deny-warnings -c oxlint.config.mjs .",
-    "check-ci:format-check": "oxfmt --check -c oxfmt.config.mjs ."
+    "check-ci": "bun run --parallel type-check lint-check format-check test-run"
   }
 }
 ```
 
 - **`bun run lint`** — fix and write; fails on remaining issues (`--deny-warnings` where used).
+- **`bun run lint-check`** — read-only; same rules, no `--fix`.
 - **`bun run format`** — oxfmt write; does not remove unused imports.
-- **`bun run check`** — mutating verify (autofix lint/format); composed by `check-pre-commit` / `check-pre-push`.
-- **`bun run check-ci`** — read-only CI verify; uses `check-ci:*` group, not write-mode `lint`/`format`.
+- **`bun run format-check`** — read-only oxfmt verify.
+- **`bun run check`** — mutating verify (autofix lint/format + type-check + tests).
+- **`bun run check-ci`** — read-only CI verify; reuses `lint-check` / `format-check` leaves, not write-mode `lint`/`format`.
 
 **VS Code / Cursor** — extension `oxc.oxc-vscode`, `oxc.typeAware: true`. Merge with TypeScript keys from [examples/vscode.settings.typescript.json.template](../examples/vscode.settings.typescript.json.template) (see [SKILL.md](../SKILL.md)).
 
