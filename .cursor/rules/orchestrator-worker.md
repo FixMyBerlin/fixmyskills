@@ -1,5 +1,5 @@
 ---
-description: Parent model orchestrates; Composer 2.5 subagents implement. For Fable 5, Sonnet 5, or GPT-5.6 Sol — apply with @orchestrator-worker.
+description: Parent model orchestrates; Composer 2.5 subagents implement. For Grok 4.5, Fable 5, Sonnet 5, or GPT-5.6 Sol — apply with @orchestrator-worker.
 alwaysApply: false
 ---
 

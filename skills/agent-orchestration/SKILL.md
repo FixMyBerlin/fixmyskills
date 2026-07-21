@@ -1,7 +1,7 @@
 ---
 name: agent-orchestration
 description: >-
-  Premium orchestrator (Fable 5, Sonnet 5, or GPT-5.6 Sol) with Composer 2.5
+  Orchestrator (Grok 4.5, Fable 5, Sonnet 5, or GPT-5.6 Sol) with Composer 2.5
   workers. Two separate setups: Cursor IDE (subagents in .cursor/agents) or Claude
   Code (cursor-agent CLI + .claude/skills). Use when configuring orchestration;
   pick the guide for your host.
