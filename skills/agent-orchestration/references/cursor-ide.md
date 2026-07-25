@@ -1,6 +1,6 @@
 # Agent orchestration — Cursor IDE
 
-A **premium orchestrator** (Grok 4.5, Fable 5, Sonnet 5, or GPT-5.6 Sol) plans in Cursor Agent chat. **Composer 2.5** workers run as subagents with explicit `model:` pins in `.cursor/agents/`.
+**Grok 4.5** (default orchestrator) plans in Cursor Agent chat. **`composer-2.5[fast=false]`** workers run as subagents with explicit `model:` pins in `.cursor/agents/`. Other orchestrators (Fable 5, Sonnet 5, GPT-5.6 Sol) work the same way.
 
 ---
 
@@ -43,33 +43,32 @@ Reset templates: re-run `init-cursor.sh` (overwrites).
 
 ## Picking an orchestrator
 
-| Model           | Good for                                                                                                                          |
-| --------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| **Grok 4.5**    | Long-running, multi-step work; Cursor's first-party orchestrator (shares included usage pool with Composer). Not available in EU. |
-| **Fable 5**     | Complex, long-running, multi-step agentic work; highest capability                                                                |
-| **Sonnet 5**    | Everyday coding with strong multi-step reasoning and reliable tool use                                                            |
-| **GPT-5.6 Sol** | Long-running agent work; can over-delegate on mid-sized tasks — keep one `/implementer` per cohesive task                         |
+| Model           | Good for                                                                                                                                       |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Grok 4.5** ⭐ | **Default.** Long-running, multi-step work; Cursor's first-party orchestrator (shares included usage pool with Composer). Not available in EU. |
+| **Fable 5**     | Complex, long-running, multi-step agentic work; highest capability                                                                             |
+| **Sonnet 5**    | Everyday coding with strong multi-step reasoning and reliable tool use                                                                         |
+| **GPT-5.6 Sol** | Long-running agent work; can over-delegate on mid-sized tasks — keep one `/implementer` per cohesive task                                      |
 
-Workers stay on **Composer 2.5** regardless of orchestrator choice.
+Workers stay on **`composer-2.5[fast=false]`** regardless of orchestrator choice.
 
 ---
 
 ## Daily usage
 
-1. Pick an orchestrator (Grok 4.5, Fable 5, Sonnet 5, or GPT-5.6 Sol).
-2. Start large tasks with **`@orchestrator-worker`**:
+1. Pick **Grok 4.5** as orchestrator (or Fable 5 / Sonnet 5 / GPT-5.6 Sol).
+2. Attach **`@orchestrator-worker`** and state your task — nothing else required:
 
 ```
 @orchestrator-worker
-
-Implement [feature]. You orchestrate only:
-- explore for discovery
-- /implementer for edits and tests
-- /verifier before declaring done
-Do not edit files yourself.
+Fix the parking map zoom bug.
 ```
 
-**Skip** trivial one-file edits — subagent startup costs more than inline work.
+The rule is the complete orchestration instruction. Do **not** paste delegation boilerplate ("orchestrate only", "omit Task model", etc.) — those live in `.cursor/rules/orchestrator-worker.md`.
+
+Workers use **`composer-2.5[fast=false]`** automatically via `.cursor/agents/` frontmatter.
+
+**Skip** `@orchestrator-worker` for trivial one-file edits — subagent startup costs more than inline work.
 
 ---
 
@@ -91,16 +90,31 @@ Orchestrator may inline only trivial fixes (~10 lines) or when user says "no sub
 
 ## Worker model pins
 
-`.cursor/agents/` frontmatter: `model: composer-2.5[fast=false]`. Verifier adds `readonly: true`. **Avoid** `inherit` or omitted model — bills at your orchestrator's rate. Parallel subagents = parallel token spend.
+`.cursor/agents/` frontmatter: `model: composer-2.5[fast=false]` (non-fast / standard Composer). Equivalent: `composer-2.5[]`. Verifier adds `readonly: true`. **Avoid** `inherit` on workers — bills at your orchestrator's rate.
 
-Cursor may fall back from a pinned worker model when blocked by admin, unavailable Max Mode, or plan limits.
+### Task tool vs frontmatter (common fast-mode bug)
+
+The Task tool's inline `model` parameter only exposes **`composer-2.5-fast`** for Composer. Passing any inline `model` on `/implementer` or `/verifier` **overrides** the frontmatter pin and forces fast — saying "slow" in the prompt does nothing.
+
+**Fix:** when spawning custom workers, use `subagent_type: implementer` or `verifier` and **omit `model` entirely**. The frontmatter pin then applies `composer-2.5[fast=false]`.
+
+| Spawn style                                    | `model` on Task call | Result                        |
+| ---------------------------------------------- | -------------------- | ----------------------------- |
+| `/implementer`, no inline model                | omitted              | `composer-2.5[fast=false]` ✅ |
+| Task + `model: composer-2.5-fast`              | set                  | **fast** ❌                   |
+| Task + `model: composer-2.5` or `[fast=false]` | set                  | rejected or unpredictable ❌  |
+| `generalPurpose` + inline Composer             | set                  | **fast** ❌                   |
+
+Built-in `explore` is for search only. Do **not** pass Task `model: composer-2.5-fast` (or any inline model) for explore, implementer, or verifier — omit `model` so workers keep `composer-2.5[fast=false]`.
+
+Parallel subagents = parallel token spend. Cursor may fall back from a pinned worker model when blocked by admin, unavailable Max Mode, or plan limits.
 
 ---
 
 ## Customize & verify
 
-- Edit copied files in the target repo (`verifier.md` check commands, rule delegation for MCP, etc.). Do **not** put orchestration in global Cursor User Rules — use `@orchestrator-worker` per task.
-- Verify: `@orchestrator-worker` in rule picker; `/implementer` and `/verifier` show `composer-2.5[fast=false]`; delegation prompt spawns workers instead of editing directly.
+- Edit copied files in the target repo (`verifier.md` check commands, rule delegation for MCP, etc.). Do **not** put orchestration in global Cursor User Rules — attach `@orchestrator-worker` per task (rule only; no boilerplate in the prompt).
+- Verify: `@orchestrator-worker` in rule picker; attaching it alone switches parent to orchestrate-only; `/implementer` and `/verifier` show `composer-2.5[fast=false]` in frontmatter; parent spawns them **without** Task inline `model`.
 
 ---
 
