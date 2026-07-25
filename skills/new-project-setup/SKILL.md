@@ -14,7 +14,7 @@ Orchestration only. Read sibling skills for how-to; this skill defines **order**
 
 ## Plan
 
-Ask: project name, copyright holder, app type (TanStack Start default), **maps?**
+Ask: project name, copyright holder, app type (**TanStack Start** default, or **TanStack Router SPA**), **maps?**
 
 Present the checklist below; confirm all **ask** items before executing.
 
@@ -34,15 +34,16 @@ Present the checklist below; confirm all **ask** items before executing.
 
 - `finish-work`, `tech-stack`, `agent-orchestration`
 - `react-dev` — TanStack/React; **skip** non-UI
-- `tanstack-start-conventions` — TanStack Start; **skip** other frameworks
+- `tanstack-router-conventions` — TanStack Router (SPA or Start); **skip** non-TanStack
+- `tanstack-start-conventions` — TanStack Start only; **skip** for Router SPA and other frameworks
 - `review-dependabot` — GitHub FMC; **skip** non-GitHub
 
 **Skills — ask**
 
 - `react-map-gl` — maps? (**skip** when no maps)
-- `tanstack-start-auth` — auth? · `playwright-skill` — E2E? · `prisma` — DB?
+- `tanstack-start-auth` — auth? (**skip** unless Start) · `playwright-skill` — E2E? · `prisma` — DB?
 - `zustand-state-management` — client global state? · `user-changelog` — public releases?
-- `rust-wasm-geo` — WASM geo? · `tanstack-better-upload` — S3 uploads?
+- `rust-wasm-geo` — WASM geo? · `tanstack-better-upload` — S3 uploads? (**skip** unless Start)
 
 **Dev tooling — default:** skill `tech-stack` (**skip** empty meta-repo). **Ask/report:** CI now or later; MCP → **report** `~/.cursor/mcp.json` only; `touch-ipad-review` → **report** on-demand.
 

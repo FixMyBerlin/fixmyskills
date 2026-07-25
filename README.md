@@ -6,24 +6,25 @@ Tilda-geo–specific skills (processing, topic-docs, static datasets, etc.) live
 
 ## Skills catalog
 
-| Skill                                                            | Description                                                                                                               | Command                                                                                                                  |
-| ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| [new-project-setup](skills/new-project-setup/)                   | Bootstrap a greenfield FMC repo — git, AGPL license, skills, orchestration, Bun tooling, finish-work commits              | `bunx skills add FixMyBerlin/fixmyskills --skill new-project-setup -a cursor -y`                                         |
-| [tech-stack](skills/tech-stack/)                                 | Default FMC stack for geo-heavy React SPAs — tooling, tsconfig, when to use sibling skills                                | `bunx skills add FixMyBerlin/fixmyskills --skill tech-stack -a cursor -y`                                                |
-| [review-dependabot](skills/review-dependabot/)                   | Review and merge Dependabot PRs — changelog triage, risk tiers, rebase merge                                              | `bunx skills add FixMyBerlin/fixmyskills --skill review-dependabot -a cursor -y`                                         |
-| [nuqs](skills/nuqs/)                                             | URL query state — prefer TanStack `validateSearch`; nuqs for Next.js / shared libs                                        | `bunx skills add FixMyBerlin/fixmyskills --skill nuqs -a cursor -y`                                                      |
-| [playwright-skill](skills/playwright-skill/)                     | TanStack Start E2E (TILDA patterns), smoke tests, stubbed auth, ad-hoc automation                                         | `bunx skills add FixMyBerlin/fixmyskills --skill playwright-skill -a cursor -y`<br>then `bun run setup` in the skill dir |
-| [react-dev](skills/react-dev/)                                   | React 19 + TypeScript, Compiler, oxlint, useEffect discipline; FMC TanStack Start — not routing/server                    | `bunx skills add FixMyBerlin/fixmyskills --skill react-dev -a cursor -y`                                                 |
-| [react-map-gl](skills/react-map-gl/)                             | react-map-gl/maplibre — MapProvider, layers, URL viewport, tilda-geo patterns                                             | `bunx skills add FixMyBerlin/fixmyskills --skill react-map-gl -a cursor -y`                                              |
-| [rust-wasm-geo](skills/rust-wasm-geo/)                           | Rust/WASM geo — Turf vs WASM, crates, wasm-bindgen, Vite for FMC geo-heavy apps                                           | `bunx skills add FixMyBerlin/fixmyskills --skill rust-wasm-geo -a cursor -y`                                             |
-| [tanstack-start-conventions](skills/tanstack-start-conventions/) | TanStack Start/Router: app layout, boundaries, Query loaders, SSR, API vs UI validation                                   | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-start-conventions -a cursor -y`                                |
-| [tanstack-start-auth](skills/tanstack-start-auth/)               | Better Auth config + TanStack Start routes, sessions, cookies (FMC/TILDA)                                                 | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-start-auth -a cursor -y`                                       |
-| [tanstack-better-upload](skills/tanstack-better-upload/)         | Better Upload direct-to-S3 in TanStack Start; optional react-dropzone for multi-file UX                                   | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-better-upload -a cursor -y`                                    |
-| [zustand-state-management](skills/zustand-state-management/)     | Zustand v5 conventions: `*-store.ts` layout, custom hooks, atomic selectors                                               | `bunx skills add FixMyBerlin/fixmyskills --skill zustand-state-management -a cursor -y`                                  |
-| [prisma](skills/prisma/)                                         | Prisma schema naming (models, relations), legacy renames, migrate workflows                                               | `bunx skills add FixMyBerlin/fixmyskills --skill prisma -a cursor -y`                                                    |
-| [finish-work](skills/finish-work/)                               | Pre-commit checks (`bun run check`) and FMC commit message format                                                         | `bunx skills add FixMyBerlin/fixmyskills --skill finish-work -a cursor -y`                                               |
-| [agent-orchestration](skills/agent-orchestration/)               | Premium orchestrator + Composer workers — separate Cursor IDE and Claude Code setup (`init-cursor.sh` / `init-claude.sh`) | `bunx skills add FixMyBerlin/fixmyskills --skill agent-orchestration -a cursor -y`                                       |
-| [user-changelog](skills/user-changelog/)                         | Weekly end-user release notes from Git (German output in `docs/user-changelog.md`, SHA boundaries)                        | `bunx skills add FixMyBerlin/fixmyskills --skill user-changelog -a cursor -y`                                            |
+| Skill                                                              | Description                                                                                                               | Command                                                                                                                  |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| [new-project-setup](skills/new-project-setup/)                     | Bootstrap a greenfield FMC repo — git, AGPL license, skills, orchestration, Bun tooling, finish-work commits              | `bunx skills add FixMyBerlin/fixmyskills --skill new-project-setup -a cursor -y`                                         |
+| [tech-stack](skills/tech-stack/)                                   | Default FMC stack for geo-heavy React SPAs — tooling, tsconfig, when to use sibling skills                                | `bunx skills add FixMyBerlin/fixmyskills --skill tech-stack -a cursor -y`                                                |
+| [review-dependabot](skills/review-dependabot/)                     | Review and merge Dependabot PRs — changelog triage, risk tiers, rebase merge                                              | `bunx skills add FixMyBerlin/fixmyskills --skill review-dependabot -a cursor -y`                                         |
+| [nuqs](skills/nuqs/)                                               | URL query state — prefer TanStack `validateSearch`; nuqs for Next.js / shared libs                                        | `bunx skills add FixMyBerlin/fixmyskills --skill nuqs -a cursor -y`                                                      |
+| [playwright-skill](skills/playwright-skill/)                       | TanStack Start E2E (TILDA patterns), smoke tests, stubbed auth, ad-hoc automation                                         | `bunx skills add FixMyBerlin/fixmyskills --skill playwright-skill -a cursor -y`<br>then `bun run setup` in the skill dir |
+| [react-dev](skills/react-dev/)                                     | React 19 + TypeScript, Compiler, oxlint, useEffect discipline; FMC TanStack Start — not routing/server                    | `bunx skills add FixMyBerlin/fixmyskills --skill react-dev -a cursor -y`                                                 |
+| [react-map-gl](skills/react-map-gl/)                               | react-map-gl/maplibre — MapProvider, layers, URL viewport, tilda-geo patterns                                             | `bunx skills add FixMyBerlin/fixmyskills --skill react-map-gl -a cursor -y`                                              |
+| [rust-wasm-geo](skills/rust-wasm-geo/)                             | Rust/WASM geo — Turf vs WASM, crates, wasm-bindgen, Vite for FMC geo-heavy apps                                           | `bunx skills add FixMyBerlin/fixmyskills --skill rust-wasm-geo -a cursor -y`                                             |
+| [tanstack-router-conventions](skills/tanstack-router-conventions/) | TanStack Router: validateSearch, pretty search URLs, loaders + Query, typed routes (SPA or Start)                         | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-router-conventions -a cursor -y`                               |
+| [tanstack-start-conventions](skills/tanstack-start-conventions/)   | TanStack Start: app layout, boundaries, server functions, SSR, API route validation (requires router skill)               | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-start-conventions -a cursor -y`                                |
+| [tanstack-start-auth](skills/tanstack-start-auth/)                 | Better Auth config + TanStack Start routes, sessions, cookies (FMC/TILDA)                                                 | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-start-auth -a cursor -y`                                       |
+| [tanstack-better-upload](skills/tanstack-better-upload/)           | Better Upload direct-to-S3 in TanStack Start; optional react-dropzone for multi-file UX                                   | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-better-upload -a cursor -y`                                    |
+| [zustand-state-management](skills/zustand-state-management/)       | Zustand v5 conventions: `*-store.ts` layout, custom hooks, atomic selectors                                               | `bunx skills add FixMyBerlin/fixmyskills --skill zustand-state-management -a cursor -y`                                  |
+| [prisma](skills/prisma/)                                           | Prisma schema naming (models, relations), legacy renames, migrate workflows                                               | `bunx skills add FixMyBerlin/fixmyskills --skill prisma -a cursor -y`                                                    |
+| [finish-work](skills/finish-work/)                                 | Pre-commit checks (`bun run check`) and FMC commit message format                                                         | `bunx skills add FixMyBerlin/fixmyskills --skill finish-work -a cursor -y`                                               |
+| [agent-orchestration](skills/agent-orchestration/)                 | Premium orchestrator + Composer workers — separate Cursor IDE and Claude Code setup (`init-cursor.sh` / `init-claude.sh`) | `bunx skills add FixMyBerlin/fixmyskills --skill agent-orchestration -a cursor -y`                                       |
+| [user-changelog](skills/user-changelog/)                           | Weekly end-user release notes from Git (German output in `docs/user-changelog.md`, SHA boundaries)                        | `bunx skills add FixMyBerlin/fixmyskills --skill user-changelog -a cursor -y`                                            |
 
 ### Deprecated skills
 
@@ -71,16 +72,23 @@ Install all skills from this repo:
 bunx skills add FixMyBerlin/fixmyskills --all -a cursor -y
 ```
 
-Install the TanStack Start stack skills (shared across FMC TanStack projects):
+Install the TanStack stack skills (shared across FMC TanStack projects):
 
 ```bash
+# SPA (Router only)
 bunx skills add FixMyBerlin/fixmyskills \
+  --skill tanstack-router-conventions \
+  -a cursor -y
+
+# TanStack Start (Router + Start)
+bunx skills add FixMyBerlin/fixmyskills \
+  --skill tanstack-router-conventions \
   --skill tanstack-start-conventions \
   --skill tanstack-start-auth \
   -a cursor -y
 ```
 
-TILDA Geo keeps the full project-specific doc in `docs/TanStack-Start-App-Structure-And-Conventions.md`; use `tanstack-start-conventions` for the portable summary.
+TILDA Geo keeps the full project-specific doc in `docs/TanStack-Start-App-Structure-And-Conventions.md`; use `tanstack-router-conventions` + `tanstack-start-conventions` for the portable summary.
 
 Local development when this repo is a sibling of your project:
 
