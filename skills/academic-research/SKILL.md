@@ -2,10 +2,10 @@
 name: academic-research
 description: >-
   Evidence-bound academic research focused on facts, quotes, and sources for a
-  specific question or topic. Uses Semantic Scholar, OpenAlex, BASE, DNB, and
-  citation-graph workflows. Use when the user asks to research a scholarly
-  question, do a literature review, find papers, verify claims with citations,
-  synthesize academic sources, or gather quotable evidence.
+  specific question or topic. Uses Semantic Scholar, OpenAlex, Crossref, BASE,
+  DNB, and citation-graph workflows. Use when the user asks to research a
+  scholarly question, do a literature review, find papers, verify claims with
+  citations, synthesize academic sources, or gather quotable evidence.
 ---
 
 # Academic research
@@ -24,6 +24,52 @@ Research a **specific question or topic** at university level. Output must be
    states vs. what you infer vs. what is missing.
 5. **Never invent citations.** If you cannot retrieve or open a source, mark it
    unverified and do not cite it as evidence.
+6. **Never treat training memory as retrieved evidence.** Only cite what you
+   fetched in this session (API, catalog, or opened full text).
+
+## Budgets (default)
+
+Stop expanding search unless the user asks for more:
+
+| Cap                       | Default                                   |
+| ------------------------- | ----------------------------------------- |
+| Discovery queries         | 4–6 total across APIs                     |
+| Candidates after triage   | 8–12                                      |
+| Deep-read / quote sources | 3–6                                       |
+| Citation-graph papers     | top 2–3                                   |
+| API retries on 429        | backoff once, then switch API (see below) |
+
+## Agent tools
+
+1. **Discovery / metadata:** `Shell` + `curl` (or equivalent HTTP) against the
+   APIs in [references/apis.md](references/apis.md). Prefer curl over guessing.
+2. **HTML landing pages / abstracts:** `WebFetch` when the API already gave a
+   stable URL.
+3. **PDFs:** download with curl to a temp file, then extract text (below). Do
+   not claim page quotes from metadata alone.
+4. **Keys:** read from env if set — never invent keys; never commit them.
+
+| Service          | Env var                    | Header / param     |
+| ---------------- | -------------------------- | ------------------ |
+| Semantic Scholar | `SEMANTIC_SCHOLAR_API_KEY` | header `x-api-key` |
+| OpenAlex         | `OPENALEX_API_KEY`         | query `api_key=`   |
+| BASE             | `BASE_API_KEY`             | query `apikey=`    |
+
+If a required key is missing and the unauthenticated path fails, say so and
+continue with the next API in the fallback order.
+
+## Fallback order
+
+1. **OpenAlex** — default discovery when no S2 key (search often 429s on the
+   shared pool).
+2. **Semantic Scholar** — citation graph + recommendations; use key if
+   available. On **429**: sleep ~2s once; if still 429, switch to OpenAlex for
+   search; keep S2 for single-paper / citations only if those still succeed.
+3. **Crossref** — DOI resolution / bibliographic confirmation.
+4. **BASE** — only with `BASE_API_KEY`; German/EU repositories & theses.
+5. **DNB** — German national bibliography / authority (no key).
+
+Do not block the whole research on one failing API.
 
 ## Conceptual workflow
 
@@ -34,7 +80,7 @@ Research progress:
 - [ ] 1. Frame the question
 - [ ] 2. Multi-perspective sub-questions
 - [ ] 3. Discover candidate sources (APIs / catalogs)
-- [ ] 4. Triage by relevance + impact (citations, venue, recency)
+- [ ] 4. Triage by relevance + impact
 - [ ] 5. Read / extract evidence (quotes, numbers, methods)
 - [ ] 6. Citation-graph pass (pioneers vs follow-ups)
 - [ ] 7. Adjudicate conflicts
@@ -43,13 +89,15 @@ Research progress:
 
 ### 1. Frame the question
 
-- Restate the user's question as a falsifiable research question.
+- Restate the user's question as a clear research question (empirical questions
+  should be answerable with evidence; conceptual/historical ones with scoped
+  claims).
 - Define scope: field, geography/language (e.g. DE vs EN), time window, OA-only.
 - List inclusion/exclusion criteria before searching.
 
 ### 2. Multi-perspective sub-questions
 
-Generate 3–6 angles before deep reading (inspired by STORM-style coverage), e.g.:
+Generate 3–6 angles before deep reading, e.g.:
 
 - definition / state of the art
 - methods & measurement
@@ -59,27 +107,47 @@ Generate 3–6 angles before deep reading (inspired by STORM-style coverage), e.
 
 Search and answer **per sub-question**, then merge.
 
-### 3–4. Discover and triage
+### 3. Discover candidate sources
 
-Use scholarly APIs first (not general web search alone). See
-[references/apis.md](references/apis.md) for endpoints and non-obvious tips.
+Use scholarly APIs first (not general web search alone). Details:
+[references/apis.md](references/apis.md).
 
-Triage signals (use together; none alone is enough):
+Typical pass: OpenAlex search → hydrate top hits → optional S2 citation graph
+on the best 2–3 → Crossref if DOI metadata is thin → BASE/DNB only if DE
+catalogs matter.
 
-| Signal            | Use for                                |
-| ----------------- | -------------------------------------- |
-| Citation count    | Impact / landmark vs niche             |
-| Year              | Currency; pair with citations          |
-| Venue / type      | Peer-reviewed vs preprint vs thesis    |
-| Open access / PDF | Ability to quote from full text        |
-| Citation graph    | Pioneer paper vs incremental follow-up |
+### 4. Triage by relevance + impact
 
-### 5. Extract evidence
+| Signal                | Use for                                |
+| --------------------- | -------------------------------------- |
+| Citation count        | Impact / landmark vs niche             |
+| Year                  | Currency; pair with citations          |
+| Venue / type          | Peer-reviewed vs preprint vs thesis    |
+| Open access / PDF URL | Ability to quote from full text        |
+| Citation graph        | Pioneer paper vs incremental follow-up |
 
-From abstracts first; open full text (OA PDF) when quoting methods, numbers, or
-nuanced claims.
+Keep 8–12 candidates; deep-read 3–6.
 
-For each kept source, capture in a markdown table:
+### 5. Extract evidence (quotes)
+
+1. Capture abstract-level claims from API fields first; mark location `abstract`.
+2. Resolve a PDF URL: S2 `openAccessPdf.url`, or OpenAlex
+   `best_oa_location.pdf_url` / `open_access.oa_url`.
+3. If no PDF: quote only from abstract/API text, or mark claim as
+   metadata-only (weaker).
+4. If PDF available:
+
+```bash
+curl -fsSL -o /tmp/paper.pdf 'PDF_URL'
+# Prefer pdftotext when installed; else python pypdf/pdfplumber if available
+pdftotext -layout /tmp/paper.pdf - | head -n 200
+```
+
+For complex multi-column layouts, see [references/frameworks.md](references/frameworks.md)
+(Docling). Do not invent page numbers — use `abstract` or § headings if pages
+are unknown.
+
+Per kept source, fill:
 
 | Field         | Content                                          |
 | ------------- | ------------------------------------------------ |
@@ -87,18 +155,17 @@ For each kept source, capture in a markdown table:
 | Bibliographic | Authors, year, title, venue                      |
 | Claim         | One atomic claim in your words                   |
 | Quote / data  | Verbatim quote or exact statistic                |
-| Location      | Page, section, or "abstract"                     |
+| Location      | Page, section, or `abstract`                     |
 | Limits        | Sample size, bias, scope limits noted by authors |
 
-**Markdown-first:** put quantitative values (n, p, CI, effect sizes) in tables —
-accuracy is higher than free prose.
+**Markdown-first:** put n, p, CI, effect sizes in tables.
 
 ### 6. Citation-graph pass
 
-For the 2–5 most important papers:
+For the top 2–3 papers (Semantic Scholar):
 
-- Who do they cite? → likely foundations / pioneers
-- Who cites them highly? → extensions, replications, critiques
+- `/references` → foundations (parse `citedPaper`)
+- `/citations` → extensions / critiques (parse `citingPaper`)
 
 Distinguish **pioneer** vs **follow-up** before treating a paper as definitive.
 
@@ -113,12 +180,10 @@ When sources conflict:
 
 ### 8. Methodology critic (when empirical)
 
-Briefly check Methods for: design, sample size, significance / uncertainty,
-confounds, generalizability. Flag weak evidence explicitly.
+Check Methods for: design, sample size, significance / uncertainty, confounds,
+generalizability. Flag weak evidence explicitly.
 
 ## Output format
-
-Deliver in this structure (adapt depth to the question):
 
 ```markdown
 # [Research question]
@@ -148,17 +213,13 @@ What the literature does not settle.
 
 ## Search log (brief)
 
-APIs, queries, filters, date of search — enough to reproduce.
+APIs, queries, filters, HTTP failures (e.g. 429), date of search — enough to reproduce.
 ```
 
 ## Tooling priorities
 
-1. **Metadata + discovery:** Semantic Scholar, OpenAlex (global); BASE, DNB (DE / catalogs).
-2. **Full text:** OA PDF links from APIs; layout-aware parsing when PDFs are complex.
-3. **Do not** treat training-memory papers as retrieved evidence.
+1. **Metadata + discovery:** OpenAlex, Semantic Scholar, Crossref; BASE, DNB (DE).
+2. **Full text:** OA PDF URLs from APIs → extract text → quote.
+3. **Optional deeper tooling:** [references/frameworks.md](references/frameworks.md).
 
-API details, example calls, auth, and rate-limit tips:
-→ [references/apis.md](references/apis.md)
-
-Optional frameworks (deeper multi-agent research systems):
-→ [references/frameworks.md](references/frameworks.md)
+API details → [references/apis.md](references/apis.md)
