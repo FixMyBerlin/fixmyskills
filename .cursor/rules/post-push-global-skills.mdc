@@ -1,0 +1,14 @@
+---
+description: After a successful git push, refresh global skills
+alwaysApply: true
+---
+
+# Post-push global skills
+
+After a **successful** `git push` to origin, run:
+
+```bash
+bunx skills update -g -y
+```
+
+Skip if the push failed. Report the update result briefly.
