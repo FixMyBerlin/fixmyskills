@@ -114,6 +114,7 @@ Parallel subagents = parallel token spend. Cursor may fall back from a pinned wo
 ## Customize & verify
 
 - Edit copied files in the target repo (`verifier.md` check commands, rule delegation for MCP, etc.). Do **not** put orchestration in global Cursor User Rules — attach `@orchestrator-worker` per task (rule only; no boilerplate in the prompt).
+- Optional one-liner in `AGENTS.md`: point at `.cursor/rules/orchestrator-worker.md` (`@orchestrator-worker`) — not this long guide.
 - Verify: `@orchestrator-worker` in rule picker; attaching it alone switches parent to orchestrate-only; `/implementer` and `/verifier` show `composer-2.5[fast=false]` in frontmatter; parent spawns them **without** Task inline `model`.
 
 ---

@@ -2,7 +2,7 @@
 
 Shared [Cursor Agent Skills](https://cursor.com/docs/context/skills) for FixMyBerlin / FMC projects.
 
-Tilda-geo–specific skills (processing, topic-docs, static datasets, etc.) live in the [tilda-geo](https://github.com/FixMyBerlin/tilda-geo) repo under `.cursor/skills/`, not here.
+Repo-specific skills (e.g. tilda-geo processing, topic-docs, static datasets, local isolation) live in that project under `.cursor/skills/`, not here. Those are on-demand playbooks — everyday coding conventions stay in the project’s `AGENTS.md`.
 
 ## Skills catalog
 
