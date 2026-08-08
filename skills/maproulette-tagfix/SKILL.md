@@ -35,7 +35,7 @@ stream.write(`${rs}${JSON.stringify(taskFeatureCollection)}\n`)
 
 **Because:** MapRoulette matches rebuilds and editor preselect on that external ID. Wrong or mismatched IDs → duplicates or broken Tag Fixes.
 
-**Do not:** use a bare numeric OSM id, or a different string in `cooperativeWork` than on the feature.
+**Do not:** use a bare numeric OSM id, a different string in `cooperativeWork` than on the feature, or `{{osmIdentifier}}` in instructions — use `properties.id` and `{{id}}` only (`osmIdentifier` is a legacy name in some older feeds).
 
 ## 3. Build Tag Fix `cooperativeWork` (because that is the proposed change)
 
@@ -49,7 +49,7 @@ stream.write(`${rs}${JSON.stringify(taskFeatureCollection)}\n`)
     "data": {
       "id": "way/123",
       "operations": [
-        { "operation": "setTags", "data": { "cycleway:both": "no" } },
+        { "operation": "setTags", "data": { "cycleway:both": "no", "source": "official data" } },
         { "operation": "unsetTags", "data": ["old_tag"] }
       ]
     }
@@ -58,8 +58,10 @@ stream.write(`${rs}${JSON.stringify(taskFeatureCollection)}\n`)
 ```
 
 - `meta.type: 1` = Tag Fix (approve/reject in MR; MapRoulette writes to OSM). `type: 2` = OSC cooperative (JOSM).
-- Only encode the **delta** tags, not a full element snapshot.
-- Geometry/features are for the map pin only — they are **not** sent as the edit; only `cooperativeWork` is.
+- Only encode **pending** tag changes — not tags already on OSM. The Tag Fix UI may list current tags; `cooperativeWork` must still be delta-only.
+- One `setTags` can set several keys on one element. Use `unsetTags` when removing tags (with tag names in the array) — **omit** empty `unsetTags: []`.
+- Geometry is for the map pin only (`Point` or `LineString`); it is **not** sent as the edit — only `cooperativeWork` is.
+- When Tag Fix auto-writes to OSM from official or third-party data, filter tasks by licence/compatibility before export — do not propose tags the data licence does not allow.
 
 ## 4. Wire `task_markdown` + challenge instruction (because body text is Mustache-templated)
 
@@ -87,7 +89,9 @@ properties: {
 
 ## 5. Point the challenge at remote GeoJSON, then rebuild to update
 
-**Do — create/update challenge:** set `remoteGeoJson` to your data URL (or upload line-by-line GeoJSON).
+**Do — create/update challenge:** set `remoteGeoJson` to your data URL, or upload line-by-line GeoJSON. A static file (e.g. GitHub Pages, `public/…` regenerated in CI) works the same as a live API — MapRoulette fetches the URL on rebuild.
+
+**Do — Tag Fix layout:** include `TagDiffWidget` in `taskWidgetLayout` so mappers get approve/reject tag diffs in the task UI.
 
 **Do — refresh tasks after source data changes** (shell / GitHub Actions step):
 
@@ -103,14 +107,17 @@ curl --fail -sS -X PUT \
 
 Or UI: Challenge → Rebuild (optionally “remove incomplete first”).
 
-**Because:** create/update only changes challenge metadata; tasks are (re)built from the GeoJSON source. Stable `type/id` IDs let MapRoulette match existing tasks instead of duplicating. `removeUnmatched=true` drops incomplete tasks no longer in the feed.
+**Because:** create/update only changes challenge metadata; tasks are (re)built from the GeoJSON source. The feed can refresh more often than you rebuild — schedule rebuilds when MR should pick up new tasks. Stable `type/id` IDs let MapRoulette match existing tasks instead of duplicating. `removeUnmatched=true` drops incomplete tasks no longer in the feed.
+
+**Optional — mixed priority:** set `properties.priority` (e.g. `prio1`, `prio2`) and matching challenge priority rules when one challenge mixes high- and low-value fixes.
 
 ## Checklist
 
 - [ ] Line-by-line FeatureCollections with `\x1E` prefix
 - [ ] Same string `type/id` on `properties.id`, `cooperativeWork…data.id`, and ideally `feature.id`
 - [ ] `cooperativeWork.meta` = `{ version: 2, type: 1 }`
-- [ ] Challenge instruction starts with `## Kontext {{id}}` then `{{task_markdown}}`
+- [ ] `cooperativeWork` is delta-only; no empty `unsetTags`
+- [ ] Challenge instruction starts with `## Kontext {{id}}` then `{{task_markdown}}` (not `{{osmIdentifier}}`)
 - [ ] Newlines in `task_markdown` normalized with `.replaceAll('\n', ' \n')`
 - [ ] After data change: rebuild (API or UI), not only challenge PUT
 

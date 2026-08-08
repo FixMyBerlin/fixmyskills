@@ -25,7 +25,7 @@ const cooperativeWork = {
         id: osmId, // Tag Fix target — must match
         operations: [
           { operation: 'setTags', data: { 'cycleway:both': 'no' } },
-          { operation: 'unsetTags', data: [] },
+          // unsetTags only when removing tags — omit empty arrays
         ],
       },
     },
