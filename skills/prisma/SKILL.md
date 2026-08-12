@@ -33,6 +33,7 @@ Use for FMC `schema.prisma` work. Relation field names are Prisma Client API nam
 ## Audit Rules
 
 - Strongly prefer `createdBy` and `updatedBy` relations on user-edited tables.
+- Each always pairs with a FK scalar (`createdById` / `updatedById`): the `*Id` is the DB column; the relation is Prisma Client-only for joins (`include` / `.osmName`) — not a second stored field.
 - If table changes need an audit trail beyond `createdBy` / `updatedBy`, use [`@explita/prisma-audit-log`](https://www.npmjs.com/package/@explita/prisma-audit-log) with audit context instead of inventing ad hoc log tables.
 
 ## Workflows
