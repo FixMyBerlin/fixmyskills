@@ -54,7 +54,7 @@ Prefer installed skill names when present; otherwise fetch from git.
 
 ## Runtime and build
 
-- **Runtime / package manager:** [Bun](https://bun.sh) — install policy [bun-install.md](references/bun-install.md) (≥ 1.3.14, global store, Vite dev)
+- **Runtime / package manager:** [Bun](https://bun.sh) — install policy [bun-install.md](references/bun-install.md) (≥ 1.3.14, global store, `bun --bun` for Vite, `.nvmrc` for Prisma/Playwright)
 - **Build:** latest Vite (8+)
 - **Lint / format:** oxlint and oxfmt with fix flags; Prettier-compatible defaults:
   - class sorting, import sorting, `package.json` sorting
