@@ -45,7 +45,7 @@ Present the checklist below; confirm all **ask** items before executing.
 - `zustand-state-management` — client global state? · `user-changelog` — public releases?
 - `rust-wasm-geo` — WASM geo? · `tanstack-better-upload` — S3 uploads? (**skip** unless Start)
 
-**Dev tooling — default:** skill `tech-stack` (**skip** empty meta-repo). **Ask/report:** CI now or later; MCP → **report** `~/.cursor/mcp.json` only; `touch-ipad-review` → **report** on-demand.
+**Dev tooling — default:** skill `tech-stack` (**skip** empty meta-repo). **Ask/report:** CI now or later; MCP → **report** `~/.cursor/mcp.json` only; `touch-ipad-review` / `cleanup-llm-changes` → **report** on-demand.
 
 ## Run order
 
