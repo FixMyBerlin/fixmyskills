@@ -14,13 +14,13 @@ Make the contract clear so we do not over-check for every possible case. Look at
 
 | Do                                                         | Do not                                               |
 | ---------------------------------------------------------- | ---------------------------------------------------- |
-| Schema the fields the producer actually writes             | `.optional()` / nullable / union “just in case”      |
+| Schema the fields the producer actually writes             | `.optional()` / nullable / union "just in case"      |
 | `z.object({ token: z.string() })` when that is the JSON    | `z.record(z.unknown())` then extra runtime narrowing |
 | Reuse one schema; `z.infer<typeof Schema>` at the boundary | Duplicate TS interfaces _and_ a looser schema        |
 | `safeParse` when you must return 4xx / fallback            | `parse` then catch-all that hides contract bugs      |
 | Zod 4 APIs from current docs (`import { z } from 'zod'`)   | Zod 3-only APIs, `@tanstack/zod-adapter`             |
 
-**Example:** `tokenFromAuthJson` — if our code writes `{ token: string }`, schema that. Do not also accept `access_token`, nested `data.session`, or empty objects unless something in **this** repo still produces them.
+**Example:** `tokenFromAuthJson`. If our code writes `{ token: string }`, schema that. Do not also accept `access_token`, nested `data.session`, or empty objects unless something in **this** repo still produces them.
 
 ## Why-not (record, do not convert)
 
