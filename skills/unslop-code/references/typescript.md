@@ -1,4 +1,4 @@
-# TypeScript (cleanup-llm-changes)
+# TypeScript (unslop-code)
 
 Phase 2. Prefer inference. Fix the type at the value, not with a cast.
 

@@ -1,4 +1,4 @@
-# Worker briefs (cleanup-llm-changes)
+# Worker briefs (unslop-code)
 
 Orchestrator: paste the matching brief into `/implementer`. Fill `<base>` (`develop` or `main`), repo root, and skill name. Each implementer runs [finish-work](../../finish-work/SKILL.md) for **one** commit when it changed files; skip commit when there is nothing to land.
 
@@ -12,7 +12,7 @@ Find runtime validation and hand-rolled type checks vs `<base>`. Also repo-wide:
 
 ## Implementer: Phase 1 (Zod)
 
-Read skill `cleanup-llm-changes` → `references/zod-audit.md` and https://zod.dev/llms.txt.
+Read skill `unslop-code` → `references/zod-audit.md` and https://zod.dev/llms.txt.
 
 In general all type checking should be done with Zod 4. Replace boundary validation with Zod 4. Make the contract clear so we do not over-check for every possible case. Look at what the input actually is from what we know about the data.
 
@@ -32,7 +32,7 @@ rg -n -g '*.ts' -g '*.tsx' -e ' as ' -e 'satisfies ' -e 'else if' -e 'default:'
 
 ## Implementer: Phase 2 (TypeScript)
 
-Read skill `cleanup-llm-changes` → `references/typescript.md`.
+Read skill `unslop-code` → `references/typescript.md`.
 
 Remove explicit return types unless the code gets too complex without them. Prefer inferred types; force types in place (const, param, `satisfies`) if needed. Remove `as` unless too complex without them; fix the issue at the root. Prefer `satisfies` over `as`. Prefer `switch` over `if` / `else if` on a union. Trust TS exhaustiveness: no `default` and no fake default.
 
@@ -92,7 +92,7 @@ Stay inside that skill's scope. finish-work commit this pass only.
 
 ---
 
-## Explore: Phase 6 (unslop)
+## Explore: Phase 6 (unslop-text)
 
 Diff vs `<base>`: comments, JSDoc, new/changed markdown, user-facing strings. Flag restating comments, AI vocabulary, em dashes, emoji in headings, curly quotes, chatbot phrases. Do not edit.
 
@@ -100,11 +100,11 @@ Diff vs `<base>`: comments, JSDoc, new/changed markdown, user-facing strings. Fl
 rg -n -g '*.ts' -g '*.tsx' -g '*.md' -e 'TODO' -e 'NOTE:' -e 'IMPORTANT:' -e 'simply' -e 'leverage' -e 'robust'
 ```
 
-## Implementer: Phase 6 (unslop)
+## Implementer: Phase 6 (unslop-text)
 
-Read skill `cleanup-llm-changes` → `references/unslop.md`. If pstack `unslop` is installed, read that too.
+Read skill `unslop-text`. Apply it to comments, JSDoc, markdown, and user-facing strings in the branch. Do not restructure code. Do not rewrite the whole docs tree.
 
-Cut AI tells from comments, JSDoc, markdown, and user-facing strings in the branch. Preserve meaning. FMC tone: dry and specific. Do not add soul. Do not restructure code.
+Keep legal/attribution text, intentional German UI copy, and comments that name a MapLibre/React quirk with a link.
 
 Then finish-work commit this phase only.
 

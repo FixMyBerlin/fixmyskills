@@ -1,18 +1,19 @@
 ---
-name: cleanup-llm-changes
+name: unslop-code
 description: >-
   Orchestrated cleanup of LLM leftovers in an FMC app: Zod 4 at runtime
   boundaries, delete pass-through re-exports, drop unneeded legacy/migration
   shims, TypeScript inference (no extra return types or `as`), skill-aligned
   code-review passes (react-dev, react-map-gl, tanstack-router-conventions,
-  tech-stack, zustand), then unslop comments and docs. Use when the user asks
-  to cleanup LLM changes, post-agent cleanup, or to tidy a branch after
-  agent/refactor work.
+  tech-stack, zustand), then unslop-text on comments and docs in the branch.
+  Use when the user asks to cleanup LLM changes, post-agent cleanup, unslop
+  code, or to tidy a branch after agent/refactor work. Formerly
+  cleanup-llm-changes.
 user-invocable: true
 disable-model-invocation: true
 ---
 
-# Cleanup LLM changes
+# Unslop code
 
 Orchestrate only. Follow [agent-orchestration](../agent-orchestration/SKILL.md) / `@orchestrator-worker`. Do not implement, grep the tree yourself, or commit. Spawn workers.
 
@@ -54,9 +55,9 @@ Current workspace git repo.
 - [ ] Phase 5c: react-map-gl (skip if no maps)
 - [ ] Phase 5d: tanstack-router-conventions (skip if no Router)
 - [ ] Phase 5e: zustand-state-management (skip if no Zustand)
-- [ ] Phase 6: Unslop comments, docs, and copy
+- [ ] Phase 6: unslop-text on comments, docs, and copy
 - [ ] Secondary changes listed
-- [ ] Chat summary (unslopped)
+- [ ] Chat summary (unslop-text)
 ```
 
 ---
@@ -145,13 +146,13 @@ Worker brief shape (substitute the skill name):
 
 ---
 
-## Phase 6: Unslop
+## Phase 6: unslop-text
 
-After the code phases, cut AI tells from **comments, JSDoc, markdown, and user-facing strings** in the branch. Load [references/unslop.md](references/unslop.md). If pstack `unslop` is installed, read that too for the full pattern list.
+After the code phases, apply [unslop-text](../unslop-text/SKILL.md) to **comments, JSDoc, markdown, and user-facing strings** in the branch (diff vs `<base>` plus leftover LLM comments in touched files). Do not rewrite the whole docs tree. Do not restructure code in this phase.
 
-Rewrite. Preserve meaning. Match FMC tone (dry, specific). Do not "add soul." Do not restructure code in this phase.
+**Keep:** legal/attribution text; intentional German UI copy; a comment that names a MapLibre/React quirk with a link.
 
-Commit this phase on its own. The orchestrator chat summary follows the same rules.
+Commit this phase on its own. The orchestrator chat summary follows unslop-text too.
 
 ---
 
@@ -166,13 +167,13 @@ Running list (orchestrator owns it). Include: location, what the worker wanted, 
 3. **Phase 3 Re-exports:** removed shims; kept barrels (why)
 4. **Phase 4 Legacy:** removed vs kept (why required)
 5. **Phase 5 Skill reviews:** per skill: committed / skipped / asked
-6. **Phase 6 Unslop:** comments/docs rewritten or deleted
+6. **Phase 6 unslop-text:** comments/docs rewritten or deleted
 7. **Commits:** SHAs + subjects
 8. **Secondary changes:** the full list (or "none")
 9. **Follow-ups:** checks still red, open AskQuestion items
 
-Write this summary in plain speech. No puffery, no chatbot closer.
+Write this summary following [unslop-text](../unslop-text/SKILL.md).
 
 ## Related
 
-[agent-orchestration](../agent-orchestration/SKILL.md) · [finish-work](../finish-work/SKILL.md) · [tech-stack](../tech-stack/SKILL.md) · [react-dev](../react-dev/SKILL.md) · [react-map-gl](../react-map-gl/SKILL.md) · [tanstack-router-conventions](../tanstack-router-conventions/SKILL.md) · [zustand-state-management](../zustand-state-management/SKILL.md) · [typescript.md](references/typescript.md) · [unslop.md](references/unslop.md)
+[unslop-text](../unslop-text/SKILL.md) · [agent-orchestration](../agent-orchestration/SKILL.md) · [finish-work](../finish-work/SKILL.md) · [tech-stack](../tech-stack/SKILL.md) · [react-dev](../react-dev/SKILL.md) · [react-map-gl](../react-map-gl/SKILL.md) · [tanstack-router-conventions](../tanstack-router-conventions/SKILL.md) · [zustand-state-management](../zustand-state-management/SKILL.md) · [typescript.md](references/typescript.md)
