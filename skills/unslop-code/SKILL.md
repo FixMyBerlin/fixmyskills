@@ -40,15 +40,29 @@ Copy worker prompts from [references/worker-briefs.md](references/worker-briefs.
 
 Current workspace git repo.
 
-- Diff vs `develop` (or `main` if that is the base) **and** repo-wide greps for the anti-patterns in each phase.
+- `<base>` is `develop`, or `main` if that is the base. Always diff **`<base>...HEAD`** (merge-base), never `<base>` alone — a two-dot diff reports commits that landed on `<base>` after the branch started and workers will "clean up" code they never wrote.
+- Branch diff **and** repo-wide greps for the anti-patterns in each phase.
+- Repo-wide greps are for discovery. Before a worker reads a repo-wide hit list, intersect it with the branch files (`git diff --name-only <base>...HEAD`) and hand over the branch hits first. Off-branch hits are Secondary unless the phase says otherwise.
 - Skip a later skill pass when tech-stack shows that stack is unused (no maps → skip `react-map-gl`; no Zustand → skip `zustand-state-management`; no TanStack Router → skip `tanstack-router-conventions`).
 - **AskQuestion** when a proposed edit would change runtime behavior **or** when a clear answer would unlock a cleanup: deploy status (4b), colocate vs shared (6), a decision lift (7), or whether this PR is merge-ready (9). Workers propose questions; you ask. Do not ship a behavior change without asking.
 - Every question must stand alone: name the file/route and what the code does today, the options and what each simplifies or costs, and why the answer is needed now. No vague “should we refactor X?”
 - Other judgment calls (style, optional refactors, "maybe") go to **Secondary changes**. Decision-hierarchy items that need design go to **Decision-lift follow-ups**. Do not apply them. The orchestrator keeps both lists.
 
+## Preflight
+
+Before Phase 1, in this order:
+
+1. Resolve `<base>` (`git remote show origin`, or the PR base) and confirm the range is non-empty: `git log --oneline <base>...HEAD`.
+2. Confirm the working tree is clean. Uncommitted work is not yours to commit — **AskQuestion**: commit it first, stash it, or stop.
+3. Note the current HEAD SHA in chat. It is the rollback point if a phase goes wrong.
+4. Run the repo's check command once (`bun run check`) to record the **starting** state. If it is already red, say so up front so a later red is not blamed on this cleanup.
+
+A phase whose checks stay red after one fix attempt gets reverted, not patched further: drop the phase, record it as a follow-up, and move on. Never commit a red phase to keep the sequence going.
+
 ## Checklist
 
 ```
+- [ ] Preflight: base resolved, tree clean, starting check state recorded
 - [ ] Phase 1: Zod 4 runtime validation
 - [ ] Phase 2: TypeScript inference, `as` / `satisfies`, exhaustive switch
 - [ ] Phase 3: Pass-through re-exports
@@ -203,7 +217,7 @@ Skip when the repo has no app tree. Commit this phase on its own.
 
 Replace generic `div`/`span` wrappers with native elements where the meaning is clear. Similar components keep a similar structure. After a shared change, consuming pages must still have a logical outline (one `h1`, no skipped levels, no second `main`).
 
-Load [references/semantic-html.md](references/semantic-html.md). Skip when Phase 5a shows no UI TSX.
+Load [references/semantic-html.md](references/semantic-html.md). Skip when the branch touches no UI TSX.
 
 Not an a11y audit. Keep layout-only `div`/`span`. Ambiguous restyles go to Secondary.
 
@@ -257,10 +271,10 @@ Running list (orchestrator owns it). Items from Phase 7 that need a real plan: l
 12. **Commits:** SHAs + subjects
 13. **Secondary changes:** the full list (or "none")
 14. **Decision-lift follow-ups:** the full list (or "none")
-15. **Follow-ups:** checks still red, open AskQuestion items
+15. **Follow-ups:** phases reverted and why, checks still red, open AskQuestion items
 
 Write this summary following [unslop-text](../unslop-text/SKILL.md).
 
 ## Related
 
-[unslop-text](../unslop-text/SKILL.md) · [agent-orchestration](../agent-orchestration/SKILL.md) · [finish-work](../finish-work/SKILL.md) · [tech-stack](../tech-stack/SKILL.md) · [react-dev](../react-dev/SKILL.md) · [react-map-gl](../react-map-gl/SKILL.md) · [tanstack-router-conventions](../tanstack-router-conventions/SKILL.md) · [tanstack-start-conventions](../tanstack-start-conventions/SKILL.md) · [zustand-state-management](../zustand-state-management/SKILL.md) · [prisma](../prisma/SKILL.md) · [typescript.md](references/typescript.md) · [undeployed-wip.md](references/undeployed-wip.md) · [component-location.md](references/component-location.md) · [decision-lift.md](references/decision-lift.md) · [semantic-html.md](references/semantic-html.md) · [leftover-process.md](references/leftover-process.md)
+[unslop-text](../unslop-text/SKILL.md) · [agent-orchestration](../agent-orchestration/SKILL.md) · [finish-work](../finish-work/SKILL.md) · [tech-stack](../tech-stack/SKILL.md) · [react-dev](../react-dev/SKILL.md) · [react-map-gl](../react-map-gl/SKILL.md) · [tanstack-router-conventions](../tanstack-router-conventions/SKILL.md) · [tanstack-start-conventions](../tanstack-start-conventions/SKILL.md) · [zustand-state-management](../zustand-state-management/SKILL.md) · [prisma](../prisma/SKILL.md) · [worker-briefs.md](references/worker-briefs.md) · [zod-audit.md](references/zod-audit.md) · [typescript.md](references/typescript.md) · [undeployed-wip.md](references/undeployed-wip.md) · [component-location.md](references/component-location.md) · [decision-lift.md](references/decision-lift.md) · [semantic-html.md](references/semantic-html.md) · [leftover-process.md](references/leftover-process.md)

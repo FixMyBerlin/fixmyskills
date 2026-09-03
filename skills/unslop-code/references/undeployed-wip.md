@@ -36,7 +36,7 @@ Skip this phase when the branch adds no migrations and no old-to-new paths.
 ## Search (give to `explore`)
 
 ```bash
-git diff --name-status <base> -- '*prisma/migrations*' '*drizzle*' '**/migrations/**'
+git diff --name-status <base>...HEAD -- '*prisma/migrations*' '*drizzle*' '**/migrations/**'
 rg -n -i -g '*.ts' -g '*.tsx' -g '*.sql' -e 'old format' -e 'backwards compatible' -e 'during migration' -e 'migrateOld' -e 'legacy'
 ```
 

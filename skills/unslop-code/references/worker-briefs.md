@@ -2,6 +2,10 @@
 
 Orchestrator: paste the matching brief into `/implementer`. Fill `<base>` (`develop` or `main`), repo root, and skill name. Each implementer runs [finish-work](../../finish-work/SKILL.md) for **one** commit when it changed files; skip commit when there is nothing to land.
 
+Every brief means the **merge-base** range `<base>...HEAD`, never `<base>` alone. Repo-wide `rg` is discovery only: intersect with `git diff --name-only <base>...HEAD` and work the branch files first.
+
+Every brief also carries the same guardrails: do not change public API or behavior silently, do not touch files outside the phase's scope, and if the phase turns up nothing, say so and skip the commit instead of inventing work.
+
 Unclear **behavior** change, deploy status, colocate vs shared, decision lift, or merge-ready leftover cleanup: report it; do not implement (orchestrator AskQuestion — question must stand alone with context). Optional / style / "maybe" items: return as **secondary**; do not implement. Decision-hierarchy items that need design: return as **decision-lift follow-ups**.
 
 ---
@@ -81,7 +85,7 @@ Then finish-work commit this phase only.
 List new migration directories/files vs `<base>`; list old-to-new / dual-format code; note any evidence of deploy/apply. Do not edit.
 
 ```bash
-git diff --name-status <base> -- '*prisma/migrations*' '*drizzle*' '**/migrations/**'
+git diff --name-status <base>...HEAD -- '*prisma/migrations*' '*drizzle*' '**/migrations/**'
 rg -n -i -g '*.ts' -g '*.tsx' -g '*.sql' -e 'old format' -e 'backwards compatible' -e 'during migration' -e 'migrateOld' -e 'legacy'
 ```
 
@@ -118,7 +122,7 @@ Stay inside that skill's scope. finish-work commit this pass only.
 `git diff --name-status` vs `<base>` for `components/` (and `routes/`). For each moved/added TSX, list importers and whether the path matches the parent feature or `shared/`. Flag orphans, empty folders, stale barrels, and UI defined in `routes/`. Do not edit.
 
 ```bash
-git diff --name-status <base> -- '**/components/**' '**/routes/**'
+git diff --name-status -M <base>...HEAD -- '**/components/**' '**/routes/**'
 ```
 
 ## Implementer: Phase 6 (component location)
@@ -150,7 +154,8 @@ Then finish-work commit this phase only. Skip when the repo has no app tree.
 List high-`div`/`span` TSX in the branch; cluster sibling families; name consuming pages. Flag `onClick` on non-`button`/`a`. Do not edit.
 
 ```bash
-rg -n -g '*.tsx' -e '<div' -e '<span' -e 'onClick='
+git diff --name-only <base>...HEAD -- '*.tsx' > /tmp/unslop-branch-tsx
+xargs rg -n -e '<div' -e '<span' -e 'onClick=' < /tmp/unslop-branch-tsx
 ```
 
 ## Implementer: Phase 8 (semantic HTML)
@@ -170,14 +175,14 @@ Orchestrator AskQuestion first: merge-ready vs still deep in the work. Spawn thi
 `git diff --name-status` vs `<base>` for `.md`, `.sql`, `scripts/`, helpers that are not app/components. Check `package.json` and CI for callers. Do not edit.
 
 ```bash
-git diff --name-status <base> -- '*.md' '*.sql' 'scripts/' '*.http'
+git diff --name-status <base>...HEAD -- '*.md' '*.sql' 'scripts/' '*.http'
 ```
 
 ## Implementer: Phase 9 (leftover process)
 
 Read skill `unslop-code` → `references/leftover-process.md`. Spawn **only** on “merge-ready”.
 
-Delete confirmed leftovers that are not everyday/critical. Keep `README` / `AGENTS.md` / user-changelog / legal text / scripts wired into `package.json` or CI. AskQuestion when a file is referenced from README but not from code/CI.
+Delete confirmed leftovers that are not everyday/critical. Prove each one is unreferenced first (grep basename and path across imports, `package.json`, CI, Dockerfiles, docs). Keep `README` / `AGENTS.md` / user-changelog / legal text / scripts wired into `package.json` or CI. Never delete a file the branch did not add, and never delete untracked files. AskQuestion when a file is referenced from README but not from code/CI.
 
 Then finish-work commit this phase only.
 

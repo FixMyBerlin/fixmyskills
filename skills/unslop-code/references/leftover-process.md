@@ -29,16 +29,23 @@ If a file might be critical, AskQuestion with path + who calls it. Do not delete
 
 ## What to do
 
-- Unused and obvious: delete in this phase
+Before deleting any candidate, prove it is unreferenced: grep the repo for its basename and for its path (imports, `package.json` scripts, CI workflows, Dockerfiles, README, other docs). A file with zero hits outside itself is safe. Anything else is a question, not a delete.
+
+- Unused and obvious: `git rm` in this phase, then let finish-work run the checks
 - Referenced from README but not from code/CI: AskQuestion (drop file and mention, or keep)
 - Unclear: follow-up; do not guess
+- Never delete a file the branch did not add. Untracked scratch files are the user's, not yours — list them, do not remove them.
 
 Then Phase 10 (unslop-text) runs on what remains.
 
 ## Search (give to `explore`)
 
 ```bash
-git diff --name-status <base> -- '*.md' '*.sql' 'scripts/' '*.http'
+git diff --name-status <base>...HEAD -- '*.md' '*.sql' 'scripts/' '*.http'
 ```
 
-Check `package.json` and CI for callers. Flag `*.ts` helpers that are not under `components/`, `routes/`, `server/`, or `shared/`.
+Check `package.json` and CI for callers. Flag `*.ts` helpers that are not under `components/`, `routes/`, `server/`, or `shared/`. For each candidate, report the reference count outside the file itself:
+
+```bash
+rg -n --fixed-strings '<basename-without-extension>' -g '!<the-file-itself>'
+```

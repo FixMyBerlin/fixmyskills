@@ -31,7 +31,7 @@ Do not invent a third dumping ground. Do not leave the old file behind after a c
 ## Search (give to `explore`)
 
 ```bash
-git diff --name-status <base> -- '**/components/**' '**/routes/**'
+git diff --name-status -M <base>...HEAD -- '**/components/**' '**/routes/**'
 ```
 
 For each moved/added TSX, list importers and whether the path matches the parent feature or `shared/`. Flag orphans.

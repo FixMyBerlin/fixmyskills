@@ -2,7 +2,7 @@
 
 Phase 8. Fewer meaningless `div`/`span` wrappers. Not a mechanical replace-all.
 
-Skip when Phase 5a shows the repo has no UI TSX (scripts, Rust, docs-only).
+Skip when the branch touches no UI TSX (scripts, Rust, docs-only repos, or a branch that only changed server code).
 
 ## Prefer native elements when the meaning is clear
 
@@ -35,8 +35,11 @@ Diff vs `<base>` plus the component family and consuming pages needed for consis
 
 ## Search (give to `explore`)
 
+Start from the branch, not the repo — a repo-wide `<div` grep returns thousands of lines and buries the signal.
+
 ```bash
-rg -n -g '*.tsx' -e '<div' -e '<span' -e 'onClick='
+git diff --name-only <base>...HEAD -- '*.tsx' > /tmp/unslop-branch-tsx
+xargs rg -n -e '<div' -e '<span' -e 'onClick=' < /tmp/unslop-branch-tsx
 ```
 
-List high-`div`/`span` TSX in the branch. Cluster sibling families. Name consuming pages. Flag `onClick` on non-`button`/`a`.
+List the highest-`div`/`span` TSX among those files. Cluster sibling families (widen to the family's other files even when they are off-branch, read-only, so the structures stay consistent). Name consuming pages. Flag `onClick` on non-`button`/`a`.
