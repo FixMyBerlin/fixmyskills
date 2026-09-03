@@ -4,7 +4,7 @@ description: >-
   Rewrite plans, markdown, comments, JSDoc, and user-facing strings so a
   human can follow the decision chain without losing facts. Use when the
   user asks to rewrite, make text readable, fix Grok wording, unslop prose,
-  or when unslop-code phase 6 runs.
+  or when unslop-code phase 10 runs.
 user-invocable: true
 disable-model-invocation: true
 ---
@@ -13,7 +13,7 @@ disable-model-invocation: true
 
 Rewrite prose so a technical reader can follow it. Preserve meaning and verdicts. Do not restructure code. Do not add soul.
 
-For orchestrated cleanup of a git branch (Zod, TypeScript, shims, then this pass on comments/docs in the diff), use [unslop-code](../unslop-code/SKILL.md).
+For orchestrated cleanup of a git branch (Zod, TypeScript, shims, location, then this pass on comments/docs in the diff), use [unslop-code](../unslop-code/SKILL.md).
 
 ## Length is not the metric
 

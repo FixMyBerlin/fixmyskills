@@ -50,6 +50,7 @@ Docs: [React Compiler](https://react.dev/learn/react-compiler.md) · [Rules of R
 | `createServerFn`, server mutations      | `tanstack-start-conventions` → [server-functions.md](../tanstack-start-conventions/references/server-functions.md) |
 | Client stores                           | `zustand-state-management`                                                                                         |
 | URL state (prefer router search)        | `tanstack-router-conventions`                                                                                      |
+| Semantic HTML (div/span leftovers)      | `unslop-code` → [semantic-html.md](../unslop-code/references/semantic-html.md)                                     |
 
 ## Component props
 
@@ -305,6 +306,7 @@ const { tab } = Route.useSearch()
 **Always**
 
 - `ComponentPropsWithoutRef` for native element extension
+- Prefer semantic HTML over generic `div`/`span` when the meaning is clear — `unslop-code` → [semantic-html.md](../unslop-code/references/semantic-html.md)
 - Specific `React.*Event<HTMLElement>` types
 - Explicit `useState` when inference fails (null, `[]`, unions)
 - Discriminated unions for variant props

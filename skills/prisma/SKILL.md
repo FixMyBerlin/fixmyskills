@@ -42,10 +42,13 @@ Adding schema: add singular model, camelCase scalars, `{name}Id` FK scalars, rel
 
 Renaming relation fields: rename only in `schema.prisma`; no DB migration is needed for the rename itself. Regenerate Prisma Client, grep old names in `include`, `select`, `_count`, and nested writes, update TypeScript, then run checks.
 
+Undeployed PR-local migrations (several files from one branch that never shipped) may be squashed into the fewest files that express the final schema — skill `unslop-code` → `undeployed-wip.md`. Do not squash migrations already applied to a live DB.
+
 ## Related
 
 - DB inspection: skill `tech-stack` -> `references/cursor-mcp.md`
 - Better Auth adapter: skill `tanstack-start-auth`
+- Undeployed PR-local migration squash: skill `unslop-code` → `references/undeployed-wip.md`
 
 ## Sources
 

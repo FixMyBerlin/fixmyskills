@@ -2,7 +2,7 @@
 
 Orchestrator: paste the matching brief into `/implementer`. Fill `<base>` (`develop` or `main`), repo root, and skill name. Each implementer runs [finish-work](../../finish-work/SKILL.md) for **one** commit when it changed files; skip commit when there is nothing to land.
 
-Unclear **behavior** change: report it; do not implement (orchestrator AskQuestion). Optional / style / "maybe" items: return as **secondary**; do not implement.
+Unclear **behavior** change, deploy status, colocate vs shared, decision lift, or merge-ready leftover cleanup: report it; do not implement (orchestrator AskQuestion — question must stand alone with context). Optional / style / "maybe" items: return as **secondary**; do not implement. Decision-hierarchy items that need design: return as **decision-lift follow-ups**.
 
 ---
 
@@ -70,9 +70,30 @@ rg -n -i -g '*.ts' -g '*.tsx' -g '*.md' -e 'legacy' -e 'migration' -e 'compat' -
 
 Question every legacy/migration/compat path. Confirm it is required. Especially for new features: we do not need or want migrations and legacy stuff. We want a clean new state of the app instead.
 
-Delete shims that exist only because an LLM was cautious. **Keep** live Prisma migrations, on-disk session formats, and URL contracts other systems still send. AskQuestion when dropping the old path could break existing users.
+Delete shims that exist only because an LLM was cautious. **Keep** on-disk session formats and URL contracts other systems still send. Deploy gate and migration-file squash are Phase 4b — do not keep PR-local extras here. AskQuestion when dropping the old path could break existing users.
 
 Then finish-work commit this phase only.
+
+---
+
+## Explore: Phase 4b (undeployed WIP)
+
+List new migration directories/files vs `<base>`; list old-to-new / dual-format code; note any evidence of deploy/apply. Do not edit.
+
+```bash
+git diff --name-status <base> -- '*prisma/migrations*' '*drizzle*' '**/migrations/**'
+rg -n -i -g '*.ts' -g '*.tsx' -g '*.sql' -e 'old format' -e 'backwards compatible' -e 'during migration' -e 'migrateOld' -e 'legacy'
+```
+
+## Implementer: Phase 4b (undeployed WIP)
+
+Read skill `unslop-code` → `references/undeployed-wip.md`. How to squash: skill `prisma`.
+
+If deploy status is unknown, stop and propose an AskQuestion (files found; what happens if not deployed vs already applied). Do not squash or drop persistence without a confirmed “not deployed”.
+
+If not deployed: squash branch-local migrations into the fewest files that express the final schema; delete old-to-new code. If deployed: keep applied migrations; only drop unused code dual-paths.
+
+Then finish-work commit this phase only. Skip when the branch adds no migrations and no old-to-new paths.
 
 ---
 
@@ -92,7 +113,77 @@ Stay inside that skill's scope. finish-work commit this pass only.
 
 ---
 
-## Explore: Phase 6 (unslop-text)
+## Explore: Phase 6 (component location)
+
+`git diff --name-status` vs `<base>` for `components/` (and `routes/`). For each moved/added TSX, list importers and whether the path matches the parent feature or `shared/`. Flag orphans, empty folders, stale barrels, and UI defined in `routes/`. Do not edit.
+
+```bash
+git diff --name-status <base> -- '**/components/**' '**/routes/**'
+```
+
+## Implementer: Phase 6 (component location)
+
+Read skill `tanstack-start-conventions` → `app-structure.md` and skill `unslop-code` → `references/component-location.md`. Placement only.
+
+Move or delete leftovers. Update imports. No re-export shims. Colocate next to the parent or extract as shared — both are clean. AskQuestion when that choice is unclear (both folders + importer list).
+
+Then finish-work commit this phase only. Skip when the branch touches no `components/`.
+
+---
+
+## Explore: Phase 7 (decision lift)
+
+Walk the branch (and obvious call sites) for repeated decisions and wasted work. Group by “could move to route / layout / parent”. Do not edit.
+
+## Implementer: Phase 7 (decision lift)
+
+Read skill `unslop-code` → `references/decision-lift.md`.
+
+Apply only obvious lifts (parent already has the value; leaf only repeats it). Record decision-lift follow-ups for items that need design. Propose AskQuestion text that already includes context (file/route, today, options, what we will do with the answer).
+
+Then finish-work commit this phase only. Skip when the repo has no app tree.
+
+---
+
+## Explore: Phase 8 (semantic HTML)
+
+List high-`div`/`span` TSX in the branch; cluster sibling families; name consuming pages. Flag `onClick` on non-`button`/`a`. Do not edit.
+
+```bash
+rg -n -g '*.tsx' -e '<div' -e '<span' -e 'onClick='
+```
+
+## Implementer: Phase 8 (semantic HTML)
+
+Read skill `unslop-code` → `references/semantic-html.md`.
+
+Replace generic wrappers where the meaning is clear. Change families together. Verify each consumer’s outline (one `h1`, no skipped levels, no second `main`). Keep layout-only `div`/`span`. Do not add ARIA as a substitute for a real element.
+
+Then finish-work commit this phase only. Skip when there is no UI TSX.
+
+---
+
+## Explore: Phase 9 (leftover process)
+
+Orchestrator AskQuestion first: merge-ready vs still deep in the work. Spawn this explore **only** on “merge-ready”.
+
+`git diff --name-status` vs `<base>` for `.md`, `.sql`, `scripts/`, helpers that are not app/components. Check `package.json` and CI for callers. Do not edit.
+
+```bash
+git diff --name-status <base> -- '*.md' '*.sql' 'scripts/' '*.http'
+```
+
+## Implementer: Phase 9 (leftover process)
+
+Read skill `unslop-code` → `references/leftover-process.md`. Spawn **only** on “merge-ready”.
+
+Delete confirmed leftovers that are not everyday/critical. Keep `README` / `AGENTS.md` / user-changelog / legal text / scripts wired into `package.json` or CI. AskQuestion when a file is referenced from README but not from code/CI.
+
+Then finish-work commit this phase only.
+
+---
+
+## Explore: Phase 10 (unslop-text)
 
 Diff vs `<base>`: comments, JSDoc, new/changed markdown, user-facing strings. Flag restating comments, AI vocabulary, em dashes, emoji in headings, curly quotes, chatbot phrases. Do not edit.
 
@@ -100,7 +191,7 @@ Diff vs `<base>`: comments, JSDoc, new/changed markdown, user-facing strings. Fl
 rg -n -g '*.ts' -g '*.tsx' -g '*.md' -e 'TODO' -e 'NOTE:' -e 'IMPORTANT:' -e 'simply' -e 'leverage' -e 'robust'
 ```
 
-## Implementer: Phase 6 (unslop-text)
+## Implementer: Phase 10 (unslop-text)
 
 Read skill `unslop-text`. Apply it to comments, JSDoc, markdown, and user-facing strings in the branch. Do not restructure code. Do not rewrite the whole docs tree.
 
