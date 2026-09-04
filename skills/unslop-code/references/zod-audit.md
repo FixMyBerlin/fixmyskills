@@ -1,6 +1,6 @@
 # Zod 4 audit (unslop-code)
 
-Read this in Phase 1 before spawning the implementer. Fetch [https://zod.dev/llms.txt](https://zod.dev/llms.txt) for current Zod 4 APIs. FMC pin and router usage: skill `tech-stack` (Validation: Zod 4) and `tanstack-router-conventions` → `params-search-ui-routes.md`.
+Read this in Phase 2 before spawning the implementer. Phase 1 (TypeScript) ran first; pick up its why-keeps whose root fix is a parse. Fetch [https://zod.dev/llms.txt](https://zod.dev/llms.txt) for current Zod 4 APIs. FMC pin and router usage: skill `tech-stack` (Validation: Zod 4) and `tanstack-router-conventions` → `params-search-ui-routes.md`.
 
 ## Where Zod belongs
 
@@ -22,6 +22,44 @@ Make the contract clear so we do not over-check for every possible case. Look at
 
 **Example:** `tokenFromAuthJson`. If our code writes `{ token: string }`, schema that. Do not also accept `access_token`, nested `data.session`, or empty objects unless something in **this** repo still produces them.
 
+## GeoJSON
+
+Nobody hand-writes GeoJSON. Three layers, each with an owner:
+
+| Need                            | Use                                                                          |
+| ------------------------------- | ---------------------------------------------------------------------------- |
+| Types                           | `@types/geojson` — `GeoJSON.Point`, `Feature`, `FeatureCollection`           |
+| Constructing a feature          | Turf helpers — `point()`, `lineString()`, `featureCollection()`              |
+| Parsing GeoJSON we did not make | A Zod schema, then `z.infer` (never `parse(x) as GeoJSON.FeatureCollection`) |
+
+`@types/geojson` and per-function `@turf/*` imports are the FMC defaults (skill `tech-stack`).
+
+Do not write the object by hand:
+
+```ts
+const geometry = { type: 'Point' as const, coordinates: [lng, lat] }
+const fc = { type: 'FeatureCollection', features } as GeoJSON.FeatureCollection
+```
+
+Use the helper. It returns a correctly typed value, so the `as const` and the cast both disappear:
+
+```ts
+import { featureCollection, point } from '@turf/helpers'
+
+const marker = point([lng, lat], { id })
+const fc = featureCollection([marker])
+```
+
+For data crossing a boundary (API response, WASM string, uploaded file, `localStorage`), parse it and infer the type from the schema:
+
+```ts
+const parsed = FeatureCollectionSchema.parse(JSON.parse(raw))
+```
+
+Check what the repo already has before writing a schema — `rg -n -e 'featureCollection\(' -e "from '@turf" -e 'GeoJSON\.' -e 'FeatureCollectionSchema'`. Reuse the app's helper or schema. Do not add a new GeoJSON validation library when the app has one, and do not hand-roll `z.object({ type: z.literal('Point'), … })` next to an existing schema.
+
+Type-only GeoJSON (React props, a value a parent already parsed) stays a why-not — `@types/geojson` is enough.
+
 ## Why-not (record, do not convert)
 
 - TypeScript-only (no runtime value)
@@ -36,4 +74,7 @@ Focus on untrusted values (`JSON.parse`, env, cookies, request bodies), not ever
 ```bash
 rg -n -g '*.ts' -g '*.tsx' -e 'JSON\.parse' -e "from 'zod'" -e 'from "zod"' -e 'safeParse' -e 'tokenFromAuthJson' -e 'validateSearch'
 rg -n -g '*.ts' -g '*.tsx' -e 'process\.env' -e 'as unknown' -e 'as any'
+rg -n -g '*.ts' -g '*.tsx' -e "type: '(Point|LineString|Polygon|Feature|FeatureCollection)'" -e 'GeoJSON\.' -e "from '@turf"
 ```
+
+The third line finds hand-built GeoJSON and shows which helpers the app already imports.

@@ -1,10 +1,11 @@
 ---
 name: unslop-code
 description: >-
-  Orchestrated cleanup of LLM leftovers in an FMC app: Zod 4 at runtime
-  boundaries, delete pass-through re-exports, drop unneeded legacy/migration
-  shims, squash undeployed WIP migrations, TypeScript inference (no extra
-  return types or `as`), skill-aligned code-review passes (react-dev,
+  Orchestrated cleanup of LLM leftovers in an FMC app: TypeScript inference
+  (no extra return types or `as`), Zod 4 at runtime boundaries with GeoJSON
+  types and helpers, delete pass-through re-exports, drop unneeded
+  legacy/migration shims, squash undeployed WIP migrations,
+  skill-aligned code-review passes (react-dev,
   react-map-gl, tanstack-router-conventions, tech-stack, zustand), component
   location, decision lift, semantic HTML, leftover process artifacts on a
   merge-ready PR, then unslop-text on comments and docs in the branch.
@@ -63,8 +64,8 @@ A phase whose checks stay red after one fix attempt gets reverted, not patched f
 
 ```
 - [ ] Preflight: base resolved, tree clean, starting check state recorded
-- [ ] Phase 1: Zod 4 runtime validation
-- [ ] Phase 2: TypeScript inference, `as` / `satisfies`, exhaustive switch
+- [ ] Phase 1: TypeScript inference, `as` / `satisfies`, exhaustive switch
+- [ ] Phase 2: Zod 4 runtime validation (incl. GeoJSON types and helpers)
 - [ ] Phase 3: Pass-through re-exports
 - [ ] Phase 4: Legacy / migration shims
 - [ ] Phase 4b: Undeployed WIP (skip if no migrations / old-to-new)
@@ -85,23 +86,7 @@ A phase whose checks stay red after one fix attempt gets reverted, not patched f
 
 ---
 
-## Phase 1: Zod 4
-
-In general all type checking should be done with Zod 4.
-
-Audit runtime type checking and validation (JSON, env, cookies, search params, request bodies, `localStorage`, `unknown` / `JSON.parse` results). Example: `src/utils/auth.ts` `tokenFromAuthJson`. Replace hand-rolled checks with Zod 4 when the value is untrusted input.
-
-Make the contract clear so we do not over-check for every possible case. Look at what the input actually is from what we know about the data (who writes it, which fields exist today). Schema that shape. Not `z.unknown()` trees, extra `.optional()` / `.passthrough()` / `.catchall()`, or "maybe also an array" branches with no evidence.
-
-For each site, either convert to Zod 4 **or** record a **why-not** (compile-time TS only, already parsed by a parent schema, React props, trusted in-process value). Fetch [zod.dev/llms.txt](https://zod.dev/llms.txt). Pin/API: skill `tech-stack` (Zod 4) and `tanstack-router-conventions` (`validateSearch`, no `zodValidator()`).
-
-Load [references/zod-audit.md](references/zod-audit.md) before the implementer brief.
-
-Commit this phase on its own.
-
----
-
-## Phase 2: TypeScript
+## Phase 1: TypeScript
 
 Remove extra annotations the model added. Load [references/typescript.md](references/typescript.md).
 
@@ -109,6 +94,26 @@ Remove extra annotations the model added. Load [references/typescript.md](refere
 - **`as`:** delete it. Fix the issue at the root. Keep `as` only when the code gets too complex without it. Why-keep.
 - Prefer **`satisfies`** over **`as`** whenever possible. Keep `as const` when that is what inference needs.
 - Prefer **`switch`** over `if` / `else if` on a union. Trust exhaustiveness (`typescript/switch-exhaustiveness-check`). No `default` and no fake default (`never` / unreachable throw).
+
+**Do not do Phase 2's work here.** This phase runs first so it does not add code the Zod pass would then rewrite. Add no schemas, no `z.infer` aliases, no duplicate GeoJSON interfaces, and no hand-built `{ type: 'Point' as const, … }` to make a type line up. When the root fix for an `as` is a Zod parse or a GeoJSON helper, leave it with a why-keep and let Phase 2 take it.
+
+Commit this phase on its own.
+
+---
+
+## Phase 2: Zod 4
+
+In general all type checking should be done with Zod 4.
+
+Audit runtime type checking and validation (JSON, env, cookies, search params, request bodies, `localStorage`, `unknown` / `JSON.parse` results). Example: `src/utils/auth.ts` `tokenFromAuthJson`. Replace hand-rolled checks with Zod 4 when the value is untrusted input.
+
+Make the contract clear so we do not over-check for every possible case. Look at what the input actually is from what we know about the data (who writes it, which fields exist today). Schema that shape. Not `z.unknown()` trees, extra `.optional()` / `.passthrough()` / `.catchall()`, or "maybe also an array" branches with no evidence.
+
+This phase also owns **GeoJSON**: `@types/geojson` for types, a schema to parse untrusted GeoJSON, and construction helpers instead of hand-written literals. See zod-audit.md.
+
+For each site, either convert to Zod 4 **or** record a **why-not** (compile-time TS only, already parsed by a parent schema, React props, trusted in-process value). Fetch [zod.dev/llms.txt](https://zod.dev/llms.txt). Pin/API: skill `tech-stack` (Zod 4) and `tanstack-router-conventions` (`validateSearch`, no `zodValidator()`).
+
+Load [references/zod-audit.md](references/zod-audit.md) before the implementer brief. It also carries the Phase 1 why-keeps whose root fix is a parse.
 
 Commit this phase on its own.
 
@@ -257,8 +262,8 @@ Running list (orchestrator owns it). Items from Phase 7 that need a real plan: l
 
 ## End summary (chat)
 
-1. **Phase 1 Zod:** converted / why-not / skipped
-2. **Phase 2 TypeScript:** return types and `as` removed; `satisfies`; exhaustive `switch`
+1. **Phase 1 TypeScript:** return types and `as` removed; `satisfies`; exhaustive `switch`; why-keeps handed to Phase 2
+2. **Phase 2 Zod:** converted / why-not / skipped; GeoJSON types and helpers
 3. **Phase 3 Re-exports:** removed shims; kept barrels (why)
 4. **Phase 4 Legacy:** removed vs kept (why required)
 5. **Phase 4b Undeployed WIP:** squashed / kept (deployed) / skipped / asked
@@ -277,4 +282,4 @@ Write this summary following [unslop-text](../unslop-text/SKILL.md).
 
 ## Related
 
-[unslop-text](../unslop-text/SKILL.md) · [agent-orchestration](../agent-orchestration/SKILL.md) · [finish-work](../finish-work/SKILL.md) · [tech-stack](../tech-stack/SKILL.md) · [react-dev](../react-dev/SKILL.md) · [react-map-gl](../react-map-gl/SKILL.md) · [tanstack-router-conventions](../tanstack-router-conventions/SKILL.md) · [tanstack-start-conventions](../tanstack-start-conventions/SKILL.md) · [zustand-state-management](../zustand-state-management/SKILL.md) · [prisma](../prisma/SKILL.md) · [worker-briefs.md](references/worker-briefs.md) · [zod-audit.md](references/zod-audit.md) · [typescript.md](references/typescript.md) · [undeployed-wip.md](references/undeployed-wip.md) · [component-location.md](references/component-location.md) · [decision-lift.md](references/decision-lift.md) · [semantic-html.md](references/semantic-html.md) · [leftover-process.md](references/leftover-process.md)
+[unslop-text](../unslop-text/SKILL.md) · [agent-orchestration](../agent-orchestration/SKILL.md) · [finish-work](../finish-work/SKILL.md) · [tech-stack](../tech-stack/SKILL.md) · [react-dev](../react-dev/SKILL.md) · [react-map-gl](../react-map-gl/SKILL.md) · [tanstack-router-conventions](../tanstack-router-conventions/SKILL.md) · [tanstack-start-conventions](../tanstack-start-conventions/SKILL.md) · [zustand-state-management](../zustand-state-management/SKILL.md) · [prisma](../prisma/SKILL.md) · [worker-briefs.md](references/worker-briefs.md) · [typescript.md](references/typescript.md) · [zod-audit.md](references/zod-audit.md) · [undeployed-wip.md](references/undeployed-wip.md) · [component-location.md](references/component-location.md) · [decision-lift.md](references/decision-lift.md) · [semantic-html.md](references/semantic-html.md) · [leftover-process.md](references/leftover-process.md)

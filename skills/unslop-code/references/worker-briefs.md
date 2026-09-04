@@ -10,23 +10,7 @@ Unclear **behavior** change, deploy status, colocate vs shared, decision lift, o
 
 ---
 
-## Explore: Phase 1 (Zod)
-
-Find runtime validation and hand-rolled type checks vs `<base>`. Also repo-wide: `JSON.parse`, `as SomeType` on unknown, `typeof` / `instanceof` guards at boundaries, `from 'zod'`, `safeParse`, `tokenFromAuthJson`, `validateSearch`, `process.env`. List file:line and whether the value is untrusted. Do not edit.
-
-## Implementer: Phase 1 (Zod)
-
-Read skill `unslop-code` → `references/zod-audit.md` and https://zod.dev/llms.txt.
-
-In general all type checking should be done with Zod 4. Replace boundary validation with Zod 4. Make the contract clear so we do not over-check for every possible case. Look at what the input actually is from what we know about the data.
-
-For each site: convert **or** write a one-line why-not. Example target: `src/utils/auth.ts` `tokenFromAuthJson` if present.
-
-Then finish-work commit this phase only. Report conversions, why-nots, and secondary items.
-
----
-
-## Explore: Phase 2 (TypeScript)
+## Explore: Phase 1 (TypeScript)
 
 Find extra return types, `as` casts, `else if` chains on a union, and `default:` in switches vs `<base>` and repo-wide. See [typescript.md](typescript.md) search. Do not edit.
 
@@ -34,13 +18,35 @@ Find extra return types, `as` casts, `else if` chains on a union, and `default:`
 rg -n -g '*.ts' -g '*.tsx' -e ' as ' -e 'satisfies ' -e 'else if' -e 'default:'
 ```
 
-## Implementer: Phase 2 (TypeScript)
+## Implementer: Phase 1 (TypeScript)
 
 Read skill `unslop-code` → `references/typescript.md`.
 
 Remove explicit return types unless the code gets too complex without them. Prefer inferred types; force types in place (const, param, `satisfies`) if needed. Remove `as` unless too complex without them; fix the issue at the root. Prefer `satisfies` over `as`. Prefer `switch` over `if` / `else if` on a union. Trust TS exhaustiveness: no `default` and no fake default.
 
-Then finish-work commit this phase only. Report why-keeps and secondary items.
+Stay inside TypeScript — Phase 2 (Zod) runs next and must not have to undo your work. Add no schemas, no `z.infer` aliases, no duplicate GeoJSON interfaces, and no hand-built `{ type: 'Point' as const, … }`. When the root fix is a runtime parse or a GeoJSON helper, keep the `as` with a why-keep and list it for Phase 2.
+
+Then finish-work commit this phase only. Report why-keeps (marking the ones Phase 2 should take) and secondary items.
+
+---
+
+## Explore: Phase 2 (Zod)
+
+Find runtime validation and hand-rolled type checks vs `<base>`. Also repo-wide: `JSON.parse`, `as SomeType` on unknown, `typeof` / `instanceof` guards at boundaries, `from 'zod'`, `safeParse`, `tokenFromAuthJson`, `validateSearch`, `process.env`. List file:line and whether the value is untrusted. Do not edit.
+
+Also list hand-written GeoJSON (`type: 'Point'` / `'FeatureCollection'` literals, `as GeoJSON.*`) and which GeoJSON helpers or schemas the app already imports — see [zod-audit.md](zod-audit.md) search. Do not edit.
+
+## Implementer: Phase 2 (Zod)
+
+Read skill `unslop-code` → `references/zod-audit.md` and https://zod.dev/llms.txt. Start from Phase 1's why-keeps.
+
+In general all type checking should be done with Zod 4. Replace boundary validation with Zod 4. Make the contract clear so we do not over-check for every possible case. Look at what the input actually is from what we know about the data.
+
+GeoJSON: types from `@types/geojson`, construction via the app's Turf helpers (`point()`, `lineString()`, `featureCollection()`), parsing via a Zod schema with `z.infer` — not hand-written literals or casts. Reuse the app's existing helper/schema; do not add a new GeoJSON library.
+
+For each site: convert **or** write a one-line why-not. Example target: `src/utils/auth.ts` `tokenFromAuthJson` if present.
+
+Then finish-work commit this phase only. Report conversions, why-nots, and secondary items.
 
 ---
 

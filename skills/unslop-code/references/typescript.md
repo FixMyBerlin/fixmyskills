@@ -1,6 +1,8 @@
 # TypeScript (unslop-code)
 
-Phase 2. Prefer inference. Fix the type at the value, not with a cast.
+Phase 1. Prefer inference. Fix the type at the value, not with a cast.
+
+This phase runs **before** Zod (Phase 2) so it does not add code the Zod pass would rewrite. Stay inside TypeScript: no new schemas, no `z.infer` aliases, no duplicate GeoJSON interfaces. When the root fix for an `as` is a runtime parse or a GeoJSON helper, leave the `as` with a why-keep and name it for Phase 2 — see [zod-audit.md](zod-audit.md).
 
 Lint: `'typescript/switch-exhaustiveness-check': 'error'` in skill `tech-stack` ([oxlint.config.mjs](../../tech-stack/examples/oxlint.config.mjs)).
 
@@ -41,6 +43,8 @@ const locale = { Zoom: 'Zoom' } as Record<string, string>
 ```
 
 `as const` stays when you need a literal tuple/object and `satisfies` is not enough.
+
+**Not** a case for `as const`: a hand-written GeoJSON literal. `{ type: 'Point' as const, coordinates: [lng, lat] }` means the value should have come from a helper. Leave it for Phase 2 ([zod-audit.md](zod-audit.md) → GeoJSON).
 
 ## `switch`
 

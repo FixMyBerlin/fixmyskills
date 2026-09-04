@@ -13,7 +13,7 @@ disable-model-invocation: true
 
 Rewrite prose so a technical reader can follow it. Preserve meaning and verdicts. Do not restructure code. Do not add soul.
 
-For orchestrated cleanup of a git branch (Zod, TypeScript, shims, location, then this pass on comments/docs in the diff), use [unslop-code](../unslop-code/SKILL.md).
+For orchestrated cleanup of a git branch (TypeScript, Zod, shims, location, then this pass on comments/docs in the diff), use [unslop-code](../unslop-code/SKILL.md).
 
 ## Length is not the metric
 
