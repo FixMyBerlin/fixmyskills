@@ -10,7 +10,7 @@ Lint: `'typescript/switch-exhaustiveness-check': 'error'` in skill `tech-stack` 
 
 Remove explicit function/method return types. Let TypeScript infer.
 
-If a type is required, put it **in place**: annotate the const, parameter, or `satisfies` on the value so the return infers. Do not annotate the function unless the code gets too complex without it (inference is `any`, a huge unreadable union, recursion that fails, or a required call-signature that will not attach).
+If a type is required, put it **in place**: annotate the const or parameter so the return infers. Do not annotate the function unless the code gets too complex without it (inference is `any`, a huge unreadable union, recursion that fails, or a required call-signature that will not attach).
 
 Record a one-line why-keep when you leave a return type.
 
@@ -19,8 +19,10 @@ function loadUser(id: string) {
   return db.user.find(id)
 }
 
-const spec = { id, paint } satisfies LayerSpec
+const spec: LayerSpec = { id, paint }
 ```
+
+A type annotation is not a cast. `const foo: Foo = …` declares the shape and is fully checked; it cannot override the type the way `as` can. It is a fine end state — do **not** rewrite it to `const foo = … satisfies Foo`.
 
 Keep `as const` on tuples when that is what inference needs (see `react-dev` hooks.md). That is not a return-type annotation.
 
@@ -30,17 +32,21 @@ Remove `as` (including `as unknown as`). Prefer fixing the root: tighter produce
 
 Keep `as` only when the code gets too complex without it (broken library types you cannot patch in this pass). Why-keep.
 
-**Prefer `satisfies` over `as` whenever possible.** `satisfies` checks the value and keeps literals. `as` widens and can hide mistakes.
+**Prefer `satisfies` over `as` whenever possible.** `satisfies` checks the value and keeps literals. `as` overrides the type and can hide mistakes.
+
+This rule is about **`as` sites only** — `return foo as Foo`, `const foo = someOtherVar as Foo`:
 
 ```ts
-const locale = { Zoom: 'Zoom' } satisfies Record<string, string>
-```
-
-Not:
-
-```ts
+// Not
 const locale = { Zoom: 'Zoom' } as Record<string, string>
+return { id, paint } as LayerSpec
+
+// Yes
+const locale = { Zoom: 'Zoom' } satisfies Record<string, string>
+return { id, paint } satisfies LayerSpec
 ```
+
+A type annotation is **not** an `as` site. `const locale: Record<string, string> = { Zoom: 'Zoom' }` is already checked — leave it alone.
 
 `as const` stays when you need a literal tuple/object and `satisfies` is not enough.
 

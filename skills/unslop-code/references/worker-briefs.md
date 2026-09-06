@@ -22,7 +22,7 @@ rg -n -g '*.ts' -g '*.tsx' -e ' as ' -e 'satisfies ' -e 'else if' -e 'default:'
 
 Read skill `unslop-code` → `references/typescript.md`.
 
-Remove explicit return types unless the code gets too complex without them. Prefer inferred types; force types in place (const, param, `satisfies`) if needed. Remove `as` unless too complex without them; fix the issue at the root. Prefer `satisfies` over `as`. Prefer `switch` over `if` / `else if` on a union. Trust TS exhaustiveness: no `default` and no fake default.
+Remove explicit return types unless the code gets too complex without them. Prefer inferred types; force types in place (`const foo: Foo = …`, param) if needed. Remove `as` unless too complex without them; fix the issue at the root. Prefer `satisfies` over `as` whenever possible, at `as` sites only (`return foo as Foo`, `const foo = someOtherVar as Foo`) — a type annotation is not a cast, so leave `const foo: Foo = …` alone. Prefer `switch` over `if` / `else if` on a union. Trust TS exhaustiveness: no `default` and no fake default.
 
 Stay inside TypeScript — Phase 2 (Zod) runs next and must not have to undo your work. Add no schemas, no `z.infer` aliases, no duplicate GeoJSON interfaces, and no hand-built `{ type: 'Point' as const, … }`. When the root fix is a runtime parse or a GeoJSON helper, keep the `as` with a why-keep and list it for Phase 2.
 

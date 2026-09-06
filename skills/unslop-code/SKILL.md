@@ -90,9 +90,9 @@ A phase whose checks stay red after one fix attempt gets reverted, not patched f
 
 Remove extra annotations the model added. Load [references/typescript.md](references/typescript.md).
 
-- **Return types:** delete them. Prefer inferred types. If a type is needed, force it **in place** (const, param, `satisfies`) so the return infers. Keep an explicit return type only when the code gets too complex without it. Why-keep.
+- **Return types:** delete them. Prefer inferred types. If a type is needed, force it **in place** (`const foo: Foo = …`, param) so the return infers. Keep an explicit return type only when the code gets too complex without it. Why-keep.
 - **`as`:** delete it. Fix the issue at the root. Keep `as` only when the code gets too complex without it. Why-keep.
-- Prefer **`satisfies`** over **`as`** whenever possible. Keep `as const` when that is what inference needs.
+- Prefer **`satisfies`** over **`as`** whenever possible — this applies to `as` sites only (`return foo as Foo`, `const foo = someOtherVar as Foo`). A type annotation is not a cast: leave `const foo: Foo = …` alone. Keep `as const` when that is what inference needs.
 - Prefer **`switch`** over `if` / `else if` on a union. Trust exhaustiveness (`typescript/switch-exhaustiveness-check`). No `default` and no fake default (`never` / unreachable throw).
 
 **Do not do Phase 2's work here.** This phase runs first so it does not add code the Zod pass would then rewrite. Add no schemas, no `z.infer` aliases, no duplicate GeoJSON interfaces, and no hand-built `{ type: 'Point' as const, … }` to make a type line up. When the root fix for an `as` is a Zod parse or a GeoJSON helper, leave it with a why-keep and let Phase 2 take it.
@@ -262,7 +262,7 @@ Running list (orchestrator owns it). Items from Phase 7 that need a real plan: l
 
 ## End summary (chat)
 
-1. **Phase 1 TypeScript:** return types and `as` removed; `satisfies`; exhaustive `switch`; why-keeps handed to Phase 2
+1. **Phase 1 TypeScript:** return types removed; `as` removed or turned into `satisfies`; type annotations untouched; exhaustive `switch`; why-keeps handed to Phase 2
 2. **Phase 2 Zod:** converted / why-not / skipped; GeoJSON types and helpers
 3. **Phase 3 Re-exports:** removed shims; kept barrels (why)
 4. **Phase 4 Legacy:** removed vs kept (why required)
