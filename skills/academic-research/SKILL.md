@@ -6,6 +6,7 @@ description: >-
   DNB, and citation-graph workflows. Use when the user asks to research a
   scholarly question, do a literature review, find papers, verify claims with
   citations, synthesize academic sources, or gather quotable evidence.
+disable-model-invocation: true
 ---
 
 # Academic research

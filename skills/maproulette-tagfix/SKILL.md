@@ -6,6 +6,7 @@ description: >-
   instructions, and rebuild/update triggers. Use when creating or updating
   MapRoulette tag-fix challenges, cooperativeWork GeoJSON, task_markdown,
   remoteGeoJson, or challenge rebuilds.
+disable-model-invocation: true
 ---
 
 # MapRoulette Tag Fix challenges
