@@ -7,6 +7,7 @@ Load for global store setup, Vite dev with globalStore, phantom deps, Docker ima
 ## Decisions (not in templates)
 
 - Bun [≥ 1.3.14](https://bun.com/blog/bun-v1.3.14) — `rm -rf node_modules && bun install` after Bun or bunfig changes
+- **Bun / DOM type packages** (`@types/bun`, `bun-types`, `@types/web`): declare as direct `devDependencies` whenever tsconfig `compilerOptions.types` lists them — [SKILL.md tsconfig templates](../SKILL.md#tsconfig-templates)
 - Commit `bunfig.toml` per repo ([template](../examples/bunfig.toml.template)); overrides `~/.bunfig.toml`
 - Force Bun for CLIs that ship a Node shebang (notably Vite): [`bun --bun`](https://bun.sh/docs/cli/run) — e.g. `FORCE_COLOR=1 bun --bun vite dev …`. Without `--bun`, `bun run` can still end up on Node via the binary’s shebang
 - Keep a root [`.nvmrc`](https://github.com/nvm-sh/nvm#nvmrc). Document `nvm use` for tools that still spawn Node (Prisma, Playwright). App `dev` under Bun is separate from that Node toolchain
