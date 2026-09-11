@@ -6,7 +6,8 @@ description: >-
   search param, loader + React Query patterns, typed Link/params, and TanStack
   devtools. Use when scaffolding a Vite + TanStack Router SPA, wiring router.tsx
   search serialization, route search params (including map viewport URLs),
-  loaders, or Query integration — without TanStack Start server/SSR topics.
+  loaders, Query integration, or client mutations (useMutation vs Form
+  onSubmit) — without TanStack Start server/SSR topics.
 disable-model-invocation: true
 ---
 
@@ -21,6 +22,7 @@ Stack conventions for **TanStack Router** apps (Vite SPA or the router layer of 
 - Configuring `router.tsx` (`parseSearch`, `stringifySearch`, trailing slash)
 - Viewport URL param `?map=zoom/lat/lng` (parse/serialize, validateSearch)
 - Loader + React Query integration (client-side)
+- Client mutations: `useMutation` vs Form `onSubmit` (delete, revoke, import, one-shot buttons)
 - Typed `Link`, `useParams` / `useSearch`, `getRouteApi`
 - Installing the TanStack devtools debug panel
 
@@ -31,7 +33,7 @@ Stack conventions for **TanStack Router** apps (Vite SPA or the router layer of 
 1. [router-search-serialization.md](references/router-search-serialization.md) — **required** `parseSearch` / `stringifySearch`, pretty JSON URLs, per-param encodings, optional jsurl
 2. [map-search-param.md](references/map-search-param.md) — `?map=zoom/lat/lng` (tilda-geo format, rounding, validateSearch)
 3. [params-search-ui-routes.md](references/params-search-ui-routes.md) — Zod `validateSearch` on UI routes
-4. [router-and-query.md](references/router-and-query.md) — Query options, loaders, router defaults
+4. [router-and-query.md](references/router-and-query.md) — Query options, loaders, client mutations, router defaults
 5. [router-typescript.md](references/router-typescript.md) — typed hooks, `from`, `Link` params, `Register`
 6. [devtools.md](references/devtools.md) — unified TanStack debug panel
 
@@ -53,6 +55,8 @@ Stack conventions for **TanStack Router** apps (Vite SPA or the router layer of 
 **Multi-query joins:** Prefer a server/API join. On the client, default to composing in a wrapper hook; only put derivation in `queryFn` / `fetchQuery` when many consumers share an expensive join — [router-and-query.md](references/router-and-query.md#derived--combined-query-data).
 
 **Search writes:** Prefer `replace: true` for filters/toggles; set keys to `undefined` to clear; use a route-local `updateSearch` wrapper — [router-search-serialization.md](references/router-search-serialization.md).
+
+**Form vs mutation:** Non-form actions (delete, revoke, import, one-shot buttons) → `useMutation`. Form submits → TanStack Form `onSubmit` (do not wrap in `useMutation`). Do not use `useTransition` for deletes. — [router-and-query.md](references/router-and-query.md#client-mutations).
 
 ## Related skills
 

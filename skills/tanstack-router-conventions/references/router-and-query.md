@@ -14,6 +14,8 @@ How we combine route loaders with React Query. Setup lives in `router.tsx` (`que
 | Data only for one route, no Query invalidation (most admin CRUD)         | Loader returns serializable data → `routeApi.useLoaderData()`                                 |
 | Redirects, auth, light context                                           | `beforeLoad`                                                                                  |
 | UI needs a join of several Query-backed sources                          | Prefer a server/API join; else [Derived / combined Query data](#derived--combined-query-data) |
+| Non-form action (delete, revoke, import, trigger hook, one-shot button)  | `useMutation` — [Client mutations](#client-mutations)                                         |
+| Form submit                                                              | TanStack Form `onSubmit` — do **not** wrap in `useMutation`                                   |
 
 Do **not** read Query-backed data only via `useLoaderData`. Query needs an observer (`useQuery` / `useSuspenseQuery`) for refetch, invalidation, and cache retention.
 
@@ -61,6 +63,37 @@ When a screen needs a value built from **several** endpoints (or several `*Query
 Avoid inventing a derived QueryCache key unless many consumers share the same expensive join **and** you accept either lost granularity (`Promise.all`) or manual invalidation (`fetchQuery`). Prefer prop-drilling or a small parent-owned composition over mounting the same derived hook in every list row.
 
 **Further reading:** [nop33 — Combining TanStack Query data](https://www.nop33.com/blog/combining-tanstack-query-data/) (decision table + trade-offs), TkDodo discussion [Derived Queries](https://github.com/TanStack/query/discussions/2178).
+
+## Client mutations
+
+| Action                                                 | Pattern                                                                                             |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| Delete, revoke, import, trigger hook, one-shot buttons | `useMutation`                                                                                       |
+| Form submit                                            | TanStack Form `onSubmit` — do **not** wrap in `useMutation` (`isSubmitting` already tracks pending) |
+
+Do **not** use `useTransition` for deletes or other non-form actions. `mutationFn` calls the API (or `createServerFn` on Start) and **throws** on `{ success: false }`. `onSuccess`: invalidate Query (+ `router.invalidate()` when loaders need it) and toast. Retries, optimistic updates, and `useMutationState` are available later without a rewrite.
+
+Pass `mutateAsync` into UI that already takes a `Promise` (confirm/delete buttons). One mutation per table is shared — `isPending` is not per row; keep the spinner on the button that awaited `mutateAsync`.
+
+If the callback is typed `() => Promise<void>` and `mutateAsync` returns a record, wrap so the Promise resolves to nothing: `async () => { await x.mutateAsync(…) }`. Direct `() => x.mutateAsync(…)` is fine when `mutationFn` already returns `void`. Do not widen the shared button type to carry mutation data.
+
+```tsx
+const deleteItem = useMutation({
+  mutationFn: async (id: string) => {
+    const result = await deleteItemApi(id) // or deleteItemFn({ data: { id } })
+    if (!result.success) throw new Error(result.message)
+  },
+  onSuccess: async () => {
+    await queryClient.invalidateQueries({ queryKey: itemsQueryKey })
+    await router.invalidate()
+    toastSuccess('Deleted.')
+  },
+})
+
+<ConfirmButton onConfirm={() => deleteItem.mutateAsync(id)} />
+```
+
+Start server-fn details: `tanstack-start-conventions` → [server-functions.md](../../tanstack-start-conventions/references/server-functions.md).
 
 ---
 
