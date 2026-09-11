@@ -52,7 +52,7 @@ Copy [examples/astro.config.example.mjs](examples/astro.config.example.mjs) into
 - `loadEnv` from Vite (`.env` is not auto-loaded into `astro.config.mjs`)
 - `output: 'static'` — Astro v5+ removed `hybrid`; static sites can still use on-demand routes with an adapter ([on-demand rendering](https://docs.astro.build/en/guides/on-demand-rendering/))
 - Conditional `keystatic()` via `ASTRO_ENABLE_KEYSTATIC` — off for static production CI builds
-- Netlify `adapter` via `ASTRO_USE_NETLIFY_ADAPTER`
+- Netlify `adapter` via `ASTRO_USE_NETLIFY_ADAPTER` — SSR functions need their own Bun install config ([tech-stack → bun-install.md](../tech-stack/references/bun-install.md#netlify-ssr-and-function-packaging))
 - `env.schema` for typed env vars used in config and client code
 
 Pair with the matching `.env` example for each deploy target:
