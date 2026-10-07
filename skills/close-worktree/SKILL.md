@@ -3,8 +3,9 @@ name: close-worktree
 description: >-
   Close a git worktree session: ensure a clean tree (via finish-work if dirty),
   review branch-related stashes, preserve keepable untracked files onto develop,
-  rebase the feature branch onto develop and fast-forward develop, then remove
-  the worktree and local branch. Use when closing a worktree, landing a feature
+  rebase the feature branch onto develop and fast-forward develop, clean up the
+  worktree's own dev server and Docker stack, then remove the worktree and local
+  branch. Use when closing a worktree, landing a feature
   branch into develop, cleaning up after a worktree session, or finishing a
   parallel worktree.
 disable-model-invocation: true
@@ -33,8 +34,9 @@ targets one worktree.
 - [ ] Step 3: Review stashes related to this branch (stop if any)
 - [ ] Step 4: Preserve keepable untracked files onto develop
 - [ ] Step 5: Rebase onto develop, fast-forward develop
-- [ ] Step 6: Remove worktree + delete local feature branch
-- [ ] Step 7: Summarize and point user at the develop checkout
+- [ ] Step 6: Stop and remove the worktree's own runtime (dev server, Docker stack)
+- [ ] Step 7: Remove worktree + delete local feature branch
+- [ ] Step 8: Summarize and point user at the develop checkout
 ```
 
 Abort on any stop condition below. Do not push unless the user explicitly asks.
@@ -169,7 +171,57 @@ git -C <develop-checkout> stash pop
 
 If the pop conflicts, stop and hand it to the user.
 
-## Step 6: Cleanup
+## Step 6: Worktree runtime (dev server, Docker stack)
+
+A worktree often has its own dev server and its own Docker Compose project
+(containers, network, database volume). Removing the folder does not stop or
+delete them — they keep ports and disk space until someone cleans them up.
+
+Do this **before** Step 7: the stack id usually lives in a worktree-only file
+(`.env.local`, compose override) that is gone once the worktree is removed.
+
+1. **Find what belongs to this worktree only.** Read the stack / compose project
+   name from the worktree's env, then list its resources:
+
+   ```bash
+   docker ps -a --format '{{.Names}}\t{{.Status}}' | grep <stack-id>
+   docker volume ls --format '{{.Name}}' | grep <stack-id>
+   docker network ls --format '{{.Name}}' | grep <stack-id>
+   ```
+
+   Also note a dev server started from this worktree (its port, who started it).
+
+2. **Never touch a stack this worktree only attached to** (the develop stack, or
+   another worktree's). Shared stacks stay as they are.
+
+3. **Decide whether anything would be lost:**
+
+   | Volume content                                                                                                                            | Action                                                        |
+   | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+   | Reproducible: seeded, or copied from another stack, nothing created in it that exists only there                                          | Remove without asking                                         |
+   | Possibly unique: hand-entered data, long processing or import results, diff/reference tables, anything the user may still want to look at | **Ask first** with the ask-question tool, then remove or keep |
+   | Unknown origin (you did not create the stack and cannot tell)                                                                             | Treat as possibly unique — ask                                |
+
+   When asking, name the stack, the volume size, and what would be lost; offer
+   "remove", "keep the volume, remove containers", and "keep everything".
+
+4. **Remove** (only this stack's names — no `docker system prune`, no
+   `docker volume prune`):
+
+   ```bash
+   # stop the worktree's dev server first (the tool or terminal that started it)
+   docker rm -f <stack-id>_<service> …
+   docker volume rm <stack-id>_<volume> …
+   docker network rm <stack-id>_default
+   ```
+
+   Verify with the three list commands from 1 that nothing with the stack id is
+   left, and that other stacks are still running.
+
+No runtime of its own (no stack id, attach-only, nothing running): skip this
+step and say so in the summary.
+
+## Step 7: Cleanup
 
 Only after develop contains the feature commits:
 
@@ -188,7 +240,7 @@ git -C <develop-checkout> branch -d <feature-branch>
 
 Confirm with `git worktree list` and `git branch` that both are gone.
 
-## Step 7: Summary
+## Step 8: Summary
 
 Use this shape (adapt facts; keep terse):
 
@@ -208,6 +260,8 @@ N `<feature>` commits. `develop` is now at `<short-sha>` (ahead of
 
 - Removed worktree `<worktree-name>`
 - Deleted local branch `<feature>`
+- Docker stack `<stack-id>`: removed containers, volume, network — or what was
+  kept and why
 
 **Note:** … (stashes restored, unrelated develop dirt, etc.)
 
@@ -221,6 +275,8 @@ Continue in `<develop-checkout-path>` on `develop`.
   confirmation.
 - No deleting remote branches unless asked.
 - Do not copy secrets or worktree-only stack config onto develop.
+- Docker: remove only resources named after this worktree's stack; ask before
+  deleting a volume whose content is not reproducible; never prune globally.
 - Stop for human review on dirty trees (after finish-work), related stashes, an
   upstream/open PR, or non-FF lands.
 
