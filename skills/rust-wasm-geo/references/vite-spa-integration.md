@@ -38,7 +38,7 @@ Add to app scripts:
 ```json
 {
   "scripts": {
-    "wasm:build": "wasm-pack build --target web --out-dir src/features/isochrone/pkg",
+    "wasm:build": "cd wasm/geo-isochrone && wasm-pack build --target web --out-dir ../../src/features/isochrone/pkg",
     "dev": "bun run wasm:build && vite",
     "build": "bun run wasm:build && vite build"
   }

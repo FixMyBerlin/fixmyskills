@@ -164,7 +164,7 @@ export async function handleProjectUploadRoute(request: Request, projectSlug: st
         assertSupportedUploadMimeTypes(files)
       },
     })
-    return handleRequest(request, router)
+    return await handleRequest(request, router)
   } catch (error) {
     return uploadErrorResponse(error)
   }

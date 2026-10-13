@@ -210,7 +210,7 @@ Do this **before** Step 7: the stack id usually lives in a worktree-only file
 
    ```bash
    # stop the worktree's dev server first (the tool or terminal that started it)
-   docker rm -f <stack-id>_<service> …
+   docker rm -f <stack-id>-<service>-1 …   # container names exactly as listed in 1
    docker volume rm <stack-id>_<volume> …
    docker network rm <stack-id>_default
    ```

@@ -13,7 +13,7 @@ Call your debug helper from **`onLoad`** when the map is ready (see [map-loaded-
 ```tsx
 import type { MapLibreEvent } from 'maplibre-gl'
 import { Map } from 'react-map-gl/maplibre'
-import { exposeMainMapForDebugging } from '~/lib/playwright'
+import { exposeMainMapForDebugging } from '@/components/shared/utils/playwright'
 
 const handleLoad = (event: MapLibreEvent) => {
   exposeMainMapForDebugging(event.target)

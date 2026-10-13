@@ -1,6 +1,5 @@
 ---
 name: react-dev
-version: 3.0.0
 description: >-
   React 19 + TypeScript for FMC TanStack Start apps: typed components, events,
   generics, ref-as-prop, Compiler-first memoization, and useEffect discipline
@@ -46,7 +45,7 @@ Docs: [React Compiler](https://react.dev/learn/react-compiler.md) · [Rules of R
 | Effects, naming, when not to use Effect | `react-dev`                                                                                                        |
 | Routes, loaders, `validateSearch`       | `tanstack-router-conventions`                                                                                      |
 | SSR, server functions, Start layout     | `tanstack-start-conventions`                                                                                       |
-| Folder layout, thin routes (Start)      | `tanstack-start-conventions` → `app-structure.md`                                                                  |
+| Folder layout, thin routes (Start)      | `tanstack-start-conventions` → [app-structure.md](../tanstack-start-conventions/references/app-structure.md)       |
 | `createServerFn`, server mutations      | `tanstack-start-conventions` → [server-functions.md](../tanstack-start-conventions/references/server-functions.md) |
 | Client stores                           | `zustand-state-management`                                                                                         |
 | URL state (prefer router search)        | `tanstack-router-conventions`                                                                                      |
@@ -198,14 +197,13 @@ If the honest name sounds like **internal React bookkeeping**, the code often be
 | User event responses           | `useEffect` watching state     | Event handler directly                                                              |
 | Persist/sync on dismiss        | `useEffect` on `isOpen`        | Dismiss handler (or `onCloseComplete`)                                              |
 | Notify parent of changes       | `useEffect` calling `onChange` | Call in event handler                                                               |
-| Fetch data                     | `useEffect` without cleanup    | `useEffect` with cleanup OR framework (loaders/Query)                               |
+| Fetch data                     | `useEffect` without cleanup    | Route loaders + React Query (no `useEffect` fetch)                                  |
 
 ### When you DO need Effects
 
 - Synchronizing with **external systems** (non-React widgets, browser APIs, map SDKs)
 - **Subscriptions** to external stores (`useSyncExternalStore` when it fits)
 - **Analytics/logging** tied to display
-- **Data fetching** with proper cleanup when framework fetch is not available
 
 **Strict Mode (dev):** Effects run setup twice on mount to surface missing cleanup. Add teardown for subscriptions, timers, and fetches — see [Anti-Patterns §8–9](references/anti-patterns.md#8-fetching-without-cleanup-race-condition).
 

@@ -69,7 +69,7 @@ Astro: [Environment variables](https://docs.astro.build/en/guides/environment-va
 
 ## Dual-file pattern (required)
 
-Every content type gets **two paired files**:
+Every Keystatic-managed collection gets **two paired files**:
 
 | File                     | Exports                                                           | Role                                                    |
 | ------------------------ | ----------------------------------------------------------------- | ------------------------------------------------------- |
@@ -239,7 +239,7 @@ Pick a pattern based on CMS visibility, API reliability at build time, and wheth
 | **C. Fetch-to-disk + glob**        | Yes (readonly) | Written each build           | Editors reference slugs; data visible in CMS |
 | **D. Local mirror + remote merge** | Local only     | Local JSON in `src/content/` | Same page template for CMS and API sources   |
 
-Remote collections register **only** in `src/content.config.ts`, not in `keystatic.config`.
+Remote collections register **only** in `src/content.config.ts`, not in `keystatic.config` — except pattern C, which adds a readonly Keystatic collection.
 
 For implementation details, decision flow, and merge patterns, see [remote-collections.md](references/remote-collections.md).
 

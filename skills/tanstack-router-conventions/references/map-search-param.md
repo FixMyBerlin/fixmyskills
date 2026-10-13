@@ -102,7 +102,7 @@ encodeURIComponent(serializeMapParam({ zoom, lat, lng }))
 serializeMapParam({ zoom, lat, lng })
 ```
 
-Wire Layer 1 pretty `parseSearch` / `stringifySearch` in `router.tsx` ([router-search-serialization.md](router-search-serialization.md)). If `map` ever goes through JSON stringify as a string value, also decode `%2F` → `/` in `makeSearchPretty`. Prefer a dedicated string param (this format) so `/` stays literal without JSON quotes.
+Wire Layer 1 pretty `parseSearch` / `stringifySearch` in `router.tsx` ([router-search-serialization.md](router-search-serialization.md)). `makeSearchPretty` there decodes `%2F` → `/`; without that replacement the default stringify emits `map=13.5%2F52.4918%2F13.4261`.
 
 ---
 

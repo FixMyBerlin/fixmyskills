@@ -67,7 +67,7 @@ Register the router for global link/search inference (app `router.tsx`):
 ```typescript
 declare module '@tanstack/react-router' {
   interface Register {
-    router: typeof router
+    router: ReturnType<typeof getRouter>
   }
 }
 ```

@@ -45,11 +45,11 @@ Keep `routes/` limited to route definitions. TanStack Router supports a **`-`** 
 
 Put shared helpers next to their domain under `server/`:
 
-| Kind                        | Location                                                              |
-| --------------------------- | --------------------------------------------------------------------- |
-| Query options               | `server/<domain>/queries/` or `*QueryOptions.ts` in the domain folder |
-| URL search schemas (shared) | `server/<domain>/searchSchemas.ts` or `server/shared/<name>Search.ts` |
-| Route-only search schema    | Inline `const` in the route file                                      |
+| Kind                        | Location                                                                |
+| --------------------------- | ----------------------------------------------------------------------- |
+| Query options               | `server/<domain>/queries/` or `*QueryOptions.ts` in the domain folder   |
+| URL search schemas (shared) | `shared/<domain>/searchSchemas.ts` or `shared/routing/` (cross-cutting) |
+| Route-only search schema    | Inline `const` in the route file                                        |
 
 Routes and components may import `searchSchemas.ts` (not `*.server.ts`). Import paths stay short and `routes/` stays obviously route-only.
 
@@ -70,7 +70,7 @@ Route files must always import and call server Fns in `loader`/`beforeLoad`; the
 
 Consequence: **any server round-trip in `beforeLoad` runs on every search-param change.** For a route whose search params are high-frequency and client-only (map viewport, feature selection, layer toggles), a redirect resolver or auth check that hits the DB in `beforeLoad` turns every client-side interaction into a server request — and can flash the `pendingComponent` / remount the map on a spurious redirect.
 
-**Rule for hot routes (map pages, anything with client-only search state):** put the redirect + auth + region resolution in the **`loader`** and keep those client-only params **out of `loaderDeps`**. The loader then runs on entry / path change / the params you _did_ list (e.g. `qa`), but **not** on map pans or layer toggles — so client-only params stay client-only (no round-trip, no pending). If you do this, decouple the `pendingComponent` (and any `useRouterState` / `useRouteContext` reader) from `beforeLoad` context — read `region` from `loaderData`, not route context. Reference: `routes/regionen/$regionSlug.tsx` in tilda-geo.
+**Rule for hot routes (map pages, anything with client-only search state):** put the redirect + auth + region resolution in the **`loader`** and keep those client-only params **out of `loaderDeps`**. The loader then runs on entry / path change / the params you _did_ list (e.g. `qa`), but **not** on map pans or layer toggles — so client-only params stay client-only (no round-trip, no pending). If you do this, decouple the `pendingComponent` (and any `useRouterState` / `useRouteContext` reader) from `beforeLoad` context — read `region` from `loaderData`, not route context. Reference: `routes/regionen/$regionSlug/route.tsx` in tilda-geo.
 
 Keep the `beforeLoad` default (light redirect/auth) for ordinary routes where navigations are path changes, not high-frequency search-param writes.
 

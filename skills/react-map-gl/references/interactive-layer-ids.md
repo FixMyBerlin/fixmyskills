@@ -98,4 +98,4 @@ Secondary maps that should not pick features:
 - [ ] Every pickable layer’s `id` is included in `interactiveLayerIds` when that layer should receive clicks/hover.
 - [ ] Toggle visibility via config/URL updates **both** layer visibility and `interactiveLayerIds` (hidden layers should drop out of the list when they should not be clickable).
 - [ ] Use `event.features` in handlers; avoid duplicate `queryRenderedFeatures` on click unless loading from URL.
-- [ ] Features need stable `feature.id` (integer) for selection/hover state — MapLibre drops non-integer ids unless `promoteId` is set on the source.
+- [ ] Features need stable `feature.id` for selection/hover state — MapLibre drops non-integer ids on vector tiles unless `promoteId` is set on the source.

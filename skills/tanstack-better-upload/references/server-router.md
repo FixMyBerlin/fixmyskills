@@ -81,7 +81,7 @@ const params = SurveyUploadParamsSchema.safeParse({
   surveyResponseId: clientMetadata?.surveyResponseId,
   surveySessionId: clientMetadata?.surveySessionId,
 })
-if (!params.success) throw new Error('Missing or invalid survey session')
+if (!params.success) throw new RejectUpload('Missing or invalid survey session')
 ```
 
 Validate metadata with Zod in `onBeforeUpload`, not on the client alone.

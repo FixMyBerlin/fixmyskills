@@ -43,13 +43,15 @@ Read [`docs/user-changelog.md`](references/user-changelog.md) (project path). Th
 - **Start this run:** `def5678` (`bis` from the latest section)
 - **End:** `HEAD` — omit in `git log` (`<FROM>..`); use `git rev-parse --short HEAD` for the new heading’s `bis` SHA
 
-To resolve `FROM` before `git log` (optional — same result as reading the file):
+To resolve `FROM` in the shell (same result as reading the file):
 
 ```bash
 FROM=$(grep -m1 '^## Zusammenfassung von' docs/user-changelog.md 2>/dev/null \
-  | sed -E 's/.*bis `([^`]+)`.*/\1/')
+  | sed -E 's/.*bis `([^`]+)`.*/\1/'); echo "FROM=$FROM"
 # FROM empty → first run (ask user for a start SHA/tag/range)
 ```
+
+Shell variables do not survive between agent tool calls: use the printed SHA literally in Step 2 (an empty `FROM` there makes `git log ..` print nothing, which looks like an empty week).
 
 **First run** (`FROM` empty — file missing, empty, or no heading): ask the user — e.g. since tag `v1.2.0`, last 2 weeks, or an explicit SHA. Do not guess.
 
@@ -60,7 +62,7 @@ FROM=$(grep -m1 '^## Zusammenfassung von' docs/user-changelog.md 2>/dev/null \
 Use **`--reverse`** (oldest first): work landed in that order, follow-up commits for the same feature usually come later, and merging several commits into one bullet is easier when reading forward in time. Write bullets in the same order.
 
 ```bash
-git log "${FROM}".. --no-merges --reverse \
+git log <FROM>.. --no-merges --reverse \
   --format='%h%n%s%n%b%n---'
 ```
 
@@ -111,7 +113,7 @@ Only when the user explicitly asks to commit — follow [finish-work](../finish-
 ```bash
 git add docs/user-changelog.md
 git commit -m "$(cat <<'EOF'
-Docs: Update changelog notes
+Dev: Update user changelog
 
 Summary def5678..f0a1b2c
 EOF

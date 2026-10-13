@@ -11,11 +11,13 @@ Pair with `tanstack-start-conventions`.
 Same as SPA — add to `vite.config.ts`:
 
 ```typescript
-import wasm from 'vite-plugin-wasm'
+import { tanstackStart } from '@tanstack/react-start/plugin/vite'
+import { defineConfig } from 'vite'
 import topLevelAwait from 'vite-plugin-top-level-await'
+import wasm from 'vite-plugin-wasm'
 
 export default defineConfig({
-  plugins: [, /* start plugin */ wasm(), topLevelAwait()],
+  plugins: [tanstackStart(), wasm(), topLevelAwait()],
   optimizeDeps: { exclude: ['geo-isochrone'] },
 })
 ```
@@ -39,7 +41,7 @@ Keep the WASM dependency graph **leaf-only**: map feature folder → `wasm.ts` �
 
 ## SSR and route `ssr`
 
-WASM requires `WebAssembly` in the browser — it does not run in Node SSR.
+We run WASM in the browser only: the `--target web` glue loads the `.wasm` via `fetch`/URL, which does not work in the SSR server bundle as-is.
 
 | Route pattern                               | `ssr`         | WASM init                                              |
 | ------------------------------------------- | ------------- | ------------------------------------------------------ |

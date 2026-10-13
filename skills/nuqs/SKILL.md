@@ -109,7 +109,7 @@ These are easy to miss; full behavior is in upstream docs.
 
 1. **Typed parsers** — URL values are strings; use `parseAsInteger`, `parseAsBoolean`, etc., or you get string math and hydration issues.
 2. **`withDefault`** — Prefer over nullable state when a param should always have a value in UI.
-3. **`useQueryStates`** — Batch related params (filters, lat/lng/zoom) to avoid multiple history entries.
+3. **`useQueryStates`** — Batch related params (filters, lat/lng/zoom) into one URL update. Default history is `replace`; pass `history: 'push'` when back-button entries are wanted.
 4. **`null` setter** — Removes param from URL; pair with `value={q ?? ''}` for controlled inputs.
 5. **`clearOnDefault`** — Default `true` keeps URLs short; set `false` only if the param must stay visible at default.
 6. **`createSearchParamsCache`** — Call `parse(searchParams)` once at the page, then `get()` in child Server Components.

@@ -101,7 +101,7 @@ This is not fixable in `dependabot.yml` or a workflow — do not try. **We keep 
 1. Take package, directory and fixed version from the alert list above.
 2. Direct dependency: set the fixed version in `package.json`, then `bun install` in that directory. Transitive (`bun why <package>`): bump the parent, or use **AskUserQuestion** before adding an `overrides` entry.
 3. Risk tier is **medium** minimum, as for any security update; read the advisory (`gh api repos/{owner}/{repo}/dependabot/alerts/<number>`) since there is no PR body.
-4. Run the project check, commit as `chore(deps): bump <package> to <version>` with a line saying it is a security fix, and push the way the repo normally takes changes.
+4. Run the project check, commit via skill `finish-work` as `Dev: Bump <package> to <version>` with a body line saying it is a security fix, and push the way the repo normally takes changes.
 5. Confirm the alert list is empty and the next push has no failed `npm_and_yarn` run.
 
 ### 5. When to use AskUserQuestion

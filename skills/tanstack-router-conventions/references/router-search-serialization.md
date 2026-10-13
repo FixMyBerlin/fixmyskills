@@ -71,6 +71,7 @@ const makeSearchPretty = (searchString: string) =>
     .replaceAll('%5D', ']')
     .replaceAll('%7B', '{')
     .replaceAll('%7D', '}')
+    .replaceAll('%2F', '/')
 
 export const routerSearch = {
   parse: parseSearch,

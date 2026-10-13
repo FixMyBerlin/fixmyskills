@@ -1,6 +1,6 @@
 # Agent orchestration (merge into CLAUDE.md)
 
-Copy the sections below into project or global `CLAUDE.md`. Full guide: fixmyskills `agent-orchestration` → [claude-code.md](references/claude-code.md).
+Copy the sections below into project or global `CLAUDE.md`. Full guide: fixmyskills `agent-orchestration` → [claude-code.md](https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/agent-orchestration/references/claude-code.md).
 
 ---
 
@@ -38,9 +38,9 @@ Claude Code subagent/workflow `model:` only accepts **Claude** models. To use **
 Prerequisite: `cursor-agent` on PATH.
 
 ```bash
-WS="--workspace $(git rev-parse --show-toplevel) --model 'cursor-grok-4.6-low[fast=false]' --output-format json"
-cursor-agent -p --mode ask $WS "Review prompt."   # review / Q&A (read-only)
-cursor-agent -p --force    $WS "Implement prompt." # edits + shell
+WS=(--workspace "$(git rev-parse --show-toplevel)" --model 'cursor-grok-4.6-low[fast=false]' --output-format json)
+cursor-agent -p --mode ask "${WS[@]}" "Review prompt."   # review / Q&A (read-only)
+cursor-agent -p --force    "${WS[@]}" "Implement prompt." # edits + shell
 ```
 
 `--force` auto-approves tools (headless has no prompt); `--trust` alone only trusts the workspace. `--mode plan` for read-only investigation. Add `--worktree <slug>` for parallel isolated edits.

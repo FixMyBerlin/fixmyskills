@@ -15,6 +15,7 @@ Install react-dropzone in [first-time-setup.md](first-time-setup.md) when this d
 ## Core wiring
 
 ```tsx
+import { useId } from 'react'
 import { useDropzone } from 'react-dropzone'
 import type { UploadHookControl } from '@better-upload/client'
 
@@ -44,10 +45,11 @@ function UploadDropzoneProgress({
   })
 
   const inputProps = getInputProps()
+  const inputId = useId()
 
   return (
-    <label {...getRootProps()} htmlFor={id}>
-      <input {...inputProps} type="file" multiple accept={accept} disabled={isPending} />
+    <label {...getRootProps()} htmlFor={inputId}>
+      <input {...inputProps} id={inputId} type="file" multiple accept={accept} disabled={isPending} />
       {/* drag overlay when isDragActive */}
       {/* progress list from progresses */}
     </label>
