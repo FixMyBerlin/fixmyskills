@@ -7,7 +7,6 @@ description: >-
   validateSearch, search serialization, and loader + Query patterns. Use when
   scaffolding or refactoring Start apps, server functions, SSR, renderServerComponent,
   or API routes under routes/api/.
-disable-model-invocation: true
 ---
 
 # TanStack Start conventions
@@ -47,7 +46,7 @@ Auth-specific flows: skill `tanstack-start-auth`.
 
 | Topic                 | Rule                                                                                                                                                                                  |
 | --------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Server-only modules   | `*.server.ts` — never imported by routes/components; use `createServerOnlyFn` inside                                                                                                  |
+| Server-only modules   | `*.server.ts` — never imported by routes/components (exceptions: `routes/api/` and handler-only routes without a component); use `createServerOnlyFn` inside                          |
 | Callable from client  | `*.functions.ts` with `createServerFn`; name exports `*Fn`                                                                                                                            |
 | Public server fns     | `public*.functions.ts` — no global auth middleware; rate-limit/token checks in `.server.ts` (see `tanstack-start-auth`)                                                               |
 | API route files       | No `server-only` import marker on the route file; server-only logic inside handlers or tree-shaken imports                                                                            |

@@ -33,7 +33,7 @@ The same rule applies to **route components**: do not `await db` or read secrets
 
 `createServerFn` handlers run **directly on the server** when called from a server context. When called from the client (including a loader during soft nav), the call becomes a **typed RPC request**.
 
-Route files and components import `*.functions.ts` exports — never `*.server.ts` directly. See [client-server-boundaries.md](client-server-boundaries.md).
+Route files and components import `*.functions.ts` exports — never `*.server.ts` directly (exceptions: `routes/api/` and handler-only routes without a component). See [client-server-boundaries.md](client-server-boundaries.md).
 
 ---
 

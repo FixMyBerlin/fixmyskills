@@ -44,10 +44,10 @@ That is the RPC shape. Loaders call `*Fn` directly. In components, wrap non-form
 
 ## FMC file conventions
 
-| Suffix           | Purpose                                                                                             |
-| ---------------- | --------------------------------------------------------------------------------------------------- |
-| `*.server.ts`    | Server-only modules; use `createServerOnlyFn` for exports — **never** imported by routes/components |
-| `*.functions.ts` | `createServerFn` exports (`*Fn` naming); imported by routes and components                          |
+| Suffix           | Purpose                                                                                                                                                                     |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `*.server.ts`    | Server-only modules; use `createServerOnlyFn` for exports — **never** imported by routes/components (exceptions: `routes/api/` and handler-only routes without a component) |
+| `*.functions.ts` | `createServerFn` exports (`*Fn` naming); imported by routes and components                                                                                                  |
 
 Example layout:
 
