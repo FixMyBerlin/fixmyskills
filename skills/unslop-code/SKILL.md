@@ -24,7 +24,7 @@ Orchestrate only. Do not implement, grep the tree yourself, or commit. Spawn sub
 
 ## Models
 
-Workers are the Haiku `high` agents from [model-policy](../model-policy/SKILL.md); they pin model, effort and a 100k compaction window, so do not pass `model` or `effort` for them. Without model-policy installed, use `subagent_type: general-purpose`, `model: haiku`, `effort: high` (verifier: no edits) — this skill explicitly asks for that effort.
+Workers are the agents from [model-policy](../model-policy/SKILL.md): Haiku `high`, compacting at 100k, so pass no `model` or `effort` for them. If the Agent tool lists no `implementer`, model-policy is not installed: pass `model: haiku`, `effort: high` on every worker call (this skill explicitly asks for that effort), including `Explore` — the built-in one otherwise runs on the session model — and use `general-purpose` in place of `implementer` and `verifier` (verifier: no edits).
 
 | Role               | Agent call                   |
 | ------------------ | ---------------------------- |
@@ -33,7 +33,7 @@ Workers are the Haiku `high` agents from [model-policy](../model-policy/SKILL.md
 | Implementer        | `subagent_type: implementer` |
 | Verifier           | `subagent_type: verifier`    |
 
-Keep each worker brief small enough that the worker stays under ~100k tokens of context; split a phase by folder before it gets bigger. When a Haiku worker returns wrong or shallow work, re-run that one brief as `general-purpose`, `model: sonnet`, `effort: high` and say so in chat. A worker that went over 100k but did the work right needs no re-run. No `xhigh` unless the user names it, never `low` or `max`, no Fable.
+Keep each worker brief small enough that the worker stays under ~100k tokens of context; split a phase by folder before it gets bigger. When a Haiku worker returns wrong or shallow work, re-run that one brief as `general-purpose`, `model: sonnet`, `effort: high` and say so in chat. A worker that went over 100k but did the work right needs no re-run. The rest of the model and effort policy is the model-policy rule.
 
 Each phase below is its **own** orchestrated unit: explore → implementer → verifier → **separate** [finish-work](../finish-work/SKILL.md) commit. Do not batch phases into one worker.
 
