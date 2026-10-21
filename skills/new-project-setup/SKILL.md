@@ -1,16 +1,16 @@
 ---
 name: new-project-setup
 description: >-
-  Orchestrate greenfield FixMyBerlin/FMC repo bootstrap: plan which fixmyskills
-  to install, git init, AGPL license, three finish-work commits. Use when
-  scaffolding a new project or onboarding a new repo. Delegates to finish-work
-  and tech-stack — do not duplicate their steps.
+  Orchestrate greenfield FixMyBerlin/FMC repo bootstrap: git init, AGPL license,
+  dev tooling, two finish-work commits. Use when scaffolding a new project or
+  onboarding a new repo. Delegates to finish-work and tech-stack — do not
+  duplicate their steps.
 disable-model-invocation: true
 ---
 
 # New FMC project setup
 
-Orchestration only. Read sibling skills for how-to; this skill defines **order**, **plan defaults**, and **three commits**.
+Orchestration only. Read sibling skills for how-to; this skill defines **order**, **plan defaults**, and **two commits**. fixmyskills are installed globally (see the repo README), not per project — do not install skills into the new repo.
 
 ## Plan
 
@@ -20,7 +20,7 @@ Present the checklist below; confirm all **ask** items before executing.
 
 | Action    | Meaning                                 |
 | --------- | --------------------------------------- |
-| `default` | Do/install unless the user overrides    |
+| `default` | Do unless the user overrides            |
 | `ask`     | Confirm with the user first             |
 | `skip`    | Omit unless the user asks               |
 | `report`  | Summary only — do not install or commit |
@@ -30,22 +30,7 @@ Present the checklist below; confirm all **ask** items before executing.
 - `git init` — **default** when no `.git`; **skip** when repo exists
 - AGPL-3.0 `LICENSE.md` — **default**; **ask** copyright holder if unknown (README only)
 
-**Skills — default** (`bunx skills add FixMyBerlin/fixmyskills … -a claude-code -y`)
-
-- `finish-work`, `tech-stack`
-- `react-dev` — TanStack/React; **skip** non-UI
-- `tanstack-router-conventions` — TanStack Router (SPA or Start); **skip** non-TanStack
-- `tanstack-start-conventions` — TanStack Start only; **skip** for Router SPA and other frameworks
-- `review-dependabot` — GitHub FMC; **skip** non-GitHub
-
-**Skills — ask**
-
-- `react-map-gl` — maps? (**skip** when no maps)
-- `tanstack-start-auth` — auth? (**skip** unless Start) · `playwright-skill` — E2E? · `prisma` — DB?
-- `zustand-state-management` — client global state? · `user-changelog` — public releases?
-- `rust-wasm-geo` — WASM geo? · `tanstack-better-upload` — S3 uploads? (**skip** unless Start)
-
-**Dev tooling — default:** skill `tech-stack` (**skip** empty meta-repo). **Ask/report:** CI now or later; MCP → **report** user-scope `claude mcp add --scope user` only; `touch-ipad-review` / `unslop-code` / `unslop-text` → **report** on-demand.
+**Dev tooling — default:** skill `tech-stack` (**skip** empty meta-repo). **Ask/report:** CI now or later; MCP → **report** user-scope `claude mcp add --scope user` only; `touch-ipad-review` / `unslop-code` → **report** on-demand.
 
 ## Run order
 
@@ -53,8 +38,7 @@ Present the checklist below; confirm all **ask** items before executing.
 - [ ] Plan confirmed
 - [ ] git init (if needed)
 - [ ] License → finish-work commit 1
-- [ ] Skills → finish-work commit 2
-- [ ] Dev tooling → finish-work commit 3
+- [ ] Dev tooling → finish-work commit 2
 - [ ] Summary
 ```
 
@@ -62,8 +46,9 @@ Present the checklist below; confirm all **ask** items before executing.
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------ |
 | Git         | `test -d .git \|\| git init`                                                                                                   | —                              |
 | License     | Verbatim AGPL-3.0 as [tilda-geo LICENSE.md](https://github.com/FixMyBerlin/tilda-geo/blob/develop/LICENSE.md); README links it | **finish-work** → commit **1** |
-| Skills      | `bunx skills add …` per plan                                                                                                   | **finish-work** → commit **2** |
-| Dev tooling | bunfig, oxc, dependabot, tsconfig, vscode when `package.json` exists                                                           | **tech-stack** → commit **3**  |
+| Dev tooling | bunfig, oxc, dependabot, tsconfig, vscode when `package.json` exists                                                           | **tech-stack** → commit **2**  |
 | Each commit | Separate commit; never batch                                                                                                   | **finish-work**                |
 
-End with summary: installed skills, skipped items, follow-ups, three commit SHAs.
+Commit 1 happens before `package.json` exists, so there is no `check` script yet: use finish-work's commit message format only and skip the check.
+
+End with summary: skipped items, follow-ups, two commit SHAs.
