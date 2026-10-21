@@ -24,7 +24,7 @@ const spec: LayerSpec = { id, paint }
 
 A type annotation is not a cast. `const foo: Foo = …` declares the shape and is fully checked; it cannot override the type the way `as` can. It is a fine end state — do **not** rewrite it to `const foo = … satisfies Foo`.
 
-Keep `as const` on tuples when that is what inference needs (see `react-dev` hooks.md). That is not a return-type annotation.
+Keep `as const` on tuples when that is what inference needs (skill `react-dev`, typing notes). That is not a return-type annotation.
 
 ## `as`
 

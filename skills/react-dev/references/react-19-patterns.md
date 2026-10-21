@@ -49,15 +49,6 @@ function Profile({ userPromise }: { userPromise: Promise<User> }) {
 
 Forms: TanStack Form. Do not use `useActionState` / `useFormState`.
 
-## Other React 19 hooks (docs only)
-
-| Hook               | Doc                                                                |
-| ------------------ | ------------------------------------------------------------------ |
-| `useOptimistic`    | [reference](https://react.dev/reference/react/useOptimistic.md)    |
-| `useTransition`    | [reference](https://react.dev/reference/react/useTransition.md)    |
-| `useDeferredValue` | [reference](https://react.dev/reference/react/useDeferredValue.md) |
-| `useEffectEvent`   | [reference](https://react.dev/reference/react/useEffectEvent.md)   |
-
 ## Migration checklist (legacy codebases)
 
 - [ ] Replace `forwardRef` with `ref` prop
