@@ -21,13 +21,13 @@ Run in the project root, or in each changed monorepo package (`app/`, `processin
 
 No-commit intent includes: explicit deferral ("don't commit", "draft only", "message only", "what would the commit be"), check/fix-only asks ("run check", "fix lint", "fix CI" with no wrap-up), review or question-only turns, or the user saying they will commit themselves.
 
-When intent is ambiguous, prefer committing — especially after implementing changes or when the user invoked finish-work to wrap up.
+When intent is ambiguous, prefer committing — especially after implementing changes or when the user invoked finish-work to wrap up. When another skill calls finish-work with a stricter commit rule (e.g. user-changelog: commit only on request), that rule wins.
 
 Commit path: `git status`, `git diff`, and `git log -5` in parallel; stage relevant files only; `git commit` via HEREDOC; `git status` to verify.
 
 Safety: no push unless asked. No `--no-verify`. No amend of pushed commits. Do not stage secrets or unrelated dirty files.
 
-Already committed and verify only fixed lint/format: `git commit --amend --no-edit` when HEAD has not been pushed; otherwise stage and ask before amending.
+Already committed and verify only fixed lint/format: when the changes are purely lint/format and clearly belong to HEAD, `git commit --amend --no-edit` (if HEAD was already pushed, say that the push now needs `--force-with-lease`; do not push). Otherwise ask.
 
 E2E is not in `check`. For UI/routes/auth changes, also run `bun run e2e` (or `check-full` when defined). See [playwright-skill](../playwright-skill/SKILL.md).
 
@@ -61,4 +61,4 @@ Internal-only (no user-visible change): maintainer bullets ok; omit user bullets
 
 ## Related
 
-[close-worktree](../close-worktree/SKILL.md) (land worktree → develop; calls this skill if dirty) | [unslop-code](../unslop-code/SKILL.md) (post-LLM cleanup; calls this skill per phase commit) | [playwright-skill](../playwright-skill/SKILL.md) | [tech-stack](../tech-stack/SKILL.md) | [review-dependabot](../review-dependabot/SKILL.md) / babysit | [user-changelog](../user-changelog/SKILL.md)
+[close-worktree](../close-worktree/SKILL.md) (land worktree → develop; calls this skill if dirty) | [unslop-code](../unslop-code/SKILL.md) (post-LLM cleanup; calls this skill per phase commit) | [playwright-skill](../playwright-skill/SKILL.md) | [tech-stack](../tech-stack/SKILL.md) | [review-dependabot](../review-dependabot/SKILL.md) | [user-changelog](../user-changelog/SKILL.md)

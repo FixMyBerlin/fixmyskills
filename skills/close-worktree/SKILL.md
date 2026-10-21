@@ -68,7 +68,7 @@ cherry-pick.
 **Upstream / PR guard:** if the feature branch has an upstream
 (`git rev-parse --abbrev-ref <feature>@{upstream}`) or an open PR
 (`gh pr list --head <feature-branch>`), stop and ask. Landing locally would
-bypass review — the user may want the PR merged instead (see babysit).
+bypass review — the user may want the PR merged instead.
 
 ## Step 2: Clean working tree
 

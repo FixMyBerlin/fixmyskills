@@ -12,8 +12,6 @@ description: >-
 
 Workflow for FMC geo React apps. Dependabot **config** (groups, schedule, ignores) lives in skill `tech-stack` — [dependabot.md](../tech-stack/references/dependabot.md). This skill covers **review and merge decisions**.
 
-After merge, use skill `babysit` only if the PR needs conflict/CI/comment follow-up on a feature branch — not for routine scheduled bumps on `develop`.
-
 ## Repo scope
 
 **Work only in the Git repository of the current workspace.** List, review, and merge Dependabot PRs for that repo — never for other repos.
@@ -151,27 +149,6 @@ Prefer adding a targeted `ignore` in `.github/dependabot.yml` (document why in P
 
 Config changes: follow skill `tech-stack` [dependabot.md](../tech-stack/references/dependabot.md).
 
-## Quick decision flow
-
-```mermaid
-flowchart TD
-  start[Dependabot PR] --> ci{CI green?}
-  ci -->|no| fix{Fix in scope?}
-  fix -->|yes| fixCi[Fix + push]
-  fix -->|no| ask[AskUserQuestion]
-  ci -->|yes| notes[Read PR body release notes]
-  notes --> major{Major or breaking?}
-  major -->|yes| investigate[Code + migration check]
-  investigate --> ask
-  major -->|no| tier{Risk tier}
-  tier -->|low| merge[Rebase merge]
-  tier -->|medium| local[Spot-check + build/lint]
-  local --> merge
-  tier -->|high| deep[Tests + domain skill]
-  deep --> ask
-  fixCi --> ci
-```
-
 ## What not to do
 
 - Do not fetch external changelogs when the PR body already has release notes — use `gh pr view` `body` first
@@ -187,5 +164,4 @@ flowchart TD
 | Skill              | When                                                           |
 | ------------------ | -------------------------------------------------------------- |
 | `tech-stack`       | dependabot.yml, groups, ignores, browserslist                  |
-| `babysit`          | Feature PR stuck on CI/comments — not standard Dependabot flow |
 | `playwright-skill` | After bumps to Playwright, maps, or auth-related deps          |
