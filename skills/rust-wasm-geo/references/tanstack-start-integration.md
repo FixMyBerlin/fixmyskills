@@ -35,7 +35,7 @@ export default defineConfig({
 | Route `loader` / `beforeLoad` (server execution) | **No** WASM import in the loader module graph                             |
 | Shared `utils/` imported by loaders              | **No** if it transitively imports `wasm.ts`                               |
 
-Keep the WASM dependency graph **leaf-only**: map feature folder → `wasm.ts` → `pkg/`.
+Keep the WASM dependency graph **leaf-only**: map feature folder → `wasm.ts` → `wasm/geo-isochrone/pkg/`.
 
 ---
 
@@ -51,7 +51,7 @@ We run WASM in the browser only: the `--target web` glue loads the `.wasm` via `
 
 See [selective-ssr.md](../../tanstack-start-conventions/references/selective-ssr.md): map/canvas routes commonly use `ssr: 'data-only'` so `beforeLoad` / loader run on the server while the map shell is client-rendered.
 
-**Do not** import `wasm.ts` in the route file's top-level if that route's module is evaluated on the server — import from a child component loaded only on the client, or dynamic-import inside an event handler / mutation.
+**Do not** call `ensureWasm()` at module load or from a route `loader` / `beforeLoad`. A static import of `wasm.ts` is fine: WASM loads only on the first `ensureWasm()` call from a handler or mutation.
 
 ```typescript
 // IsochroneTool.tsx — client component under a data-only map route
@@ -93,14 +93,18 @@ export function useBufferPolygon() {
 Align with `tanstack-start-conventions`:
 
 ```
-app/src/
-├── routes/
-│   └── regions/$regionSlug/map.tsx    # thin route; ssr: 'data-only'
-├── features/isochrone/
-│   ├── wasm.ts
-│   ├── useIsochrone.ts
-│   └── IsochronePanel.tsx
-└── wasm/geo-isochrone/                # Rust source (sibling or monorepo root)
+app/
+├── src/
+│   ├── routes/
+│   │   └── regions/$regionSlug/map.tsx    # thin route; ssr: 'data-only'
+│   └── features/isochrone/
+│       ├── wasm.ts
+│       ├── useIsochrone.ts
+│       └── IsochronePanel.tsx
+└── wasm/geo-isochrone/                    # Rust crate (wasm-pack output → pkg/)
+    ├── Cargo.toml
+    ├── pkg/                               # wasm-pack output (generated)
+    └── src/
 ```
 
 Route file: wire layout, `ssr`, loader for auth/data. Feature folder: WASM + map UI.
