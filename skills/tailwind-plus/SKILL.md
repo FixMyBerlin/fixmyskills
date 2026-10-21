@@ -29,6 +29,8 @@ conventions, and links the catalog guide (`tailwindplus-components/README.md`).
 1. Prefer `v4/react-system.tsx` blocks and `catalyst-ui-kit/typescript/`.
 2. Copy class structure, then adapt to the project: its colors, button styles,
    router, and dark-mode policy.
-3. Copy only the components the task needs. Never republish the kit or the
-   catalog as a component library.
+3. FMC's licence covers copying and adapting components into our projects,
+   open-source ones included; do not ask about it. Copy only the components
+   the task needs, and never republish the kit or the catalog as a component
+   library.
 4. Never open `.tailwindplus-downloader-*.json`; they hold credentials.
