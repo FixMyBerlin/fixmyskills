@@ -27,13 +27,16 @@ Install globally, then run `/model-policy`:
 bunx skills add FixMyBerlin/fixmyskills --skill model-policy -g -a claude-code -y
 ```
 
+Needs Claude Code 2.1.296 or newer: older versions ignore `autoCompactWindow` silently and the agents never compact at 100k.
+
 ## Steps
 
-1. Read [assets/model-policy.md](assets/model-policy.md) and every file in [assets/agents/](assets/agents/).
-2. For each target file that already exists, show the user the diff against the asset. When the user changed the file by hand, AskUserQuestion: overwrite, merge their lines in, or keep theirs.
-3. Copy `assets/model-policy.md` to `~/.claude/rules/model-policy.md` and each `assets/agents/*.md` to `~/.claude/agents/`.
-4. In `~/.claude/settings.json`, set `env.CLAUDE_CODE_SUBAGENT_MODEL` to `"haiku"`. Keep every other key; create the file with `{ "env": { … } }` if it is missing. Do not set `CLAUDE_CODE_SUBAGENT_MODEL_FORCE` — it would also override the per-call `model` that escalation needs.
-5. Report what changed. The rule and agents apply from the next session on.
+1. Run `claude --version`; stop and say so when it is below 2.1.296.
+2. Read [assets/model-policy.md](assets/model-policy.md) and every file in [assets/agents/](assets/agents/).
+3. For each target file that exists and differs from its asset, show the diff and AskUserQuestion: overwrite, or keep theirs. The skill cannot tell a hand edit from an older version of the asset, so it asks on every difference.
+4. Copy `assets/model-policy.md` to `~/.claude/rules/model-policy.md` and each `assets/agents/*.md` to `~/.claude/agents/`.
+5. In `~/.claude/settings.json`, set `env.CLAUDE_CODE_SUBAGENT_MODEL` to `"haiku"`. Keep every other key; create the file with `{ "env": { … } }` if it is missing. Do not set `CLAUDE_CODE_SUBAGENT_MODEL_FORCE` — it would also override the per-call `model` that escalation needs.
+6. Report what changed. The rule and agents apply from the next session on.
 
 ## Updating the ladder
 
@@ -45,6 +48,7 @@ The ladder in [assets/model-policy.md](assets/model-policy.md) comes from the sl
 - **Env var:** model resolution is the Agent call's `model`, then the agent file's `model`, then `CLAUDE_CODE_SUBAGENT_MODEL`, then the session model. The env var catches every spawn that names no model.
 - **Explore agent:** built-in `Explore` and `Plan` ignore the env var. A user-level agent with the same name replaces `Explore`; `Plan` stays on the session model on purpose.
 - **Effort:** there is no setting for a default subagent effort. Agent files pin it (`effort:` frontmatter); for `general-purpose` the rule tells the orchestrator to pass `effort` on each call.
-- **100K window:** `autoCompactWindow` in an agent's frontmatter only affects that agent, so Haiku compacts near its price step while the Opus session keeps its full window. 100000 is the lowest value Claude Code accepts. On Pro / Max plans usage is not billed per token; the docs do not say whether the price step affects plan limits.
+- **Haiku `high`, not `medium`:** Haiku `medium` is also on the Pareto line, but `high` is a lot smarter for little extra cost, so the agents pin `high` and the ladder starts there.
+- **100K window:** Haiku 5.5 has two prices, chosen per request by prompt length: $0.10 / $0.50 per million input / output tokens up to 100K, $0.50 / $2.50 above — for the whole request, with cache reads and writes counted toward the 100K. A subagent resends its context every turn, so once it passes 100K every later turn pays more. `autoCompactWindow` in an agent's frontmatter only affects that agent, so Haiku compacts near its price step while the Opus session keeps its full window; 100000 is the lowest value Claude Code accepts. Even over 100K, Haiku stays cheaper than switching: on cache reads, which dominate agent turns, it is $0.05 against Sonnet's $0.10 and Opus's $0.20 per million; on fresh input and output 4× and 8× cheaper. On Pro / Max plans usage is not billed per token; the docs do not say whether the price step affects plan limits.
 
 Docs: [Subagents](https://code.claude.com/docs/en/sub-agents), [Auto-compact window](https://code.claude.com/docs/en/model-config#set-the-auto-compact-window), [Memory and rules](https://code.claude.com/docs/en/memory), [Settings](https://code.claude.com/docs/en/settings), [Haiku long-context pricing](https://platform.claude.com/docs/en/about-claude/pricing#long-context-pricing).
