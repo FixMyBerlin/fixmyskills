@@ -1,23 +1,8 @@
 # Academic research APIs
 
 Non-obvious endpoints, auth, and query patterns. Prefer these over ad-hoc web
-search for discovery; then open OA PDFs for quotable evidence.
-
-## Quick picker
-
-| Need                                     | Prefer              |
-| ---------------------------------------- | ------------------- |
-| Default discovery (no S2 key / S2 429)   | OpenAlex            |
-| Broad STEM/CS + citation graph           | Semantic Scholar    |
-| DOI / publisher bibliographic record     | Crossref            |
-| German / EU repositories, theses, OA     | BASE (needs key)    |
-| German national bibliography / authority | DNB (SRU / OAI-PMH) |
-| "Who cites this?" / recommendations      | Semantic Scholar    |
-
-Always request only the **fields you need**. On **429**: backoff once, then
-switch API (see SKILL.md fallback order).
-
-Env vars: `SEMANTIC_SCHOLAR_API_KEY`, `OPENALEX_API_KEY`, `BASE_API_KEY`.
+search for discovery; then open OA PDFs for quotable evidence. Request only the
+**fields you need**. 429 handling: see SKILL.md fallback order.
 
 ---
 
@@ -42,7 +27,7 @@ curl -sG 'https://api.semanticscholar.org/graph/v1/paper/search' \
 - Without a key, `/paper/search` often returns **429** (shared pool).
 - Single-paper, citations, references, batch, and recommendations often still
   work without a key — prefer those when search is throttled.
-- With a key: typically ~1 req/s. Sleep / backoff on 429.
+- With a key: typically ~1 req/s.
 
 ### Relevance search
 
@@ -218,8 +203,8 @@ Example values often look like `https://arxiv.org/pdf/2301.10140`.
 
 ## Crossref
 
-Lightweight DOI / bibliographic confirmation. No key required for light use;
-send a polite User-Agent with contact mail.
+Lightweight DOI / bibliographic confirmation; send a polite User-Agent with
+contact mail.
 
 ```bash
 curl -sG 'https://api.crossref.org/works' \
@@ -256,7 +241,7 @@ curl -sG 'https://api.base-search.net/cgi-bin/BaseHttpSearchInterface.fcgi' \
 ```
 
 Tips: `coll=de` biases German repositories. Treat hits as discovery — verify
-DOI / full text before quoting. Skip BASE entirely if no key.
+DOI / full text before quoting.
 
 ---
 
@@ -267,51 +252,10 @@ German national bibliography and catalog metadata. No API key.
 - Overview: https://www.dnb.de/metadatendienste
 - Protocols: **SRU** and **OAI-PMH**
 
-### SRU
-
-```bash
-curl -sG 'https://services.dnb.de/sru/dnb' \
-  --data-urlencode 'version=1.1' \
-  --data-urlencode 'operation=searchRetrieve' \
-  --data-urlencode 'query=per=Habermas' \
-  --data-urlencode 'recordSchema=MARC21-xml'
-```
-
-Useful indexes: `per=` (person), `tit=` (title), `swd=` / subject, ISBN.
-
-Minimal MARC21 tags to parse (do not invent others):
-
-| Tag           | Meaning     |
-| ------------- | ----------- |
-| `020`         | ISBN        |
-| `100` / `700` | Person name |
-| `245`         | Title       |
-| `260` / `264` | Publication |
-| `650`         | Subject     |
-
-Responses are XML — extract those fields only.
-
-### OAI-PMH (harvest / identify)
-
-```bash
-curl -sG 'https://services.dnb.de/oai/repository' \
-  --data-urlencode 'verb=Identify'
-```
+SRU: `https://services.dnb.de/sru/dnb` with `version=1.1`,
+`operation=searchRetrieve`, `recordSchema=MARC21-xml`, `query=per=Habermas`
+(also `tit=`, `swd=`, ISBN). Responses are XML — extract only the fields you
+need. OAI-PMH: `https://services.dnb.de/oai/repository` (`verb=Identify`).
 
 Use DNB for **German monographs, dissertations, authority control** — not as
 the primary STEM citation graph.
-
----
-
-## Practical search sequence
-
-1. **OpenAlex search** — 10–20 candidates; `select` year, citations, OA fields.
-2. **Triage** — keep ≤12; deep-read 3–6 with PDF when needed.
-3. **S2** — batch hydrate + `/references` + `/citations` on top 2–3 (parse
-   nested paper objects). On search 429, skip S2 search.
-4. **Crossref** — only if DOI/metadata conflict.
-5. **BASE / DNB** — only if DE repositories or national bib matter (BASE needs key).
-6. **Full text** — download PDF URL → `pdftotext` / Docling → quote tables.
-7. **Conflict** — re-fetch primary via DOI; adjudicate.
-
-Record queries, filters, and HTTP failures in the research **Search log**.

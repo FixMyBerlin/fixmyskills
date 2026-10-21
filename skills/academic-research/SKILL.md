@@ -32,22 +32,22 @@ Research a **specific question or topic** at university level. Output must be
 
 Stop expanding search unless the user asks for more:
 
-| Cap                       | Default                                   |
-| ------------------------- | ----------------------------------------- |
-| Discovery queries         | 4–6 total across APIs                     |
-| Candidates after triage   | 8–12                                      |
-| Deep-read / quote sources | 3–6                                       |
-| Citation-graph papers     | top 2–3                                   |
-| API retries on 429        | backoff once, then switch API (see below) |
+| Cap                       | Default               |
+| ------------------------- | --------------------- |
+| Discovery queries         | 4–6 total across APIs |
+| Candidates after triage   | 8–12                  |
+| Deep-read / quote sources | 3–6                   |
+| Citation-graph papers     | top 2–3               |
 
 ## Agent tools
 
-1. **Discovery / metadata:** `Shell` + `curl` (or equivalent HTTP) against the
-   APIs in [references/apis.md](references/apis.md). Prefer curl over guessing.
+Read [references/apis.md](references/apis.md) before the first API call.
+
+1. **Discovery / metadata:** `curl` against the APIs. Prefer curl over guessing.
 2. **HTML landing pages / abstracts:** `WebFetch` when the API already gave a
    stable URL.
-3. **PDFs:** download with curl to a temp file, then extract text (below). Do
-   not claim page quotes from metadata alone.
+3. **PDFs:** download with curl, then extract text (step 5). Do not claim page
+   quotes from metadata alone.
 4. **Keys:** read from env if set — never invent keys; never commit them.
 
 | Service          | Env var                    | Header / param     |
@@ -64,8 +64,9 @@ continue with the next API in the fallback order.
 1. **OpenAlex** — default discovery when no S2 key (search often 429s on the
    shared pool).
 2. **Semantic Scholar** — citation graph + recommendations; use key if
-   available. On **429**: sleep ~2s once; if still 429, switch to OpenAlex for
-   search; keep S2 for single-paper / citations only if those still succeed.
+   available. On **429** (any API): sleep ~2s once; if still 429, switch API
+   (S2: use OpenAlex for search; keep S2 for single-paper / citations only if
+   those still succeed).
 3. **Crossref** — DOI resolution / bibliographic confirmation.
 4. **BASE** — only with `BASE_API_KEY`; German/EU repositories & theses.
 5. **DNB** — German national bibliography / authority (no key).
@@ -73,20 +74,6 @@ continue with the next API in the fallback order.
 Do not block the whole research on one failing API.
 
 ## Conceptual workflow
-
-Copy and track:
-
-```
-Research progress:
-- [ ] 1. Frame the question
-- [ ] 2. Multi-perspective sub-questions
-- [ ] 3. Discover candidate sources (APIs / catalogs)
-- [ ] 4. Triage by relevance + impact
-- [ ] 5. Read / extract evidence (quotes, numbers, methods)
-- [ ] 6. Citation-graph pass (pioneers vs follow-ups)
-- [ ] 7. Adjudicate conflicts
-- [ ] 8. Synthesize answer with sources
-```
 
 ### 1. Frame the question
 
@@ -110,12 +97,11 @@ Search and answer **per sub-question**, then merge.
 
 ### 3. Discover candidate sources
 
-Use scholarly APIs first (not general web search alone). Details:
-[references/apis.md](references/apis.md).
+Use scholarly APIs first (not general web search alone).
 
 Typical pass: OpenAlex search → hydrate top hits → optional S2 citation graph
-on the best 2–3 → Crossref if DOI metadata is thin → BASE/DNB only if DE
-catalogs matter.
+(step 6) → Crossref if DOI metadata is thin or sources disagree → BASE/DNB only
+if DE catalogs matter.
 
 ### 4. Triage by relevance + impact
 
@@ -126,8 +112,6 @@ catalogs matter.
 | Venue / type          | Peer-reviewed vs preprint vs thesis    |
 | Open access / PDF URL | Ability to quote from full text        |
 | Citation graph        | Pioneer paper vs incremental follow-up |
-
-Keep 8–12 candidates; deep-read 3–6.
 
 ### 5. Extract evidence (quotes)
 
@@ -140,13 +124,13 @@ Keep 8–12 candidates; deep-read 3–6.
 
 ```bash
 curl -fsSL -o /tmp/paper.pdf 'PDF_URL'
-# Prefer pdftotext when installed; else python pypdf/pdfplumber if available
-pdftotext -layout /tmp/paper.pdf - | head -n 200
+pdftotext -layout /tmp/paper.pdf /tmp/paper.txt   # else pypdf/pdfplumber
 ```
 
-For complex multi-column layouts, see [references/frameworks.md](references/frameworks.md)
-(Docling). Do not invent page numbers — use `abstract` or § headings if pages
-are unknown.
+If extraction fails or is garbled, quote from the abstract and state that full
+text was unreachable. For multi-column layouts see
+[references/frameworks.md](references/frameworks.md) (Docling). Do not invent
+page numbers — use `abstract` or § headings if pages are unknown.
 
 Per kept source, fill:
 
@@ -163,7 +147,7 @@ Per kept source, fill:
 
 ### 6. Citation-graph pass
 
-For the top 2–3 papers (Semantic Scholar):
+For the top papers (Semantic Scholar, see budgets):
 
 - `/references` → foundations (parse `citedPaper`)
 - `/citations` → extensions / critiques (parse `citingPaper`)
@@ -172,17 +156,10 @@ Distinguish **pioneer** vs **follow-up** before treating a paper as definitive.
 
 ### 7. Adjudication
 
-When sources conflict:
-
-1. Prefer the primary study over reviews summarizing it.
-2. Prefer fuller methods reporting and larger / more appropriate samples.
-3. Re-open the original PDF when metadata or secondary summaries disagree.
-4. If still unclear: report both sides with citations; do not pick a winner.
-
-### 8. Methodology critic (when empirical)
-
-Check Methods for: design, sample size, significance / uncertainty, confounds,
-generalizability. Flag weak evidence explicitly.
+When sources conflict (rule 3 first): prefer fuller methods reporting and larger
+/ more appropriate samples. If still unclear, report both sides with citations;
+do not pick a winner. For empirical work, check Methods and flag weak evidence
+explicitly.
 
 ## Output format
 
@@ -216,11 +193,3 @@ What the literature does not settle.
 
 APIs, queries, filters, HTTP failures (e.g. 429), date of search — enough to reproduce.
 ```
-
-## Tooling priorities
-
-1. **Metadata + discovery:** OpenAlex, Semantic Scholar, Crossref; BASE, DNB (DE).
-2. **Full text:** OA PDF URLs from APIs → extract text → quote.
-3. **Optional deeper tooling:** [references/frameworks.md](references/frameworks.md).
-
-API details → [references/apis.md](references/apis.md)
