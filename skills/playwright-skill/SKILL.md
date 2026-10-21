@@ -305,4 +305,4 @@ Multiple headers: `PW_EXTRA_HEADERS='{"X-Automated-By":"playwright-skill"}'`.
 | Post–TanStack Start smoke        | `tests/smoke/` + this skill                                                     |
 | Agent debugging (SSR, React, UI) | agent-browser MCP — [tech-stack](../tech-stack/references/agent-browser-mcp.md) |
 | Quick screenshot / external site | Ad-hoc `run.js` or agent-browser                                                |
-| DB schema / queries              | Postgres MCP — [tech-stack](../tech-stack/references/cursor-mcp.md)             |
+| DB schema / queries              | Postgres MCP — [tech-stack](../tech-stack/references/postgres-mcp.md)           |

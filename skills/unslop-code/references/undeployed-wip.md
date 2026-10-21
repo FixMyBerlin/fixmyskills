@@ -8,7 +8,7 @@ The Phase 4 keep-rule (“real Prisma migrations for a live DB”) applies **onl
 
 ## Gate: was this PR deployed?
 
-If it is not obvious (no production apply, no shipped URL contract, no live data on the old path), stop and let the orchestrator **AskQuestion** before deleting or squashing.
+If it is not obvious (no production apply, no shipped URL contract, no live data on the old path), stop and let the orchestrator **AskUserQuestion** before deleting or squashing.
 
 Question shape (must stand alone):
 
@@ -31,7 +31,7 @@ Skip this phase when the branch adds no migrations and no old-to-new paths.
 
 - **Not deployed (confirmed):** squash branch-local migrations into the fewest files that express the final schema; delete old-to-new code; want the clean new state
 - **Deployed / live data:** keep applied migrations and on-disk contracts
-- **Unsure:** AskQuestion with the list of files; do not guess
+- **Unsure:** AskUserQuestion with the list of files; do not guess
 
 ## Search (give to `explore`)
 

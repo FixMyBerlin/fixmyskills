@@ -46,7 +46,7 @@ Undeployed PR-local migrations (several files from one branch that never shipped
 
 ## Related
 
-- DB inspection: skill `tech-stack` -> `references/cursor-mcp.md`
+- DB inspection: skill `tech-stack` -> `references/postgres-mcp.md`
 - Better Auth adapter: skill `tanstack-start-auth`
 - Undeployed PR-local migration squash: skill `unslop-code` → `references/undeployed-wip.md`
 

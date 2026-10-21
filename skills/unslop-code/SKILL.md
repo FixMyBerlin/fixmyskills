@@ -45,7 +45,7 @@ Current workspace git repo.
 - Branch diff **and** repo-wide greps for the anti-patterns in each phase.
 - Repo-wide greps are for discovery. Before a worker reads a repo-wide hit list, intersect it with the branch files (`git diff --name-only <base>...HEAD`) and hand over the branch hits first. Off-branch hits are Secondary unless the phase says otherwise.
 - Skip a later skill pass when tech-stack shows that stack is unused (no maps → skip `react-map-gl`; no Zustand → skip `zustand-state-management`; no TanStack Router → skip `tanstack-router-conventions`).
-- **AskQuestion** when a proposed edit would change runtime behavior **or** when a clear answer would unlock a cleanup: deploy status (4b), colocate vs shared (6), a decision lift (7), or whether this PR is merge-ready (9). Workers propose questions; you ask. Do not ship a behavior change without asking.
+- **AskUserQuestion** when a proposed edit would change runtime behavior **or** when a clear answer would unlock a cleanup: deploy status (4b), colocate vs shared (6), a decision lift (7), or whether this PR is merge-ready (9). Workers propose questions; you ask. Do not ship a behavior change without asking.
 - Every question must stand alone: name the file/route and what the code does today, the options and what each simplifies or costs, and why the answer is needed now. No vague “should we refactor X?”
 - Other judgment calls (style, optional refactors, "maybe") go to **Secondary changes**. Decision-hierarchy items that need design go to **Decision-lift follow-ups**. Do not apply them. The orchestrator keeps both lists.
 
@@ -54,7 +54,7 @@ Current workspace git repo.
 Before Phase 1, in this order:
 
 1. Resolve `<base>` (`git remote show origin`, or the PR base) and confirm the range is non-empty: `git log --oneline <base>...HEAD`.
-2. Confirm the working tree is clean. Uncommitted work is not yours to commit — **AskQuestion**: commit it first, stash it, or stop.
+2. Confirm the working tree is clean. Uncommitted work is not yours to commit — **AskUserQuestion**: commit it first, stash it, or stop.
 3. Note the current HEAD SHA in chat. It is the rollback point if a phase goes wrong.
 4. Run the repo's check command once (`bun run check`) to record the **starting** state. If it is already red, say so up front so a later red is not blamed on this cleanup.
 
@@ -133,7 +133,7 @@ export * from './new-home'
 
 We do not want this. We want the **clean new state**: every call site imports from the new module; delete the shim file.
 
-**Keep** only intentional public barrels (`package` `index.ts`, a designed feature facade documented as the API). If unsure, AskQuestion, then Secondary.
+**Keep** only intentional public barrels (`package` `index.ts`, a designed feature facade documented as the API). If unsure, AskUserQuestion, then Secondary.
 
 Commit this phase on its own.
 
@@ -149,7 +149,7 @@ If a dual path exists only because the LLM was cautious, delete the old path.
 
 **Deploy gate and migration-file squash** are Phase 4b. Do not treat “keep live Prisma migrations” here as a reason to keep PR-local extras — that keep-rule applies only after 4b knows the branch shipped.
 
-AskQuestion when dropping the old path could break existing data or URLs. If it is not a clear yes, list it as Secondary.
+AskUserQuestion when dropping the old path could break existing data or URLs. If it is not a clear yes, list it as Secondary.
 
 Commit this phase on its own.
 
@@ -161,7 +161,7 @@ LLMs on a long-lived PR often add **old → new** compatibility and **one Prisma
 
 Load [references/undeployed-wip.md](references/undeployed-wip.md). How to squash: skill `prisma`.
 
-If deploy status is not obvious, **AskQuestion** before deleting or squashing. Skip when the branch adds no migrations and no old-to-new paths.
+If deploy status is not obvious, **AskUserQuestion** before deleting or squashing. Skip when the branch adds no migrations and no old-to-new paths.
 
 - **Not deployed (confirmed):** squash branch-local migrations into the fewest files that express the final schema; delete old-to-new code.
 - **Deployed / live data:** keep applied migrations and on-disk contracts.
@@ -174,7 +174,7 @@ Commit this phase on its own.
 ## Phase 5: Skill-aligned code review
 
 1. Load skill `tech-stack` and confirm this app's stack. Flag alternative tools (nuqs on a TanStack app, raw `useEffect` fetch, MapLibre without `react-map-gl/maplibre`, Zod 3, Redux, etc.). Fix clear violations. This pass also decides which of 5b-5e apply.
-2. For **each remaining skill**, one implementer: code-review and **fix** to match that skill; **one commit** per skill. AskQuestion only for behavior-changing calls; collect other non-clear items as secondary in chat.
+2. For **each remaining skill**, one implementer: code-review and **fix** to match that skill; **one commit** per skill. AskUserQuestion only for behavior-changing calls; collect other non-clear items as secondary in chat.
 
 Default passes (skip via 5a):
 
@@ -198,7 +198,7 @@ After refactors, files are sometimes left where nobody would look. Folder rules:
 
 Both are clean: **colocate** a subcomponent next to its parent, or extract it as **shared** when it is a real abstraction. Do not leave the old file behind. No re-export shims (Phase 3).
 
-Skip when the branch touches no `components/` (or equivalent). AskQuestion when colocate vs shared is a real choice (include both folders and the importer list).
+Skip when the branch touches no `components/` (or equivalent). AskUserQuestion when colocate vs shared is a real choice (include both folders and the importer list).
 
 Commit this phase on its own.
 
@@ -212,7 +212,7 @@ This is not a second Zod or legacy pass. Load [references/decision-lift.md](refe
 
 - Very obvious: fix in this phase.
 - Needs design: **Decision-lift follow-up** (location, what is duplicated, what would get simpler, why not now). Do not guess.
-- User/product choice: AskQuestion.
+- User/product choice: AskUserQuestion.
 
 Skip when the repo has no app tree. Commit this phase on its own.
 
@@ -234,7 +234,7 @@ Commit this phase on its own.
 
 Scratch docs, one-off SQL, and helper scripts pile up mid-PR. **Do not clean those mid-stream.**
 
-**AskQuestion first** (must stand alone): make this PR **production-ready to merge** (list candidates, then delete unused), or **still deep in the work** (skip entirely). Different from Phase 4b (schema/compat). Load [references/leftover-process.md](references/leftover-process.md).
+**AskUserQuestion first** (must stand alone): make this PR **production-ready to merge** (list candidates, then delete unused), or **still deep in the work** (skip entirely). Different from Phase 4b (schema/compat). Load [references/leftover-process.md](references/leftover-process.md).
 
 Spawn workers only on “merge-ready”. Keep everyday/critical tooling (`package.json` / CI / `bun run`), README / AGENTS.md / user-changelog, and migrations 4b already kept. If skipped, record “Phase 9 skipped — not merge-ready”.
 
@@ -276,7 +276,7 @@ Running list (orchestrator owns it). Items from Phase 7 that need a real plan: l
 12. **Commits:** SHAs + subjects
 13. **Secondary changes:** the full list (or "none")
 14. **Decision-lift follow-ups:** the full list (or "none")
-15. **Follow-ups:** phases reverted and why, checks still red, open AskQuestion items
+15. **Follow-ups:** phases reverted and why, checks still red, open AskUserQuestion items
 
 Write this summary following [unslop-text](../unslop-text/SKILL.md).
 

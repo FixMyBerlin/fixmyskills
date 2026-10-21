@@ -30,7 +30,7 @@ Present the checklist below; confirm all **ask** items before executing.
 - `git init` — **default** when no `.git`; **skip** when repo exists
 - AGPL-3.0 `LICENSE.md` — **default**; **ask** copyright holder if unknown (README only)
 
-**Skills — default** (`bunx skills add FixMyBerlin/fixmyskills … -a cursor -y`)
+**Skills — default** (`bunx skills add FixMyBerlin/fixmyskills … -a claude-code -y`)
 
 - `finish-work`, `tech-stack`, `agent-orchestration`
 - `react-dev` — TanStack/React; **skip** non-UI
@@ -45,7 +45,7 @@ Present the checklist below; confirm all **ask** items before executing.
 - `zustand-state-management` — client global state? · `user-changelog` — public releases?
 - `rust-wasm-geo` — WASM geo? · `tanstack-better-upload` — S3 uploads? (**skip** unless Start)
 
-**Dev tooling — default:** skill `tech-stack` (**skip** empty meta-repo). **Ask/report:** CI now or later; MCP → **report** `~/.cursor/mcp.json` only; `touch-ipad-review` / `unslop-code` / `unslop-text` → **report** on-demand.
+**Dev tooling — default:** skill `tech-stack` (**skip** empty meta-repo). **Ask/report:** CI now or later; MCP → **report** user-scope `claude mcp add --scope user` only; `touch-ipad-review` / `unslop-code` / `unslop-text` → **report** on-demand.
 
 ## Run order
 
@@ -62,7 +62,7 @@ Present the checklist below; confirm all **ask** items before executing.
 | ----------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------- |
 | Git         | `test -d .git \|\| git init`                                                                                                   | —                                      |
 | License     | Verbatim AGPL-3.0 as [tilda-geo LICENSE.md](https://github.com/FixMyBerlin/tilda-geo/blob/develop/LICENSE.md); README links it | **finish-work** → commit **1**         |
-| Skills      | `bunx skills add …` per plan; then `init-cursor.sh`                                                                            | **agent-orchestration** → commit **2** |
+| Skills      | `bunx skills add …` per plan; then `init-claude.sh`                                                                            | **agent-orchestration** → commit **2** |
 | Dev tooling | bunfig, oxc, dependabot, tsconfig, vscode when `package.json` exists                                                           | **tech-stack** → commit **3**          |
 | Each commit | Separate commit; never batch                                                                                                   | **finish-work**                        |
 

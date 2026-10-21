@@ -2,7 +2,7 @@
 
 Template: [examples/package-json-scripts.md.template](../examples/package-json-scripts.md.template).
 
-Copy to `.cursor/rules/package-json-scripts.md` on scaffold; tune per app layout.
+Copy to `.claude/rules/package-json-scripts.md` on scaffold; tune per app layout.
 
 ## Policy
 
@@ -60,6 +60,6 @@ Multi-path lint/format (tilda-geo style): write-mode uses `lint: "bun run --para
 ## Scaffold setup
 
 ```bash
-mkdir -p .cursor/rules
-cp path/to/package-json-scripts.md.template .cursor/rules/package-json-scripts.md
+mkdir -p .claude/rules
+cp path/to/package-json-scripts.md.template .claude/rules/package-json-scripts.md
 ```

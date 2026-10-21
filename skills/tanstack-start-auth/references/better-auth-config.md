@@ -39,7 +39,7 @@ CLI looks for `auth.ts` in `./`, `./lib`, `./utils`, or `./src` (`--config` for 
 
 - `bunx @better-auth/cli@latest migrate` — built-in adapter
 - `bunx @better-auth/cli@latest generate` — Prisma/Drizzle schema
-- `bunx @better-auth/cli mcp --cursor` — docs MCP for editors
+- `bunx @better-auth/cli mcp --claude-code` — docs MCP for Claude Code
 
 Re-run after adding or changing plugins.
 

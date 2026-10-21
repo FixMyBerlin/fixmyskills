@@ -19,13 +19,13 @@ Skip when the repo has no app tree (scripts-only, no components/routes).
 
 - **Very obvious** (parent already has the value; leaf only repeats it): fix in this phase
 - **Needs design** (API change, which layer owns the decision): do **not** guess — add a **follow-up plan item**
-- **User/product choice** would change the split: **AskQuestion**
+- **User/product choice** would change the split: **AskUserQuestion**
 
 Follow-up plan items are more than Secondary. Each one must be something someone can pick up and plan: location, what is duplicated or decided too low, what would get simpler above/below, and why it is not a clear fix now.
 
 Secondary stays for style / optional / “maybe” that is not a decision-hierarchy issue.
 
-## AskQuestion (propose; orchestrator asks)
+## AskUserQuestion (propose; orchestrator asks)
 
 Every proposed question must:
 

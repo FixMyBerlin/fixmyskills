@@ -20,7 +20,7 @@ After merge, use skill `babysit` only if the PR needs conflict/CI/comment follow
 
 Run all `gh` commands from the project root **without `--repo`** so GitHub CLI uses the checkout. Stop if the workspace is not a git repo or has no `.github/dependabot.yml`.
 
-Typical FMC app repos target **`develop`** — never merge Dependabot PRs to `main`. Confirm `baseRefName` on each PR; use **AskQuestion** if it looks wrong.
+Typical FMC app repos target **`develop`** — never merge Dependabot PRs to `main`. Confirm `baseRefName` on each PR; use **AskUserQuestion** if it looks wrong.
 
 Policy: **one open Dependabot PR per ecosystem** — merge or explicitly defer (close + ignore) before the next opens.
 
@@ -37,7 +37,7 @@ Copy and track:
 - [ ] Scan lockfile + manifest diff for surprises
 - [ ] Confirm CI green on latest commit
 - [ ] Run extra local checks if risk ≥ medium
-- [ ] Merge with rebase, or AskQuestion / defer
+- [ ] Merge with rebase, or AskUserQuestion / defer
 ```
 
 ### 1. Gather context
@@ -73,7 +73,7 @@ gh api repos/{owner}/{repo}/dependabot/alerts \
 | **Low**               | Patch dev tools (`knip`, `husky`), typings, isolated utilities                                                            | CI green → merge                                                                                                                                   |
 | **Medium**            | Grouped minor/patch framework deps, `vite`, `oxlint`/`oxfmt`, Playwright                                                  | Read PR-body release notes; spot-check usage; `bun run build` + `bun oxlint` locally if notes mention behavior changes                             |
 | **High**              | `react`, `@tanstack/*`, `maplibre-gl`, `react-map-gl`, `prisma`, `better-auth`, `zod`, `tailwindcss`, `typescript` majors | Read all PR-body notes + migration sections; grep codebase for affected APIs; run build, lint, unit tests; Playwright if maps/auth/routing touched |
-| **Critical decision** | Semver **major**, explicit breaking changes, peer-dep conflicts, CI red, or changelog unclear                             | **AskQuestion** — do not merge until human chooses                                                                                                 |
+| **Critical decision** | Semver **major**, explicit breaking changes, peer-dep conflicts, CI red, or changelog unclear                             | **AskUserQuestion** — do not merge until human chooses                                                                                             |
 
 Security updates: treat as **medium** minimum — still read notes; do not merge blind even when labeled security. They bypass cooldown and may propose very fresh releases.
 
@@ -99,14 +99,14 @@ In Bun repos Dependabot **cannot open security-update PRs**. GitHub files the al
 This is not fixable in `dependabot.yml` or a workflow — do not try. **We keep the failed run as the signal to bump by hand:**
 
 1. Take package, directory and fixed version from the alert list above.
-2. Direct dependency: set the fixed version in `package.json`, then `bun install` in that directory. Transitive (`bun why <package>`): bump the parent, or use **AskQuestion** before adding an `overrides` entry.
+2. Direct dependency: set the fixed version in `package.json`, then `bun install` in that directory. Transitive (`bun why <package>`): bump the parent, or use **AskUserQuestion** before adding an `overrides` entry.
 3. Risk tier is **medium** minimum, as for any security update; read the advisory (`gh api repos/{owner}/{repo}/dependabot/alerts/<number>`) since there is no PR body.
 4. Run the project check, commit as `chore(deps): bump <package> to <version>` with a line saying it is a security fix, and push the way the repo normally takes changes.
 5. Confirm the alert list is empty and the next push has no failed `npm_and_yarn` run.
 
-### 5. When to use AskQuestion
+### 5. When to use AskUserQuestion
 
-Use Cursor **AskQuestion** when the agent cannot safely decide alone:
+Use **AskUserQuestion** when the agent cannot safely decide alone:
 
 - Semver **major** for any production or framework dependency
 - Breaking change affects code paths you cannot fully verify in session
@@ -158,7 +158,7 @@ flowchart TD
   start[Dependabot PR] --> ci{CI green?}
   ci -->|no| fix{Fix in scope?}
   fix -->|yes| fixCi[Fix + push]
-  fix -->|no| ask[AskQuestion]
+  fix -->|no| ask[AskUserQuestion]
   ci -->|yes| notes[Read PR body release notes]
   notes --> major{Major or breaking?}
   major -->|yes| investigate[Code + migration check]

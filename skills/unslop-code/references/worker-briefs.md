@@ -6,7 +6,7 @@ Every brief means the **merge-base** range `<base>...HEAD`, never `<base>` alone
 
 Every brief also carries the same guardrails: do not change public API or behavior silently, do not touch files outside the phase's scope, and if the phase turns up nothing, say so and skip the commit instead of inventing work.
 
-Unclear **behavior** change, deploy status, colocate vs shared, decision lift, or merge-ready leftover cleanup: report it; do not implement (orchestrator AskQuestion — question must stand alone with context). Optional / style / "maybe" items: return as **secondary**; do not implement. Decision-hierarchy items that need design: return as **decision-lift follow-ups**.
+Unclear **behavior** change, deploy status, colocate vs shared, decision lift, or merge-ready leftover cleanup: report it; do not implement (orchestrator AskUserQuestion — question must stand alone with context). Optional / style / "maybe" items: return as **secondary**; do not implement. Decision-hierarchy items that need design: return as **decision-lift follow-ups**.
 
 ---
 
@@ -62,7 +62,7 @@ Also flag files that `import { foo }` from a sibling and immediately `export { f
 
 ## Implementer: Phase 3 (re-exports)
 
-Update all imports to the real module. Delete the shim. We do not want import+export pass-throughs; we want the clean new state. Keep only intentional public barrels. AskQuestion if unsure.
+Update all imports to the real module. Delete the shim. We do not want import+export pass-throughs; we want the clean new state. Keep only intentional public barrels. AskUserQuestion if unsure.
 
 Then finish-work commit this phase only.
 
@@ -80,7 +80,7 @@ rg -n -i -g '*.ts' -g '*.tsx' -g '*.md' -e 'legacy' -e 'migration' -e 'compat' -
 
 Question every legacy/migration/compat path. Confirm it is required. Especially for new features: we do not need or want migrations and legacy stuff. We want a clean new state of the app instead.
 
-Delete shims that exist only because an LLM was cautious. **Keep** on-disk session formats and URL contracts other systems still send. Deploy gate and migration-file squash are Phase 4b — do not keep PR-local extras here. AskQuestion when dropping the old path could break existing users.
+Delete shims that exist only because an LLM was cautious. **Keep** on-disk session formats and URL contracts other systems still send. Deploy gate and migration-file squash are Phase 4b — do not keep PR-local extras here. AskUserQuestion when dropping the old path could break existing users.
 
 Then finish-work commit this phase only.
 
@@ -99,7 +99,7 @@ rg -n -i -g '*.ts' -g '*.tsx' -g '*.sql' -e 'old format' -e 'backwards compatibl
 
 Read skill `unslop-code` → `references/undeployed-wip.md`. How to squash: skill `prisma`.
 
-If deploy status is unknown, stop and propose an AskQuestion (files found; what happens if not deployed vs already applied). Do not squash or drop persistence without a confirmed “not deployed”.
+If deploy status is unknown, stop and propose an AskUserQuestion (files found; what happens if not deployed vs already applied). Do not squash or drop persistence without a confirmed “not deployed”.
 
 If not deployed: squash branch-local migrations into the fewest files that express the final schema; delete old-to-new code. If deployed: keep applied migrations; only drop unused code dual-paths.
 
@@ -135,7 +135,7 @@ git diff --name-status -M <base>...HEAD -- '**/components/**' '**/routes/**'
 
 Read skill `tanstack-start-conventions` → `app-structure.md` and skill `unslop-code` → `references/component-location.md`. Placement only.
 
-Move or delete leftovers. Update imports. No re-export shims. Colocate next to the parent or extract as shared — both are clean. AskQuestion when that choice is unclear (both folders + importer list).
+Move or delete leftovers. Update imports. No re-export shims. Colocate next to the parent or extract as shared — both are clean. AskUserQuestion when that choice is unclear (both folders + importer list).
 
 Then finish-work commit this phase only. Skip when the branch touches no `components/`.
 
@@ -149,7 +149,7 @@ Walk the branch (and obvious call sites) for repeated decisions and wasted work.
 
 Read skill `unslop-code` → `references/decision-lift.md`.
 
-Apply only obvious lifts (parent already has the value; leaf only repeats it). Record decision-lift follow-ups for items that need design. Propose AskQuestion text that already includes context (file/route, today, options, what we will do with the answer).
+Apply only obvious lifts (parent already has the value; leaf only repeats it). Record decision-lift follow-ups for items that need design. Propose AskUserQuestion text that already includes context (file/route, today, options, what we will do with the answer).
 
 Then finish-work commit this phase only. Skip when the repo has no app tree.
 
@@ -176,7 +176,7 @@ Then finish-work commit this phase only. Skip when there is no UI TSX.
 
 ## Explore: Phase 9 (leftover process)
 
-Orchestrator AskQuestion first: merge-ready vs still deep in the work. Spawn this explore **only** on “merge-ready”.
+Orchestrator AskUserQuestion first: merge-ready vs still deep in the work. Spawn this explore **only** on “merge-ready”.
 
 `git diff --name-status` vs `<base>` for `.md`, `.sql`, `scripts/`, helpers that are not app/components. Check `package.json` and CI for callers. Do not edit.
 
@@ -188,7 +188,7 @@ git diff --name-status <base>...HEAD -- '*.md' '*.sql' 'scripts/' '*.http'
 
 Read skill `unslop-code` → `references/leftover-process.md`. Spawn **only** on “merge-ready”.
 
-Delete confirmed leftovers that are not everyday/critical. Prove each one is unreferenced first (grep basename and path across imports, `package.json`, CI, Dockerfiles, docs). Keep `README` / `AGENTS.md` / user-changelog / legal text / scripts wired into `package.json` or CI. Never delete a file the branch did not add, and never delete untracked files. AskQuestion when a file is referenced from README but not from code/CI.
+Delete confirmed leftovers that are not everyday/critical. Prove each one is unreferenced first (grep basename and path across imports, `package.json`, CI, Dockerfiles, docs). Keep `README` / `AGENTS.md` / user-changelog / legal text / scripts wired into `package.json` or CI. Never delete a file the branch did not add, and never delete untracked files. AskUserQuestion when a file is referenced from README but not from code/CI.
 
 Then finish-work commit this phase only.
 

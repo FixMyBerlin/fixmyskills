@@ -17,7 +17,7 @@ extraction fails. Not required for a normal literature pass with
 - **Methodology critic:** treat Methods as first-class evidence, not only the Abstract.
 - **Adjudication agent:** on conflict, re-read primaries instead of averaging summaries.
 
-## PDF extraction in Cursor (practical)
+## PDF extraction in Claude Code (practical)
 
 Default (fast path) — try first:
 

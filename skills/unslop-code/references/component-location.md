@@ -17,15 +17,15 @@ Do not invent a third dumping ground. Do not leave the old file behind after a c
 
 - Files added or edited on the branch that live outside the feature folder they belong to
 - Private helpers still under `components/shared/` (or a sibling feature) after they became single-use
-- Shared-looking names that have only one importer — move next to that parent unless a second consumer is coming (AskQuestion)
-- Feature-local components that two or more features now import — extract to shared, or AskQuestion
+- Shared-looking names that have only one importer — move next to that parent unless a second consumer is coming (AskUserQuestion)
+- Feature-local components that two or more features now import — extract to shared, or AskUserQuestion
 - Empty folders, stale barrels, and the previous path still imported after a rename
 - Page/layout components defined in `routes/` (thin-route rule from `app-structure.md`)
 
 ## What to do
 
 - **Obvious leftover** (old path, one importer, empty folder): move or delete in this phase; update imports; no shim
-- **Colocate vs shared is a product/API choice:** AskQuestion with both folders and the importer list
+- **Colocate vs shared is a product/API choice:** AskUserQuestion with both folders and the importer list
 - **Unclear or large move:** follow-up plan item; do not guess
 
 ## Search (give to `explore`)

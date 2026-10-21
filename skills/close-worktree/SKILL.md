@@ -113,7 +113,7 @@ git status --porcelain -u --ignored  # plus ignored (env, caches)
 **Usually keep** (copy into the develop checkout, same relative path when
 sensible):
 
-- Cursor / agent plan `.md` files that live only in this worktree
+- Claude Code / agent plan `.md` files that live only in this worktree
 - Other session notes the user still wants on develop
 
 **Usually leave / discard** (do not copy):
@@ -122,7 +122,7 @@ sensible):
 - `node_modules`, build artifacts, caches
 - Secrets
 
-Plans already under `~/.cursor/plans/` need no move — note that in the summary.
+Plans already under `~/.claude/plans/` need no move — note that in the summary.
 
 Copy keepable files into the develop checkout before deleting this worktree, and
 ask when ownership is unclear. If Step 5's fast-forward then refuses because an

@@ -3,10 +3,10 @@ name: tech-stack
 description: >-
   Default FMC tech stack for geo-heavy React SPAs: Bun/Vite, React 19, TanStack,
   maps, styling, TypeScript editor/CLI alignment, tsconfig templates,
-  browserslist client targets, Cursor MCP (Postgres, agent-browser), and
+  browserslist client targets, Claude Code MCP (Postgres, agent-browser), and
   when to pick sibling skills. Use when scaffolding a new app, evaluating
   libraries, setting up Bun install/global store or Knip, changing supported
-  browsers or compat lint, setting up Cursor MCP, or making stack/architecture
+  browsers or compat lint, setting up Claude Code MCP, or making stack/architecture
   decisions on existing apps.
 ---
 
@@ -14,7 +14,7 @@ description: >-
 
 Default stack for **geo-heavy React SPAs** at FixMyBerlin / FMC. Use for tech decisions when **creating** or **changing** an app — not as a deep dive into any one library.
 
-Install sibling skills separately: `bunx skills add FixMyBerlin/fixmyskills --skill <name> -a cursor -y`
+Install sibling skills separately: `bunx skills add FixMyBerlin/fixmyskills --skill <name> -a claude-code -y`
 
 ## When to apply
 
@@ -22,7 +22,7 @@ Install sibling skills separately: `bunx skills add FixMyBerlin/fixmyskills --sk
 - Adding or renaming `package.json` scripts
 - Library or pattern choice (“should we use X?”)
 - Cross-cutting convention review on an existing app
-- Cursor MCP setup for Postgres schema inspection, agent DB queries, or browser exploration MCP
+- Claude Code MCP setup for Postgres schema inspection, agent DB queries, or browser exploration MCP
 
 ## LLM resources
 
@@ -73,8 +73,8 @@ Prefer installed skill names when present; otherwise fetch from git.
 - **Scaffold (TS 7):** `package.json` — `devDependencies.typescript` `^7`, script `"type-check": "tsc --noEmit"` (add `-p` when using split tsconfigs); pin `@typescript/typescript-darwin-arm64` / `@typescript/typescript-linux-x64` in `optionalDependencies` at the same version when CI runs on a different platform than dev (the `typescript` package lists these as optional — extend for other platforms as needed). `bunfig.toml` — [bun-install.md](references/bun-install.md). Commit `.vscode/settings.json` (template: [examples/vscode.settings.typescript.json.template](examples/vscode.settings.typescript.json.template)) and recommend the **TypeScript 7** extension in `.vscode/extensions.json` ([examples/vscode.extensions.json.template](examples/vscode.extensions.json.template)).
 - **Monorepos:** when TypeScript lives in a package subfolder, prefix `js/ts.tsdk.path` to that package’s `node_modules/typescript` (e.g. `app/node_modules/typescript` — [tilda-geo](https://github.com/FixMyBerlin/tilda-geo/blob/develop/.vscode/settings.json)).
 - **Cursor / VS Code:** install **TypeScript 7** (`TypeScriptTeam.native-preview` — marketplace ID unchanged). Enable via command palette **TypeScript: Enable TypeScript 7** or the settings template. Copy [examples/vscode.settings.typescript.json.template](examples/vscode.settings.typescript.json.template) into `.vscode/settings.json` (merge with oxc keys from [references/oxc-config.md](references/oxc-config.md)). Toggle back with **Disable TypeScript 7 Language Server** when editor plugins still require TS 6 (Vue, Astro, Svelte, Angular templates — see release notes).
-- **Cursor MCP (user-level):** `~/.cursor/mcp.json` only — [examples/mcp.json.template](examples/mcp.json.template). Postgres: [references/cursor-mcp.md](references/cursor-mcp.md). Browser exploration: [references/agent-browser-mcp.md](references/agent-browser-mcp.md). Never commit MCP config to a repo.
-- **Cursor rules (app-level):** copy [examples/package-json-scripts.md.template](examples/package-json-scripts.md.template) → `.cursor/rules/package-json-scripts.md` on scaffold — [references/package-json-scripts.md](references/package-json-scripts.md)
+- **Claude Code MCP (user-level):** `claude mcp add --scope user` only (`~/.claude.json`) — [examples/mcp.json.template](examples/mcp.json.template). Postgres: [references/postgres-mcp.md](references/postgres-mcp.md). Browser exploration: [references/agent-browser-mcp.md](references/agent-browser-mcp.md). Never commit MCP config to a repo.
+- **Claude Code rules (app-level):** copy [examples/package-json-scripts.md.template](examples/package-json-scripts.md.template) → `.claude/rules/package-json-scripts.md` on scaffold — [references/package-json-scripts.md](references/package-json-scripts.md)
 
 **Verify:** `node -e "console.log(require('typescript/package.json').version)"`, `tsc --version`, and `bun run type-check` — all 7.x. In the editor, confirm **TypeScript 7** is enabled (status bar / command palette). Do not add `typescript` to repos that have no TS source (e.g. this skills monorepo).
 
@@ -163,7 +163,7 @@ Turf vs WASM, crates, Vite wiring: skill `rust-wasm-geo`.
 
 ## Dependency updates (Dependabot)
 
-- Schedule by project type — **AskQuestion** if unclear. FixMyCity: weekly Monday. Private OSS and Astro: first Friday of the month. Same template. Details: [dependabot.md](references/dependabot.md).
+- Schedule by project type — **AskUserQuestion** if unclear. FixMyCity: weekly Monday. Private OSS and Astro: first Friday of the month. Same template. Details: [dependabot.md](references/dependabot.md).
 - **One open PR at a time** per ecosystem (`open-pull-requests-limit: 1`).
 - Template: [examples/dependabot.yml.template](examples/dependabot.yml.template)
 - **Reviewing and merging PRs:** skill `review-dependabot` (changelog triage, risk tiers, rebase merge)
