@@ -29,7 +29,7 @@ Type-safe React = compile-time guarantees. This skill covers **TypeScript patter
 
 | Requirement        | Rule                                                                                                                                                 |
 | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **React 19**       | Target 19.x; no `forwardRef` / `useFormState` in new code                                                                                            |
+| **React 19**       | Target 19.x; no `forwardRef` / `useFormState` / `useActionState` in new code; forms: TanStack Form                                                                                            |
 | **React Compiler** | Enabled in the app build — auto-memoization is the default                                                                                           |
 | **Lint**           | **Oxlint** `react` plugin — native Compiler rules on by default, plus `'react/unsupported-syntax': 'error'`; no `eslint-plugin-react-hooks` jsPlugin |
 | **Memoization**    | Do **not** add `useMemo` / `useCallback` / `memo` by default; add only when profiling or a lint rule requires it                                     |
@@ -278,7 +278,6 @@ Examples: [generic-components.md](examples/generic-components.md)
 | API              | Use                                     | Docs                                                                  |
 | ---------------- | --------------------------------------- | --------------------------------------------------------------------- |
 | `use()`          | Unwrap promise/context (can suspend)    | [use](https://react.dev/reference/react/use.md)                       |
-| `useActionState` | Form action state (RSC/Next-style apps) | [useActionState](https://react.dev/reference/react/useActionState.md) |
 | `useOptimistic`  | Optimistic UI                           | [useOptimistic](https://react.dev/reference/react/useOptimistic.md)   |
 | `useTransition`  | Non-urgent updates                      | [useTransition](https://react.dev/reference/react/useTransition.md)   |
 | `useEffectEvent` | Stable callback inside effects          | [useEffectEvent](https://react.dev/reference/react/useEffectEvent.md) |
@@ -314,7 +313,7 @@ const { tab } = Route.useSearch()
 **Never**
 
 - `any` on events; `JSX.Element` for `children`
-- New `forwardRef` / `useFormState`
+- New `forwardRef` / `useFormState` / `useActionState` (forms: TanStack Form)
 - Default `useMemo` / `useCallback` / `memo` without cause
 - `useEffect` for app data fetching (use loaders/Query)
 - Await a promise you pass to `use()` for streaming handoff

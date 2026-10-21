@@ -3,8 +3,7 @@ name: zustand-state-management
 description: |
   FMC conventions for Zustand v5 in React: file naming, custom-hook-only exports, atomic selectors, actions namespace, small focused stores. Use when adding or reviewing client global state, or debugging unnecessary re-renders and SSR/persist hydration issues.
 
-  Not for server/async data (TanStack Query) or URL state (nuqs). For API details, middleware, slices, and migration, use the official llms.txt index below.
-user-invocable: true
+  Not for server/async data (TanStack Query) or URL state (router search params, or nuqs in Vite apps without TanStack Router). For API details, middleware, slices, and migration, use the official llms.txt index below.
 ---
 
 **LLM reference:** Fetch [llms.txt](https://zustand.docs.pmnd.rs/llms.txt) for the documentation index and latest API. Full docs: [llms-full.txt](https://zustand.docs.pmnd.rs/llms-full.txt). Human-readable docs: [zustand.docs.pmnd.rs](https://zustand.docs.pmnd.rs/).
@@ -20,8 +19,8 @@ user-invocable: true
 | Use Zustand for                                                            | Use something else for                      |
 | -------------------------------------------------------------------------- | ------------------------------------------- |
 | Client UI state shared across components (panels, map tools, wizard steps) | Server data → **TanStack Query**            |
-| Ephemeral client prefs not in the URL                                      | Shareable/bookmarkable state → **nuqs**     |
-| Small, synchronous client state                                            | Auth session → app auth skill / Better Auth |
+| Ephemeral client prefs not in the URL                                      | Shareable state → router search params (Vite app without Router: **nuqs**) |
+| Small, synchronous client state                                            | Auth session → skill `tanstack-start-auth` |
 
 Most app state is server or URL state. Add a Zustand store only when you need client-global state that is not already covered.
 
@@ -150,7 +149,7 @@ export const useFilteredTodos = () => {
 }
 ```
 
-Filters live in Zustand; server list lives in Query. URL filters belong in nuqs, not duplicated in Zustand.
+Filters live in Zustand; server list lives in Query. URL filters belong in router search params (`validateSearch`; nuqs only in Vite apps without TanStack Router), not duplicated in Zustand.
 
 ### 7. Idempotent updates (optional)
 
@@ -175,7 +174,7 @@ updateSize: (next) =>
 - `actions` namespace for mutators
 - Immutable updates via `set`; use updater form `set((state) => …)` for derived patches
 - Unique `persist` `name` per store
-- For Next.js / SSR + `persist`: follow llms.txt → **Setup with Next.js** / **SSR and Hydration** (hydration gate or official SSR-safe patterns)
+- For SSR + `persist` (TanStack Start): follow skill `tanstack-start-conventions` and llms.txt → **SSR and Hydration** (hydration gate or official SSR-safe patterns)
 
 ### Never
 
@@ -184,7 +183,7 @@ updateSize: (next) =>
 - Object/array selectors without `useShallow`
 - Zustand for server-fetched data
 - Mutate state in place inside `set`
-- Duplicate URL state in Zustand when nuqs already owns it
+- Duplicate URL state in Zustand when the router search params (or nuqs) already own it
 
 ---
 
@@ -194,7 +193,7 @@ updateSize: (next) =>
 | ------------------------------ | ------------------------------------------------ | ---------------------------------------------- |
 | Re-render on unrelated updates | Whole-store subscription or object selector      | Atomic exported hooks                          |
 | Maximum update depth exceeded  | Object selector creating new reference each time | Atomic hooks or `useShallow`                   |
-| Next.js hydration mismatch     | `persist` + SSR                                  | llms.txt Next.js / SSR guides                  |
+| Hydration mismatch (Start)     | `persist` + SSR                                  | `tanstack-start-conventions`, llms.txt SSR     |
 | Middleware types break         | `create<T>(…)` single parens                     | `create<T>()(…)`                               |
 | Wrong persist import           | Importing from `'zustand'`                       | `import { persist } from 'zustand/middleware'` |
 
@@ -206,7 +205,7 @@ Do not duplicate full API docs in this skill. Fetch llms.txt when you need:
 
 - **Middleware:** `persist`, `devtools`, `immer`, combining middlewares
 - **Patterns:** slices, reset state, vanilla store, testing, flux-style reducers
-- **Integrations:** Next.js, URL hash, Maps/Sets
+- **Integrations:** SSR and Hydration, URL hash, Maps/Sets
 - **Migration:** v4 → v5 (`useShallow` import paths, etc.)
 
 Official guides worth opening directly: [Updating state](https://zustand.docs.pmnd.rs/learn/guides/updating-state), [Flux inspired practice](https://zustand.docs.pmnd.rs/learn/guides/flux-inspired-practice).
@@ -219,4 +218,4 @@ Official guides worth opening directly: [Updating state](https://zustand.docs.pm
 | ----------------------- | ----------------------------- |
 | App layout, SSR (Start) | `tanstack-start-conventions`  |
 | URL search (Router)     | `tanstack-router-conventions` |
-| URL query state         | `nuqs`                        |
+| URL query state (no Router) | `nuqs`                    |

@@ -14,7 +14,7 @@ description: >-
 
 Default stack for **geo-heavy React SPAs** at FixMyBerlin / FMC. Use for tech decisions when **creating** or **changing** an app — not as a deep dive into any one library.
 
-Install sibling skills separately: `bunx skills add FixMyBerlin/fixmyskills --skill <name> -a claude-code -y`
+Install sibling skills separately: `bunx skills add FixMyBerlin/fixmyskills --skill <name> -g -a claude-code -y`
 
 ## When to apply
 
@@ -46,8 +46,8 @@ Prefer installed skill names when present; otherwise fetch from git.
 | Devtools debug panel                      | —                             | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-router-conventions/references/devtools.md>                    |
 | TanStack Start (boundaries, SSR, server)  | `tanstack-start-conventions`  | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/tanstack-start-conventions>                                            |
 | App folder layout (Start)                 | —                             | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-start-conventions/references/app-structure.md>                |
-| URL state (TanStack Router apps)          | `tanstack-router-conventions` | `params-search-ui-routes.md`                                                                                                        |
-| URL state (Next.js / legacy)              | `nuqs`                        | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/nuqs>                                                                  |
+| URL state (with TanStack Router)          | `tanstack-router-conventions` | `params-search-ui-routes.md`                                                                                                        |
+| URL state (Vite app without Router)       | `nuqs`                        | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/nuqs>                                                                  |
 | Client global state                       | `zustand-state-management`    | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/zustand-state-management>                                              |
 | Prisma schema naming, migrations          | `prisma`                      | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/prisma>                                                                |
 | E2E / Playwright                          | `playwright-skill`            | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/playwright-skill>                                                      |
@@ -129,8 +129,8 @@ Component typing, Compiler, oxlint React rules, and useEffect discipline: skill 
 | Server / async data                 | TanStack Query — no raw `useEffect` fetch; Suspense where the router supports it                |
 | Forms (non-trivial)                 | TanStack Form                                                                                   |
 | Routing                             | TanStack Router / Start                                                                         |
-| Shareable URL state (TanStack apps) | Route `validateSearch` (Zod) — see `tanstack-router-conventions` → `params-search-ui-routes.md` |
-| Shareable URL state (Next.js)       | nuqs — see skill `nuqs`                                                                         |
+| Shareable URL state (with TanStack Router) | Route `validateSearch` (Zod), never nuqs — see `tanstack-router-conventions` → `params-search-ui-routes.md` |
+| Shareable URL state (Vite app without TanStack Router) | nuqs — see skill `nuqs`                                                          |
 | High-frequency URL updates          | `@tanstack/react-pacer` — see <https://tanstack.com/pacer/latest>                               |
 | Global client state                 | Zustand (tkdodo patterns) — skill `zustand-state-management`                                    |
 | Local UI state                      | `useState`                                                                                      |
@@ -189,8 +189,8 @@ flowchart TD
   maps -->|yes| reactMapGl[react-map-gl skill]
   maps -->|no| data{Server or URL state?}
   data -->|server| tanstackQuery[router-and-query.md]
-  data -->|URL TanStack| validateSearch[params-search-ui-routes.md]
-  data -->|URL Next/shared| nuqsSkill[nuqs skill]
+  data -->|URL with Router| validateSearch[params-search-ui-routes.md]
+  data -->|URL no Router| nuqsSkill[nuqs skill]
   data -->|client global| zustandSkill[zustand-state-management]
   maps -->|slow geo compute| rustWasm[rust-wasm-geo skill]
 ```

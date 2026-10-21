@@ -45,17 +45,9 @@ function Profile({ userPromise }: { userPromise: Promise<User> }) {
 
 `use()` may be conditional (unlike other hooks). Reference: [use](https://react.dev/reference/react/use.md)
 
-## useActionState
+## Forms
 
-Replaces `useFormState`. Common in apps that post forms to server actions with progressive enhancement.
-
-```typescript
-import { useActionState } from 'react'
-
-const [state, formAction, isPending] = useActionState(serverAction, initialState)
-```
-
-Reference: [useActionState](https://react.dev/reference/react/useActionState.md)
+Forms: TanStack Form. Do not use `useActionState` / `useFormState`.
 
 ## Other React 19 hooks (docs only)
 
@@ -69,6 +61,6 @@ Reference: [useActionState](https://react.dev/reference/react/useActionState.md)
 ## Migration checklist (legacy codebases)
 
 - [ ] Replace `forwardRef` with `ref` prop
-- [ ] Replace `useFormState` with `useActionState`
+- [ ] Replace `useFormState` / `useActionState` with TanStack Form
 - [ ] `@types/react` 19.x
 - [ ] Enable React Compiler + oxlint native `react/*` compiler rules
