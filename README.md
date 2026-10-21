@@ -16,7 +16,8 @@ Repo-specific skills (e.g. tilda-geo processing, topic-docs, static datasets, lo
 | [playwright-skill](skills/playwright-skill/)                       | TanStack Start E2E (TILDA patterns), smoke tests, stubbed auth, ad-hoc automation                                                                           | `bunx skills add FixMyBerlin/fixmyskills --skill playwright-skill -a claude-code -y`<br>then `bun run setup` in the skill dir |
 | [react-dev](skills/react-dev/)                                     | React 19 + TypeScript, Compiler, oxlint, useEffect discipline; FMC TanStack Start — not routing/server                                                      | `bunx skills add FixMyBerlin/fixmyskills --skill react-dev -a claude-code -y`                                                 |
 | [react-map-gl](skills/react-map-gl/)                               | react-map-gl/maplibre — MapProvider, layers, URL viewport, tilda-geo patterns                                                                               | `bunx skills add FixMyBerlin/fixmyskills --skill react-map-gl -a claude-code -y`                                              |
-| [osm-pbfs](skills/osm-pbfs/)                                       | Shared local OSM PBF cache — symlink extracts, do not copy or re-download                                                                                   | `bunx skills add FixMyBerlin/fixmyskills --skill osm-pbfs -a claude-code -y`                                                  |
+| [osm-pbfs](skills/osm-pbfs/)                                       | Once per machine: shared local OSM PBF cache — symlink extracts, do not copy or re-download                                                                 | `bunx skills add FixMyBerlin/fixmyskills --skill osm-pbfs -g -a claude-code -y`                                               |
+| [tailwind-plus](skills/tailwind-plus/)                             | Once per machine: local Tailwind Plus + Catalyst workspace (private repo) — copy markup instead of inventing it                                             | `bunx skills add FixMyBerlin/fixmyskills --skill tailwind-plus -g -a claude-code -y`                                          |
 | [rust-wasm-geo](skills/rust-wasm-geo/)                             | Rust/WASM geo — Turf vs WASM, crates, wasm-bindgen, Vite for FMC geo-heavy apps                                                                             | `bunx skills add FixMyBerlin/fixmyskills --skill rust-wasm-geo -a claude-code -y`                                             |
 | [tanstack-router-conventions](skills/tanstack-router-conventions/) | TanStack Router: validateSearch, pretty search URLs, loaders + Query, typed routes (SPA or Start)                                                           | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-router-conventions -a claude-code -y`                               |
 | [tanstack-start-conventions](skills/tanstack-start-conventions/)   | TanStack Start: app layout, boundaries, server functions, SSR, API route validation (requires router skill)                                                 | `bunx skills add FixMyBerlin/fixmyskills --skill tanstack-start-conventions -a claude-code -y`                                |
@@ -103,6 +104,12 @@ bunx skills add ../skills --skill react-dev -a claude-code -y
 ```
 
 After adding skills, commit the updated `skills-lock.json`.
+
+### Machine-wide skills
+
+`model-policy`, `osm-pbfs` and `tailwind-plus` belong to your machine, not to a project, so install them globally (`-g`, outside `skills-lock.json`) and refresh them with `bunx skills update -g -y`.
+
+`osm-pbfs` and `tailwind-plus` check their folder first and walk you through setup if it is missing. Paths default to `~/Development/_osm-pbfs` and `~/Development/_tailwind`; override with `OSM_PBFS_DIR` / `TAILWIND_PLUS_DIR`. Ask Tobias for access to the private `tordans/tailwind-plus` repo.
 
 ### Remove skills
 

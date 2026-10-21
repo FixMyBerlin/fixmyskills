@@ -9,47 +9,32 @@ description: >-
 
 # Shared OSM PBF extracts
 
-OSM PBF files are large (Germany is about 4.5 GB). Keep one copy on disk in the
-cache and symlink it into projects.
+PBFs are large (Germany is about 4.5 GB). Keep one copy in a shared cache and
+symlink it into projects.
 
-## Cache
+## First: find the cache
 
 ```bash
-ls -lh "$HOME/Development/_osm-pbfs"
+PBF_DIR="${OSM_PBFS_DIR:-$HOME/Development/_osm-pbfs}"; ls -lh "$PBF_DIR"
 ```
 
-Look there first. Typical files: `berlin-latest.osm.pbf` (small),
-`germany-latest.osm.pbf` (large).
+Folder missing → read [references/setup.md](references/setup.md) first.
 
 ## Rules
 
-1. Never copy a PBF from the cache into a repo.
+1. Symlink, never copy, a PBF from the cache into a repo.
 2. Never download an extract that is already in the cache.
-3. If an extract is missing, download it into the cache, then symlink.
-4. Never commit `.osm.pbf` files. Make sure `*.osm.pbf` is gitignored.
-
-## Symlink into the project
-
-Use an absolute target so the link also resolves from worktrees:
+3. A missing extract goes into the cache, then gets symlinked.
+4. Never commit `.osm.pbf` files; make sure `*.osm.pbf` is gitignored.
 
 ```bash
-ln -s "$HOME/Development/_osm-pbfs/berlin-latest.osm.pbf" ./berlin-latest.osm.pbf
-ls -l ./berlin-latest.osm.pbf # starts with `l` and points at the cache
-```
-
-## Download a missing extract
-
-Into the cache, never into the project:
-
-```bash
-mkdir -p "$HOME/Development/_osm-pbfs"
-curl -L -o "$HOME/Development/_osm-pbfs/berlin-latest.osm.pbf" \
-  "https://download.geofabrik.de/europe/germany/berlin-latest.osm.pbf"
+ln -s "$PBF_DIR/berlin-latest.osm.pbf" ./berlin-latest.osm.pbf # absolute target, works from worktrees
+curl -L -o "$PBF_DIR/brandenburg-latest.osm.pbf" \
+  "https://download.geofabrik.de/europe/germany/brandenburg-latest.osm.pbf"
 ```
 
 ## Ask the user first
 
-- The project already holds a real (not symlinked) copy of an extract: stop and
-  offer to replace it with a symlink. Delete the duplicate only after they
-  confirm, with `trash`, not `rm`.
-- The user asks for a private copy: follow that.
+- The project holds a real (not symlinked) copy: offer to replace it with a
+  symlink; delete the duplicate only after they confirm, with `trash`, not `rm`.
+- The user wants a private copy: follow that.
