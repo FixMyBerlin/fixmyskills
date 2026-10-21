@@ -1,8 +1,3 @@
----
-description: After a successful git push, refresh global skills
-alwaysApply: true
----
-
 # Post-push global skills
 
 After a **successful** `git push` to origin, run:
