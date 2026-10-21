@@ -124,17 +124,17 @@ Component typing, Compiler, oxlint React rules, and useEffect discipline: skill 
 
 ## Data and state
 
-| Need                                | Choice                                                                                          |
-| ----------------------------------- | ----------------------------------------------------------------------------------------------- |
-| Server / async data                 | TanStack Query — no raw `useEffect` fetch; Suspense where the router supports it                |
-| Forms (non-trivial)                 | TanStack Form                                                                                   |
-| Routing                             | TanStack Router / Start                                                                         |
-| Shareable URL state (with TanStack Router) | Route `validateSearch` (Zod), never nuqs — see `tanstack-router-conventions` → `params-search-ui-routes.md` |
-| Shareable URL state (Vite app without TanStack Router) | nuqs — see skill `nuqs`                                                          |
-| High-frequency URL updates          | `@tanstack/react-pacer` — see <https://tanstack.com/pacer/latest>                               |
-| Global client state                 | Zustand (tkdodo patterns) — skill `zustand-state-management`                                    |
-| Local UI state                      | `useState`                                                                                      |
-| Prisma schema / migrations          | skill `prisma` — naming, relation fields, migrate workflows                                     |
+| Need                                                   | Choice                                                                                                      |
+| ------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| Server / async data                                    | TanStack Query — no raw `useEffect` fetch; Suspense where the router supports it                            |
+| Forms (non-trivial)                                    | TanStack Form                                                                                               |
+| Routing                                                | TanStack Router / Start                                                                                     |
+| Shareable URL state (with TanStack Router)             | Route `validateSearch` (Zod), never nuqs — see `tanstack-router-conventions` → `params-search-ui-routes.md` |
+| Shareable URL state (Vite app without TanStack Router) | nuqs — see skill `nuqs`                                                                                     |
+| High-frequency URL updates                             | `@tanstack/react-pacer` — see <https://tanstack.com/pacer/latest>                                           |
+| Global client state                                    | Zustand (tkdodo patterns) — skill `zustand-state-management`                                                |
+| Local UI state                                         | `useState`                                                                                                  |
+| Prisma schema / migrations                             | skill `prisma` — naming, relation fields, migrate workflows                                                 |
 
 Loader + Query integration: [router-and-query.md](https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-router-conventions/references/router-and-query.md).
 

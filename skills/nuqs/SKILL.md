@@ -11,10 +11,10 @@ Do **not** duplicate upstream API reference in this skill — use `llms.txt` / `
 
 ## URL state rule (FMC)
 
-| App                                  | URL state                                                                                           |
-| ------------------------------------ | --------------------------------------------------------------------------------------------------- |
-| Uses TanStack Router (SPA or Start)  | Router search params: `validateSearch` — skill `tanstack-router-conventions`. **Never nuqs.**        |
-| Vite React app WITHOUT TanStack Router | nuqs                                                                                              |
+| App                                    | URL state                                                                                     |
+| -------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Uses TanStack Router (SPA or Start)    | Router search params: `validateSearch` — skill `tanstack-router-conventions`. **Never nuqs.** |
+| Vite React app WITHOUT TanStack Router | nuqs                                                                                          |
 
 On TanStack Router use `validateSearch` instead (`tanstack-router-conventions` → `references/params-search-ui-routes.md`).
 
@@ -53,7 +53,7 @@ Adapter export verified in nuqs 2.9.5: `NuqsAdapter` from `nuqs/adapters/react`.
 
 ## Related FMC skills
 
-| Skill                         | Role                                                  |
-| ----------------------------- | ----------------------------------------------------- |
-| `tanstack-router-conventions` | `validateSearch` for apps with TanStack Router        |
+| Skill                         | Role                                                   |
+| ----------------------------- | ------------------------------------------------------ |
+| `tanstack-router-conventions` | `validateSearch` for apps with TanStack Router         |
 | `zustand-state-management`    | Ephemeral client state that does not belong in the URL |

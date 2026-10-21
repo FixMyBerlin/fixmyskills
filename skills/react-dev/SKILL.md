@@ -29,7 +29,7 @@ Type-safe React = compile-time guarantees. This skill covers **TypeScript patter
 
 | Requirement        | Rule                                                                                                                                                 |
 | ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **React 19**       | Target 19.x; no `forwardRef` / `useFormState` / `useActionState` in new code; forms: TanStack Form                                                                                            |
+| **React 19**       | Target 19.x; no `forwardRef` / `useFormState` / `useActionState` in new code; forms: TanStack Form                                                   |
 | **React Compiler** | Enabled in the app build — auto-memoization is the default                                                                                           |
 | **Lint**           | **Oxlint** `react` plugin — native Compiler rules on by default, plus `'react/unsupported-syntax': 'error'`; no `eslint-plugin-react-hooks` jsPlugin |
 | **Memoization**    | Do **not** add `useMemo` / `useCallback` / `memo` by default; add only when profiling or a lint rule requires it                                     |
@@ -275,12 +275,12 @@ Examples: [generic-components.md](examples/generic-components.md)
 
 ## React 19 APIs (pointers)
 
-| API              | Use                                     | Docs                                                                  |
-| ---------------- | --------------------------------------- | --------------------------------------------------------------------- |
-| `use()`          | Unwrap promise/context (can suspend)    | [use](https://react.dev/reference/react/use.md)                       |
-| `useOptimistic`  | Optimistic UI                           | [useOptimistic](https://react.dev/reference/react/useOptimistic.md)   |
-| `useTransition`  | Non-urgent updates                      | [useTransition](https://react.dev/reference/react/useTransition.md)   |
-| `useEffectEvent` | Stable callback inside effects          | [useEffectEvent](https://react.dev/reference/react/useEffectEvent.md) |
+| API              | Use                                  | Docs                                                                  |
+| ---------------- | ------------------------------------ | --------------------------------------------------------------------- |
+| `use()`          | Unwrap promise/context (can suspend) | [use](https://react.dev/reference/react/use.md)                       |
+| `useOptimistic`  | Optimistic UI                        | [useOptimistic](https://react.dev/reference/react/useOptimistic.md)   |
+| `useTransition`  | Non-urgent updates                   | [useTransition](https://react.dev/reference/react/useTransition.md)   |
+| `useEffectEvent` | Stable callback inside effects       | [useEffectEvent](https://react.dev/reference/react/useEffectEvent.md) |
 
 Short TS notes: [react-19-patterns.md](references/react-19-patterns.md). TanStack Start server mutations → `tanstack-start-conventions` → [server-functions.md](../tanstack-start-conventions/references/server-functions.md).
 

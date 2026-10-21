@@ -161,7 +161,7 @@ Config changes: follow skill `tech-stack` [dependabot.md](../tech-stack/referenc
 
 ## Related skills
 
-| Skill              | When                                                           |
-| ------------------ | -------------------------------------------------------------- |
-| `tech-stack`       | dependabot.yml, groups, ignores, browserslist                  |
-| `playwright-skill` | After bumps to Playwright, maps, or auth-related deps          |
+| Skill              | When                                                  |
+| ------------------ | ----------------------------------------------------- |
+| `tech-stack`       | dependabot.yml, groups, ignores, browserslist         |
+| `playwright-skill` | After bumps to Playwright, maps, or auth-related deps |

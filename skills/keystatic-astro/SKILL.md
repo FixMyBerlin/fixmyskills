@@ -70,10 +70,10 @@ Astro: [Environment variables](https://docs.astro.build/en/guides/environment-va
 
 Every Keystatic-managed collection gets **two paired files**:
 
-| File                     | Exports                                                           | Role                                                    |
-| ------------------------ | ----------------------------------------------------------------- | ------------------------------------------------------- |
-| `{name}Keystatic.ts`     | `keystatic{Name}Config`, `basePath` / `contentBase`, shared enums | Keystatic schema, paths, CMS labels                     |
-| `{name}Astro.ts`         | `astro{Name}Definition`                                           | Astro `defineCollection`, Zod schema, required `loader` |
+| File                 | Exports                                                           | Role                                                    |
+| -------------------- | ----------------------------------------------------------------- | ------------------------------------------------------- |
+| `{name}Keystatic.ts` | `keystatic{Name}Config`, `basePath` / `contentBase`, shared enums | Keystatic schema, paths, CMS labels                     |
+| `{name}Astro.ts`     | `astro{Name}Definition`                                           | Astro `defineCollection`, Zod schema, required `loader` |
 
 Register both in root configs:
 
@@ -116,15 +116,15 @@ All collection and singleton definitions live in `cms/` at the project root.
 
 ### Supporting files per concern
 
-| Concern                        | Location                                   | Pattern                                                                         |
-| ------------------------------ | ------------------------------------------ | ------------------------------------------------------------------------------- |
-| Shared Zod (API + Astro)       | `{name}Schema.ts`                          | API response + collection validation                                            |
+| Concern                        | Location                                   | Pattern                                                                             |
+| ------------------------------ | ------------------------------------------ | ----------------------------------------------------------------------------------- |
+| Shared Zod (API + Astro)       | `{name}Schema.ts`                          | API response + collection validation                                                |
 | Local variant of remote schema | `local{Name}Schema.ts`                     | extends/omits/transforms the remote schema for CMS (e.g. `localCampaignsSchema.ts`) |
-| Glob loader helper             | `cms/utils/loader.ts`                      | reused by all local file collections                                            |
-| MDX block registry (CMS)       | `cms/components/mdxComponentsKeystatic.ts` | `mdxComponentsKeystatic('faqs')` per context                                    |
-| MDX block registry (site)      | `cms/components/mdxComponentsAstro.astro`  | passed to `<Content components={...} />`                                        |
-| Per-block files                | `cms/components/{Block}/`                  | `keystatic.{block}.config.ts`, `{Block}.astro`, optional `KeystaticPreview.tsx` |
-| Custom Keystatic fields        | `cms/components/keystaticComponents/`      | e.g. map picker, color picker                                                   |
+| Glob loader helper             | `cms/utils/loader.ts`                      | reused by all local file collections                                                |
+| MDX block registry (CMS)       | `cms/components/mdxComponentsKeystatic.ts` | `mdxComponentsKeystatic('faqs')` per context                                        |
+| MDX block registry (site)      | `cms/components/mdxComponentsAstro.astro`  | passed to `<Content components={...} />`                                            |
+| Per-block files                | `cms/components/{Block}/`                  | `keystatic.{block}.config.ts`, `{Block}.astro`, optional `KeystaticPreview.tsx`     |
+| Custom Keystatic fields        | `cms/components/keystaticComponents/`      | e.g. map picker, color picker                                                       |
 
 ### MDX blocks (three layers)
 

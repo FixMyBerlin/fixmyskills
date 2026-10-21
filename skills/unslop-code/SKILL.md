@@ -280,7 +280,6 @@ Running list (orchestrator owns it). Items from Phase 7 that need a real plan: l
 14. **Decision-lift follow-ups:** the full list (or "none")
 15. **Follow-ups:** phases reverted and why, checks still red, open AskUserQuestion items
 
-
 ## Related
 
 [model-policy](../model-policy/SKILL.md) · [finish-work](../finish-work/SKILL.md) · [tech-stack](../tech-stack/SKILL.md) · [react-dev](../react-dev/SKILL.md) · [react-map-gl](../react-map-gl/SKILL.md) · [tanstack-router-conventions](../tanstack-router-conventions/SKILL.md) · [tanstack-start-conventions](../tanstack-start-conventions/SKILL.md) · [zustand-state-management](../zustand-state-management/SKILL.md) · [prisma](../prisma/SKILL.md) · [worker-briefs.md](references/worker-briefs.md) · [typescript.md](references/typescript.md) · [zod-audit.md](references/zod-audit.md) · [undeployed-wip.md](references/undeployed-wip.md) · [component-location.md](references/component-location.md) · [decision-lift.md](references/decision-lift.md) · [semantic-html.md](references/semantic-html.md) · [leftover-process.md](references/leftover-process.md) · [text-pass.md](references/text-pass.md)

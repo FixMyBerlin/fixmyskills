@@ -16,11 +16,11 @@ description: |
 
 ## When to use Zustand
 
-| Use Zustand for                                                            | Use something else for                      |
-| -------------------------------------------------------------------------- | ------------------------------------------- |
-| Client UI state shared across components (panels, map tools, wizard steps) | Server data → **TanStack Query**            |
+| Use Zustand for                                                            | Use something else for                                                     |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Client UI state shared across components (panels, map tools, wizard steps) | Server data → **TanStack Query**                                           |
 | Ephemeral client prefs not in the URL                                      | Shareable state → router search params (Vite app without Router: **nuqs**) |
-| Small, synchronous client state                                            | Auth session → skill `tanstack-start-auth` |
+| Small, synchronous client state                                            | Auth session → skill `tanstack-start-auth`                                 |
 
 Most app state is server or URL state. Add a Zustand store only when you need client-global state that is not already covered.
 
@@ -214,8 +214,8 @@ Official guides worth opening directly: [Updating state](https://zustand.docs.pm
 
 ## Related skills
 
-| Topic                   | Skill                         |
-| ----------------------- | ----------------------------- |
-| App layout, SSR (Start) | `tanstack-start-conventions`  |
-| URL search (Router)     | `tanstack-router-conventions` |
-| URL query state (no Router) | `nuqs`                    |
+| Topic                       | Skill                         |
+| --------------------------- | ----------------------------- |
+| App layout, SSR (Start)     | `tanstack-start-conventions`  |
+| URL search (Router)         | `tanstack-router-conventions` |
+| URL query state (no Router) | `nuqs`                        |
