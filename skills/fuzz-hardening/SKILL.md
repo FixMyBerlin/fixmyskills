@@ -41,7 +41,7 @@ Harness code, generators and the invariant catalog: [references/harness-patterns
 
 ### 1. Preflight
 
-Read `package.json` (scripts — expect `test-run` / `check` / `check-ci` per [package-json-scripts.md](../tech-stack/references/package-json-scripts.md) — and `vitest`, `fast-check`, `zod`, `@prisma/client`, `@turf/*`), the Vitest config (`testTimeout`, path alias such as `@/`), and `.github/workflows/`. Check for existing `*.fuzz.test.ts` — if present, this is a **follow-up run**: extend, do not duplicate.
+Read `package.json` (scripts — expect `test-run` / `check` / `check-ci` per skill `tech-stack` → `references/package-json-scripts.md` — and `vitest`, `fast-check`, `zod`, `@prisma/client`, `@turf/*`), the Vitest config (`testTimeout`, path alias such as `@/`), and `.github/workflows/`. Check for existing `*.fuzz.test.ts` — if present, this is a **follow-up run**: extend, do not duplicate.
 
 Stop and tell the user if there is no Vitest. Offer to add it (one devDep + `vitest.config.ts` + `test-run` script); do not fall back to `bun test` silently.
 
@@ -107,7 +107,7 @@ Cap the session: if a target keeps producing new failures after three fix rounds
 
 ### 5. Wire scripts and CI
 
-- `package.json`: add `"test-fuzz": "FUZZ_RUNS=20000 vitest run .fuzz. --testTimeout=600000"` (kebab-case, no `:` — see [package-json-scripts.md](../tech-stack/references/package-json-scripts.md)). Do not touch `check` / `check-ci` — fuzz files already run inside `test-run` at 100 runs.
+- `package.json`: add `"test-fuzz": "FUZZ_RUNS=20000 vitest run .fuzz. --testTimeout=600000"` (kebab-case, no `:` — see skill `tech-stack` → `references/package-json-scripts.md`). Do not touch `check` / `check-ci` — fuzz files already run inside `test-run` at 100 runs.
 - CI: the existing PR workflow runs `check-ci` → `test-run`, so nothing to add there. Offer (ask, default yes) a weekly scheduled job running `bun run test-fuzz` — template in the reference. A failing scheduled run prints the seed; re-run locally with it.
 
 ### 6. Report
@@ -131,4 +131,4 @@ Keep this skill on input handling. Do not pull in during a fuzz run:
 
 ## Related
 
-[tech-stack](../tech-stack/SKILL.md) | [tanstack-start-conventions](../tanstack-start-conventions/SKILL.md) (server functions, API route validation) | [tanstack-router-conventions](../tanstack-router-conventions/SKILL.md) (search serialization) | [rust-wasm-geo](../rust-wasm-geo/SKILL.md) (differential WASM vs Turf) | [prisma](../prisma/SKILL.md) | [finish-work](../finish-work/SKILL.md)
+skill `tech-stack` | skill `tanstack-start-conventions` (server functions, API route validation) | skill `tanstack-router-conventions` (search serialization) | skill `rust-wasm-geo` (differential WASM vs Turf) | skill `prisma` | skill `finish-work`

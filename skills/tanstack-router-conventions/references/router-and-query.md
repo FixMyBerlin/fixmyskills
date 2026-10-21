@@ -93,7 +93,7 @@ const deleteItem = useMutation({
 <ConfirmButton onConfirm={() => deleteItem.mutateAsync(id)} />
 ```
 
-Start server-fn details: `tanstack-start-conventions` → [server-functions.md](../../tanstack-start-conventions/references/server-functions.md).
+Start server-fn details: `tanstack-start-conventions` → `references/server-functions.md`.
 
 ---
 

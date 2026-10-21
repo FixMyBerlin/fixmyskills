@@ -1,6 +1,6 @@
 # Component location (unslop-code)
 
-Phase 6. Folder rules live in skill `tanstack-start-conventions` → [app-structure.md](../../tanstack-start-conventions/references/app-structure.md). Load that file (and the repo’s local `docs/` path map if present). Do not copy those tables here.
+Phase 6. Folder rules live in skill `tanstack-start-conventions` → `references/app-structure.md`. Load that file (and the repo’s local `docs/` path map if present). Do not copy those tables here.
 
 This pass is the **residue** after a refactor: something still sits where nobody would look.
 

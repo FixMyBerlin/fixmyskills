@@ -10,7 +10,7 @@ description: >-
 
 # Review Dependabot PRs
 
-Workflow for FMC geo React apps. Dependabot **config** (groups, schedule, ignores) lives in skill `tech-stack` — [dependabot.md](../tech-stack/references/dependabot.md). This skill covers **review and merge decisions**.
+Workflow for FMC geo React apps. Dependabot **config** (groups, schedule, ignores) lives in skill `tech-stack` — skill `tech-stack` → `references/dependabot.md`. This skill covers **review and merge decisions**.
 
 ## Repo scope
 
@@ -84,7 +84,7 @@ When PR-body release notes or tier say investigate:
 3. Load the relevant FMC skill if the bump touches that area (`react-dev`, `react-map-gl`, `tanstack-router-conventions`, `tanstack-start-conventions`, `playwright-skill`, etc.).
 4. Check **peer dependency** warnings in CI logs.
 
-**browserslist** bumps: Dependabot does not change the browserslist query — but lockfile may refresh `caniuse-lite`. After merge, ensure `bun oxlint` and `bun run build` still pass ([browser-target.md](../tech-stack/references/browser-target.md)).
+**browserslist** bumps: Dependabot does not change the browserslist query — but lockfile may refresh `caniuse-lite`. After merge, ensure `bun oxlint` and `bun run build` still pass (skill `tech-stack` → `references/browser-target.md`).
 
 **GitHub Actions** bumps: prefer grouped minor/patch; verify action release notes for runner/input renames; workflow must stay compatible with org secrets and `permissions`.
 
@@ -147,7 +147,7 @@ Close without merging when:
 
 Prefer adding a targeted `ignore` in `.github/dependabot.yml` (document why in PR comment) over leaving the PR open — remember `open-pull-requests-limit: 1` blocks the queue.
 
-Config changes: follow skill `tech-stack` [dependabot.md](../tech-stack/references/dependabot.md).
+Config changes: follow skill `tech-stack` skill `tech-stack` → `references/dependabot.md`.
 
 ## What not to do
 

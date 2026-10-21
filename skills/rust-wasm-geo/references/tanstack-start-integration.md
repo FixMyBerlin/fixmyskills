@@ -49,7 +49,7 @@ We run WASM in the browser only: the `--target web` glue loads the `.wasm` via `
 | Fully client-first tool                     | `false`       | Same — still lazy-init to avoid blocking               |
 | Static marketing page                       | `true`        | N/A — no WASM on route                                 |
 
-See [selective-ssr.md](../../tanstack-start-conventions/references/selective-ssr.md): map/canvas routes commonly use `ssr: 'data-only'` so `beforeLoad` / loader run on the server while the map shell is client-rendered.
+See skill `tanstack-start-conventions` → `references/selective-ssr.md`: map/canvas routes commonly use `ssr: 'data-only'` so `beforeLoad` / loader run on the server while the map shell is client-rendered.
 
 **Do not** call `ensureWasm()` at module load or from a route `loader` / `beforeLoad`. A static import of `wasm.ts` is fine: WASM loads only on the first `ensureWasm()` call from a handler or mutation.
 

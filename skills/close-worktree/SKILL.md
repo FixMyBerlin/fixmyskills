@@ -19,7 +19,7 @@ worktree and local branch. Run this from the worktree you want to close.
 Default integration branch: **`develop`**. If the user names another base
 (`main`, etc.), use that instead.
 
-This is not [finish-work](../finish-work/SKILL.md). Finish-work only checks and
+This is not skill `finish-work`. Finish-work only checks and
 commits in the current tree. Close-worktree owns the worktree lifecycle and
 **calls finish-work** when the tree is dirty.
 
@@ -74,7 +74,7 @@ bypass review — the user may want the PR merged instead.
 
 If there are staged, unstaged, or other tracked dirty changes:
 
-1. Run [finish-work](../finish-work/SKILL.md) (check + commit).
+1. Run skill `finish-work` (check + commit).
 2. **Abort** after finish-work so the user can review the new commit(s).
 3. Resume close-worktree only when the user asks again.
 
@@ -282,4 +282,4 @@ Continue in `<develop-checkout-path>` on `develop`.
 
 ## Related
 
-[finish-work](../finish-work/SKILL.md)
+skill `finish-work`

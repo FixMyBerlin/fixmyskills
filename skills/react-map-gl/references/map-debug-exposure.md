@@ -22,7 +22,7 @@ const handleLoad = (event: MapLibreEvent) => {
 <Map id="mainMap" onLoad={handleLoad} … />
 ```
 
-The helper and Playwright gating live in skill **`playwright-skill`** ([App hooks](../../playwright-skill/SKILL.md)). For E2E, also call `firePlaywrightMapLoadedEvent()` from the same handler — documented there, not here.
+The helper and Playwright gating live in skill **`playwright-skill`**. For E2E, also call `firePlaywrightMapLoadedEvent()` from the same handler — documented there, not here.
 
 Minimal `Window` typing for agents and tests:
 

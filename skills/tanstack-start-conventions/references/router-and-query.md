@@ -2,7 +2,7 @@
 
 Core loader + Query patterns live in skill **`tanstack-router-conventions`**:
 
-→ [router-and-query.md](../../tanstack-router-conventions/references/router-and-query.md)
+→ skill `tanstack-router-conventions` → `references/router-and-query.md`
 
 **Start-only follow-ups in this skill:**
 

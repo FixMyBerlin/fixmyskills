@@ -29,13 +29,13 @@ Playwright has **no** official `llms.txt` ([request closed](https://github.com/m
 
 ## Three layers (pick the right tool)
 
-| Layer                   | When                                                          | Where                                                                                                             |
-| ----------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| **Project E2E**         | Suites, CI, regression                                        | `@playwright/test` in `tests/*.spec.ts`, repo `playwright.config.ts`                                              |
-| **Agent exploration**   | Interactive debugging, hydration, React tree, quick UI checks | **agent-browser MCP** — skill `tech-stack`, [agent-browser-mcp.md](../tech-stack/references/agent-browser-mcp.md) |
-| **Ad-hoc** (this skill) | One-off scripts, external sites, no MCP                       | `/tmp/playwright-test-*.js` via `run.js`                                                                          |
+| Layer                   | When                                                          | Where                                                                                              |
+| ----------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **Project E2E**         | Suites, CI, regression                                        | `@playwright/test` in `tests/*.spec.ts`, repo `playwright.config.ts`                               |
+| **Agent exploration**   | Interactive debugging, hydration, React tree, quick UI checks | **agent-browser MCP** — skill `tech-stack`, skill `tech-stack` → `references/agent-browser-mcp.md` |
+| **Ad-hoc** (this skill) | One-off scripts, external sites, no MCP                       | `/tmp/playwright-test-*.js` via `run.js`                                                           |
 
-For in-repo work, **prefer project E2E** for anything that should regress. Use **agent-browser MCP** for interactive debugging — setup and usage in skill `tech-stack` ([agent-browser-mcp.md](../tech-stack/references/agent-browser-mcp.md)). Use ad-hoc scripts for one-off work outside MCP or without committing tests.
+For in-repo work, **prefer project E2E** for anything that should regress. Use **agent-browser MCP** for interactive debugging — setup and usage in skill `tech-stack` (skill `tech-stack` → `references/agent-browser-mcp.md`). Use ad-hoc scripts for one-off work outside MCP or without committing tests.
 
 ### Boundaries (Playwright vs agent-browser)
 
@@ -175,7 +175,7 @@ export const firePlaywrightMapLoadedEvent = createIsomorphicFn()
   })
 ```
 
-Call both helpers from the map `onLoad` handler: `exposeMainMapForDebugging(event.target)` and `firePlaywrightMapLoadedEvent()`. `window.__mainMap` is available in dev and Playwright mode; the `mapLoaded` event remains Playwright-gated. Why expose the map and `onLoad` wiring: skill `react-map-gl` → [map-debug-exposure.md](../react-map-gl/references/map-debug-exposure.md). Tests use `tests/utils/maps.ts` (`waitForMapLoad`, `verifyMapRendered`, `checkMapTilesLoaded`, `getMapLayerIds`). For tile/API coverage on region pages, use `verifyMapNetworkRequests` from `tests/utils/network.ts` (after `waitForMapLoad`).
+Call both helpers from the map `onLoad` handler: `exposeMainMapForDebugging(event.target)` and `firePlaywrightMapLoadedEvent()`. `window.__mainMap` is available in dev and Playwright mode; the `mapLoaded` event remains Playwright-gated. Why expose the map and `onLoad` wiring: skill `react-map-gl` → `references/map-debug-exposure.md`. Tests use `tests/utils/maps.ts` (`waitForMapLoad`, `verifyMapRendered`, `checkMapTilesLoaded`, `getMapLayerIds`). For tile/API coverage on region pages, use `verifyMapNetworkRequests` from `tests/utils/network.ts` (after `waitForMapLoad`).
 
 For **click/drag on map canvas**, consider [MapGrab](https://mapgrab.github.io/docs/getting-started/stage-two/playwright) (used in legacy Trassenscout surveys; adopt when migrating those flows to Start).
 
@@ -297,10 +297,10 @@ Multiple headers: `PW_EXTRA_HEADERS='{"X-Automated-By":"playwright-skill"}'`.
 
 ## When to use what
 
-| Need                             | Tool                                                                            |
-| -------------------------------- | ------------------------------------------------------------------------------- |
-| Committed regression / CI        | `@playwright/test` in repo                                                      |
-| Post–TanStack Start smoke        | `tests/smoke/` + this skill                                                     |
-| Agent debugging (SSR, React, UI) | agent-browser MCP — [tech-stack](../tech-stack/references/agent-browser-mcp.md) |
-| Quick screenshot / external site | Ad-hoc `run.js` or agent-browser                                                |
-| DB schema / queries              | Postgres MCP — [tech-stack](../tech-stack/references/postgres-mcp.md)           |
+| Need                             | Tool                                                                       |
+| -------------------------------- | -------------------------------------------------------------------------- |
+| Committed regression / CI        | `@playwright/test` in repo                                                 |
+| Post–TanStack Start smoke        | `tests/smoke/` + this skill                                                |
+| Agent debugging (SSR, React, UI) | agent-browser MCP — skill `tech-stack` → `references/agent-browser-mcp.md` |
+| Quick screenshot / external site | Ad-hoc `run.js` or agent-browser                                           |
+| DB schema / queries              | Postgres MCP — skill `tech-stack` → `references/postgres-mcp.md`           |

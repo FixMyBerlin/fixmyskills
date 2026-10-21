@@ -61,7 +61,7 @@ Auth-specific flows: skill `tanstack-start-auth`.
 
 **Loader vs Query:** Follow `tanstack-router-conventions` → `router-and-query.md`. On Start, route server I/O through `createServerFn` ([execution-model.md](references/execution-model.md)).
 
-**Form vs mutation:** Follow `tanstack-router-conventions` → [router-and-query.md](../tanstack-router-conventions/references/router-and-query.md#client-mutations). On Start, `mutationFn` calls the `*Fn`.
+**Form vs mutation:** Follow `tanstack-router-conventions` → `references/router-and-query.md#client-mutations`. On Start, `mutationFn` calls the `*Fn`.
 
 **`ssr`:** Map/canvas-heavy UI but need server auth/data → `'data-only'`. Handler-only API (`server.handlers`) → `false`. Fully client-first UI route → `false` (rare).
 
@@ -69,11 +69,11 @@ Auth-specific flows: skill `tanstack-start-auth`.
 
 ## Related skills
 
-| Topic                              | Skill                                                                                            |
-| ---------------------------------- | ------------------------------------------------------------------------------------------------ |
-| Router (required)                  | `tanstack-router-conventions`                                                                    |
-| Auth / session                     | `tanstack-start-auth`                                                                            |
-| Bun install / nvm                  | `tech-stack` → bun-install                                                                       |
-| Zustand                            | `zustand-state-management`                                                                       |
-| nuqs (Next.js)                     | `nuqs`                                                                                           |
-| Leftover placement after refactors | `unslop-code` Phase 6 → [component-location.md](../unslop-code/references/component-location.md) |
+| Topic                              | Skill                                                      |
+| ---------------------------------- | ---------------------------------------------------------- |
+| Router (required)                  | `tanstack-router-conventions`                              |
+| Auth / session                     | `tanstack-start-auth`                                      |
+| Bun install / nvm                  | `tech-stack` → bun-install                                 |
+| Zustand                            | `zustand-state-management`                                 |
+| nuqs (Next.js)                     | `nuqs`                                                     |
+| Leftover placement after refactors | `unslop-code` Phase 6 → `references/component-location.md` |

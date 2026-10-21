@@ -40,16 +40,16 @@ Docs: [React Compiler](https://react.dev/learn/react-compiler.md) · [Rules of R
 
 ## Related skills
 
-| Topic                                   | Skill                                                                                                              |
-| --------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| Effects, naming, when not to use Effect | `react-dev`                                                                                                        |
-| Routes, loaders, `validateSearch`       | `tanstack-router-conventions`                                                                                      |
-| SSR, server functions, Start layout     | `tanstack-start-conventions`                                                                                       |
-| Folder layout, thin routes (Start)      | `tanstack-start-conventions` → [app-structure.md](../tanstack-start-conventions/references/app-structure.md)       |
-| `createServerFn`, server mutations      | `tanstack-start-conventions` → [server-functions.md](../tanstack-start-conventions/references/server-functions.md) |
-| Client stores                           | `zustand-state-management`                                                                                         |
-| URL state (prefer router search)        | `tanstack-router-conventions`                                                                                      |
-| Semantic HTML (div/span leftovers)      | `unslop-code` → [semantic-html.md](../unslop-code/references/semantic-html.md)                                     |
+| Topic                                   | Skill                                                                 |
+| --------------------------------------- | --------------------------------------------------------------------- |
+| Effects, naming, when not to use Effect | `react-dev`                                                           |
+| Routes, loaders, `validateSearch`       | `tanstack-router-conventions`                                         |
+| SSR, server functions, Start layout     | `tanstack-start-conventions`                                          |
+| Folder layout, thin routes (Start)      | skill `tanstack-start-conventions` → `references/app-structure.md`    |
+| `createServerFn`, server mutations      | skill `tanstack-start-conventions` → `references/server-functions.md` |
+| Client stores                           | `zustand-state-management`                                            |
+| URL state (prefer router search)        | `tanstack-router-conventions`                                         |
+| Semantic HTML (div/span leftovers)      | skill `unslop-code` → `references/semantic-html.md`                   |
 
 ## Component props
 
@@ -282,7 +282,7 @@ Examples: [generic-components.md](examples/generic-components.md)
 | `useTransition`  | Non-urgent updates                   | [useTransition](https://react.dev/reference/react/useTransition.md)   |
 | `useEffectEvent` | Stable callback inside effects       | [useEffectEvent](https://react.dev/reference/react/useEffectEvent.md) |
 
-Short TS notes: [react-19-patterns.md](references/react-19-patterns.md). TanStack Start server mutations → `tanstack-start-conventions` → [server-functions.md](../tanstack-start-conventions/references/server-functions.md).
+Short TS notes: [react-19-patterns.md](references/react-19-patterns.md). TanStack Start server mutations → skill `tanstack-start-conventions` → `references/server-functions.md`.
 
 ## Routing (TypeScript only)
 
@@ -303,7 +303,7 @@ const { tab } = Route.useSearch()
 **Always**
 
 - `ComponentPropsWithoutRef` for native element extension
-- Prefer semantic HTML over generic `div`/`span` when the meaning is clear — `unslop-code` → [semantic-html.md](../unslop-code/references/semantic-html.md)
+- Prefer semantic HTML over generic `div`/`span` when the meaning is clear — skill `unslop-code` → `references/semantic-html.md`
 - Specific `React.*Event<HTMLElement>` types
 - Explicit `useState` when inference fails (null, `[]`, unions)
 - Discriminated unions for variant props

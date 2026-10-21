@@ -2,7 +2,7 @@
 
 Validation uses **Zod 4** everywhere in FMC TanStack Start apps. Pin `zod@4.4.3`.
 
-**UI routes** (`validateSearch`, typed `Route.useSearch()`): skill `tanstack-router-conventions` → [params-search-ui-routes.md](../../tanstack-router-conventions/references/params-search-ui-routes.md).
+**UI routes** (`validateSearch`, typed `Route.useSearch()`): skill `tanstack-router-conventions` → `references/params-search-ui-routes.md`.
 
 TanStack Router follows **two execution paths**: UI routes run matching, `validateSearch`, loaders, and components; **server route handlers** are plain `Request` handlers. Handlers receive **`request`**, **`params`**, and **`context`** only — there is **no** validated `search` object on `GET`.
 

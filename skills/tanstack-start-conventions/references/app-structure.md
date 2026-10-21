@@ -129,7 +129,7 @@ Route files import layouts from `@/components/layouts/...` only. See `components
 
 ## Components: Layout vs Page
 
-- **Layouts:** `Layout*.tsx` in **`components/layouts/`** — route shell, providers, outlet for child page. `LayoutRoot` is the document shell (`html`/`body`, app header/footer). Devtools: `tanstack-router-conventions` → [devtools.md](../../tanstack-router-conventions/references/devtools.md).
+- **Layouts:** `Layout*.tsx` in **`components/layouts/`** — route shell, providers, outlet for child page. `LayoutRoot` is the document shell (`html`/`body`, app header/footer). Devtools: `tanstack-router-conventions` → `references/devtools.md`.
 - **Pages:** `Page*.tsx` — actual screen content, colocated with the feature domain (`components/pages/`, `components/regionen/`, …).
 - **Deliberate asymmetry:** Route segments may use `_segment` for grouping while `components/` uses a readable folder name (e.g. route `_pages` → `components/pages/` for pages, `components/layouts/LayoutPages.tsx` for the layout).
 
@@ -148,9 +148,9 @@ Domain Zod and URL search schemas live in `shared/<domain>/` (or `shared/<topic>
 
 Owned by skill **`tanstack-router-conventions`** (install alongside this skill):
 
-- **Default:** route `validateSearch` (Zod) + `Route.useSearch()` — [params-search-ui-routes.md](../../tanstack-router-conventions/references/params-search-ui-routes.md).
-- **Router `router.tsx`:** required pretty-JSON `parseSearch` / `stringifySearch` + `trailingSlash: 'never'` — [router-search-serialization.md](../../tanstack-router-conventions/references/router-search-serialization.md).
-- **Map viewport:** `?map=zoom/lat/lng` — [map-search-param.md](../../tanstack-router-conventions/references/map-search-param.md).
+- **Default:** route `validateSearch` (Zod) + `Route.useSearch()` — skill `tanstack-router-conventions` → `references/params-search-ui-routes.md`.
+- **Router `router.tsx`:** required pretty-JSON `parseSearch` / `stringifySearch` + `trailingSlash: 'never'` — skill `tanstack-router-conventions` → `references/router-search-serialization.md`.
+- **Map viewport:** `?map=zoom/lat/lng` — skill `tanstack-router-conventions` → `references/map-search-param.md`.
 - **API routes:** no route-level `validateSearch` — [params-search-api-routes.md](params-search-api-routes.md).
 - **Search schema placement** (keep `routes/` for route files only — no `-` prefixed colocated helpers):
   - **Route-only:** inline `const …SearchSchema = z.object({ … })` in the route file.

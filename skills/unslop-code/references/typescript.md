@@ -4,7 +4,7 @@ Phase 1. Prefer inference. Fix the type at the value, not with a cast.
 
 This phase runs **before** Zod (Phase 2) so it does not add code the Zod pass would rewrite. Stay inside TypeScript: no new schemas, no `z.infer` aliases, no duplicate GeoJSON interfaces. When the root fix for an `as` is a runtime parse or a GeoJSON helper, leave the `as` with a why-keep and name it for Phase 2 — see [zod-audit.md](zod-audit.md).
 
-Lint: `'typescript/switch-exhaustiveness-check': 'error'` in skill `tech-stack` ([oxlint.config.mjs](../../tech-stack/examples/oxlint.config.mjs)).
+Lint: `'typescript/switch-exhaustiveness-check': 'error'` in skill `tech-stack` (skill `tech-stack` → `examples/oxlint.config.mjs`).
 
 ## Return types
 

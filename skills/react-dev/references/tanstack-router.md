@@ -1,6 +1,6 @@
 # TanStack Router — TypeScript only
 
-**Canonical copy:** skill `tanstack-router-conventions` → [router-typescript.md](../../tanstack-router-conventions/references/router-typescript.md).
+**Canonical copy:** skill `tanstack-router-conventions` → `references/router-typescript.md`.
 
 **Routing behavior** (loaders, React Query, `validateSearch`, pretty search URLs) → `tanstack-router-conventions`.  
 **Start-only** (SSR, server functions, API routes) → `tanstack-start-conventions`.

@@ -37,7 +37,7 @@ Files that export `createServerFn` and are imported by route files or components
 
 **Function names:** All `createServerFn` / `createServerOnlyFn` use the pattern **`functionNameFn`** (e.g. `getRegionPageLoaderFn`, `getUploadsForRegionUserFn`).
 
-**Public (unauthenticated) server functions:** Use the **`public*.functions.ts`** filename (e.g. `publicSurveys.functions.ts`, `publicInvite.functions.ts`). Do not attach auth middleware or `requireAuth` unless the handler intentionally validates a public token/session pair. Global auth middleware is not the FMC pattern because these exports must stay callable. See `tanstack-start-auth` → [auth.md](../../tanstack-start-auth/references/auth.md) §5.
+**Public (unauthenticated) server functions:** Use the **`public*.functions.ts`** filename (e.g. `publicSurveys.functions.ts`, `publicInvite.functions.ts`). Do not attach auth middleware or `requireAuth` unless the handler intentionally validates a public token/session pair. Global auth middleware is not the FMC pattern because these exports must stay callable. See `tanstack-start-auth` → `references/auth.md` §5.
 
 ### Route folder: routes only
 
@@ -62,11 +62,11 @@ Route files must always import and call server Fns in `loader`/`beforeLoad`; the
 ## Routes: When to use `beforeLoad` vs `loader`
 
 - **`beforeLoad`:** Redirects (URL normalization, auth redirect), auth/authorization, and returning context for the route (e.g. `isAuthorized`, `region`). Keep it light; server work is fine for ordinary route entry, but see the hot-route caveat below.
-- **`loader`:** Page data and cache priming. Can use `context` from `beforeLoad`. For React Query–backed data, see `tanstack-router-conventions` → [router-and-query.md](../../tanstack-router-conventions/references/router-and-query.md); otherwise return serializable data for `useLoaderData()` (e.g. admin pages).
+- **`loader`:** Page data and cache priming. Can use `context` from `beforeLoad`. For React Query–backed data, see `tanstack-router-conventions` → `references/router-and-query.md`; otherwise return serializable data for `useLoaderData()` (e.g. admin pages).
 
 ### `beforeLoad` runs on **every** navigation — gate server work with `loaderDeps`
 
-`beforeLoad` is **not** gated by `loaderDeps`: it re-runs on **every** navigation to the route, **including search-param-only changes on the same route** (a map pan writing `?map=`, a layer toggle, a feature selection). The `loader` is different — it only re-runs when `loaderDeps` or path params change ([TanStack Router — data loading](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#using-loaderdeps-to-access-search-params)). Map URL format: `tanstack-router-conventions` → [map-search-param.md](../../tanstack-router-conventions/references/map-search-param.md).
+`beforeLoad` is **not** gated by `loaderDeps`: it re-runs on **every** navigation to the route, **including search-param-only changes on the same route** (a map pan writing `?map=`, a layer toggle, a feature selection). The `loader` is different — it only re-runs when `loaderDeps` or path params change ([TanStack Router — data loading](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#using-loaderdeps-to-access-search-params)). Map URL format: `tanstack-router-conventions` → `references/map-search-param.md`.
 
 Consequence: **any server round-trip in `beforeLoad` runs on every search-param change.** For a route whose search params are high-frequency and client-only (map viewport, feature selection, layer toggles), a redirect resolver or auth check that hits the DB in `beforeLoad` turns every client-side interaction into a server request — and can flash the `pendingComponent` / remount the map on a spurious redirect.
 
@@ -76,9 +76,9 @@ Keep the `beforeLoad` default (light redirect/auth) for ordinary routes where na
 
 Use **`beforeLoad`, not request middleware**, for route redirects and layout auth. Pathless layout routes make open vs protected URLs obvious, and Trassenscout's lint pattern enforces this shape.
 
-TanStack **function middleware** (`createMiddleware({ type: 'function' })`) is a server-function data-boundary topic only. It is not a replacement for layout `beforeLoad`, and it should not be recommended for FMC route auth. See [auth.md](../../tanstack-start-auth/references/auth.md) §5 and [endpoint-auth-lint.md](../../tanstack-start-auth/references/endpoint-auth-lint.md).
+TanStack **function middleware** (`createMiddleware({ type: 'function' })`) is a server-function data-boundary topic only. It is not a replacement for layout `beforeLoad`, and it should not be recommended for FMC route auth. See skill `tanstack-start-auth` → `references/auth.md` §5 and skill `tanstack-start-auth` → `references/endpoint-auth-lint.md`.
 
-See also: [auth.md](../../tanstack-start-auth/references/auth.md) in the `tanstack-start-auth` skill. API route handlers and server modules that need the current user must receive the request’s headers and pass them to session helpers.
+See also: skill `tanstack-start-auth` → `references/auth.md` in the `tanstack-start-auth` skill. API route handlers and server modules that need the current user must receive the request’s headers and pass them to session helpers.
 
 ## Selective SSR (`ssr` option)
 
@@ -93,7 +93,7 @@ Our default is explicit `ssr: true` on UI routes unless a leaf needs a more rest
 
 ## Router + React Query
 
-See **`tanstack-router-conventions` → [router-and-query.md](../../tanstack-router-conventions/references/router-and-query.md)** for loader vs `useLoaderData` vs `useQuery` / `useSuspenseQuery` and shared `*QueryOptions`. SSR / dehydration: [selective-ssr.md](selective-ssr.md). This file covers server/client boundaries only.
+See **`tanstack-router-conventions` → `references/router-and-query.md`** for loader vs `useLoaderData` vs `useQuery` / `useSuspenseQuery` and shared `*QueryOptions`. SSR / dehydration: [selective-ssr.md](selective-ssr.md). This file covers server/client boundaries only.
 
 ## Error handling
 

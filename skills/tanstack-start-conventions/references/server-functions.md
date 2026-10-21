@@ -4,7 +4,7 @@ Server functions run on the server and are callable from routes and components l
 
 **Official docs:** [Server Functions](https://tanstack.com/start/latest/docs/framework/react/guide/server-functions)
 
-**Related:** [execution-model.md](execution-model.md) · [client-server-boundaries.md](client-server-boundaries.md) (file suffixes) · `tanstack-start-auth` (auth inside handlers) · client mutation wrappers: `tanstack-router-conventions` → [router-and-query.md](../../tanstack-router-conventions/references/router-and-query.md#client-mutations)
+**Related:** [execution-model.md](execution-model.md) · [client-server-boundaries.md](client-server-boundaries.md) (file suffixes) · `tanstack-start-auth` (auth inside handlers) · client mutation wrappers: `tanstack-router-conventions` → `references/router-and-query.md#client-mutations`
 
 ---
 
@@ -40,7 +40,7 @@ await updateNameFn({ data: { name: 'Jane' } })
 - **validator:** Validate before handler; handler receives `{ data }`.
 - **handler:** Async; DB, external APIs, fs. Return serializable value.
 
-That is the RPC shape. Loaders call `*Fn` directly. In components, wrap non-form calls in `useMutation` and form submits in Form `onSubmit` — `tanstack-router-conventions` → [router-and-query.md](../../tanstack-router-conventions/references/router-and-query.md#client-mutations). On Start, `mutationFn` is `await deleteItemFn({ data: { id } })` (throw if `{ success: false }`).
+That is the RPC shape. Loaders call `*Fn` directly. In components, wrap non-form calls in `useMutation` and form submits in Form `onSubmit` — `tanstack-router-conventions` → `references/router-and-query.md#client-mutations`. On Start, `mutationFn` is `await deleteItemFn({ data: { id } })` (throw if `{ success: false }`).
 
 ## FMC file conventions
 
@@ -120,7 +120,7 @@ After a mutation that changes loader/Query data:
 - **React Query:** `queryClient.invalidateQueries({ queryKey: [...] })`
 - **Router:** `router.invalidate()` for loader-only routes
 
-Where to call these (Form `onSubmit` vs `useMutation` `onSuccess`) is in [router-and-query.md](../../tanstack-router-conventions/references/router-and-query.md#client-mutations).
+Where to call these (Form `onSubmit` vs `useMutation` `onSuccess`) is in skill `tanstack-router-conventions` → `references/router-and-query.md#client-mutations`.
 
 ## Auth note
 

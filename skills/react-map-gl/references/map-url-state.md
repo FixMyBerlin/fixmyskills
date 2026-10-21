@@ -2,7 +2,7 @@
 
 Store viewport in query param **`map`** as `zoom/lat/lng` (e.g. `12.1/52.5/13.4`). Sync from the Map on `onMoveEnd`.
 
-**URL contract** (format, rounding, `parseMapParam` / `serializeMapParam`, `validateSearch`, slash encoding, `loaderDeps`): skill `tanstack-router-conventions` → [map-search-param.md](../../tanstack-router-conventions/references/map-search-param.md).
+**URL contract** (format, rounding, `parseMapParam` / `serializeMapParam`, `validateSearch`, slash encoding, `loaderDeps`): skill `tanstack-router-conventions` → `references/map-search-param.md`.
 
 **Default (TanStack Router / Start):** route `validateSearch` + `navigate({ search })` + `@tanstack/react-pacer` for throttled high-frequency updates.
 
@@ -12,7 +12,7 @@ Store viewport in query param **`map`** as `zoom/lat/lng` (e.g. `12.1/52.5/13.4`
 ?map=<zoom>/<lat>/<lng>
 ```
 
-Full precision rules and shared util: [map-search-param.md](../../tanstack-router-conventions/references/map-search-param.md).
+Full precision rules and shared util: skill `tanstack-router-conventions` → `references/map-search-param.md`.
 
 ## Parser / serializer
 
@@ -22,7 +22,7 @@ Reuse the shared helpers from the router skill (tilda-geo: `.../useQueryState/ut
 
 ## TanStack Router (preferred)
 
-Validate once on the route; read/write typed search in components. Schema + `replace: true` writes: [map-search-param.md](../../tanstack-router-conventions/references/map-search-param.md).
+Validate once on the route; read/write typed search in components. Schema + `replace: true` writes: skill `tanstack-router-conventions` → `references/map-search-param.md`.
 
 ```tsx
 // RegionMap.tsx
@@ -54,7 +54,7 @@ const navigate = useNavigate({ from: Route.fullPath })
 
 Use **`replace: true`** on viewport drags; use default push semantics when the user navigates to a new place explicitly.
 
-**Server redirects / hot map routes:** see [map-search-param.md](../../tanstack-router-conventions/references/map-search-param.md) and `tanstack-start-conventions` → `client-server-boundaries.md`.
+**Server redirects / hot map routes:** see skill `tanstack-router-conventions` → `references/map-search-param.md` and `tanstack-start-conventions` → `client-server-boundaries.md`.
 
 ## nuqs (when TanStack Router search is not used)
 
@@ -89,7 +89,7 @@ Register param keys in a central registry if server URL normalization must prese
 
 ## Server / tests
 
-Reuse parsers in redirects, export links, and `URLSearchParams` — checklist in [map-search-param.md](../../tanstack-router-conventions/references/map-search-param.md).
+Reuse parsers in redirects, export links, and `URLSearchParams` — checklist in skill `tanstack-router-conventions` → `references/map-search-param.md`.
 
 ## Checklist
 
