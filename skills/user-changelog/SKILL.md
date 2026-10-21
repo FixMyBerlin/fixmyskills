@@ -84,8 +84,9 @@ Merge multiple commits into **one** bullet when they describe the same visible c
 Write bullets in **German**:
 
 - Active voice, short, no jargon (no “refactor”, “loader”, “PR”, package names).
+- No direct address (neither du nor Sie): „Karten laden schneller“, not „Sie können jetzt …“.
 - **Area prefix** when it helps scanning — e.g. **Karte:**, **Export:**, **Anmeldung:**. In a **monorepo**, one shared `docs/user-changelog.md`; use the prefix for the package or surface (e.g. **Processing:** for `processing/`, **Karte:** for the app map UI).
-- Fixes: describe the user-visible problem, not the broken code.
+- Fixes start with **Behoben:** and describe the user-visible problem, not the broken code.
 - No issue/PR numbers, author names, or SHAs inside bullets.
 
 Good and bad examples: [examples.md](references/examples.md).

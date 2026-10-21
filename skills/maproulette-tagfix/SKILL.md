@@ -125,4 +125,4 @@ Or UI: Challenge → Rebuild (optionally “remove incomplete first”).
 ## Reference
 
 - Minimal task line: [examples/tag-fix-task.ndjson](examples/tag-fix-task.ndjson)
-- Property / Mustache notes: [references/task-markdown-and-ids.md](references/task-markdown-and-ids.md)
+- Task lookup by external ID: `GET /api/v2/challenge/{challengeId}/task/way%2F123`
