@@ -8,7 +8,6 @@ description: >-
   search serialization, route search params (including map viewport URLs),
   loaders, Query integration, or client mutations (useMutation vs Form
   onSubmit) — without TanStack Start server/SSR topics.
-disable-model-invocation: true
 ---
 
 # TanStack Router conventions

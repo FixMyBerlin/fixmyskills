@@ -75,9 +75,9 @@ export function TanStackAppDevtools() {
           panelLocation: 'bottom',
         }}
         eventBusConfig={{
-          // Start apps: true connects to the Vite/devtools server bus.
-          // SPA-only: omit or set false if you have no server bus.
-          connectToServerBus: true,
+          // Default: false (no server bus).
+          // TanStack Start: set `true` to see server events.
+          connectToServerBus: false,
         }}
         plugins={[
           {
