@@ -33,7 +33,7 @@ Do not hardcode `h1`/`h2` in a reusable component that is mounted in more than o
 
 Diff vs `<base>` plus the component family and consuming pages needed for consistency. Repo-wide grep is for discovery, not a license to rewrite every `div`. Ambiguous or large restyles go to Secondary.
 
-## Search (give to `explore`)
+## Search (give to `Explore`)
 
 Start from the branch, not the repo — a repo-wide `<div` grep returns thousands of lines and buries the signal.
 

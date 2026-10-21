@@ -18,20 +18,22 @@ disable-model-invocation: true
 
 # Unslop code
 
-Orchestrate only. Follow [agent-orchestration](../agent-orchestration/SKILL.md) / `@orchestrator-worker`. Do not implement, grep the tree yourself, or commit. Spawn workers.
+Orchestrate only. Do not implement, grep the tree yourself, or commit. Spawn subagents with the Agent tool.
 
 **Goal:** a **clean new state** of the app, not compatibility layers left behind by refactors.
 
 ## Models
 
-| Role               | Model                                                                                         |
-| ------------------ | --------------------------------------------------------------------------------------------- |
-| You (orchestrator) | **Grok 4.6 High**, standard / not Fast (`cursor-grok-4.6-high[fast=false]`)                   |
-| Grunt work         | `/implementer` → `cursor-grok-4.6-low[fast=false]` (omit Task `model` so frontmatter applies) |
-| Search             | Built-in `explore`                                                                            |
-| Proof              | `/verifier` after each phase that changed files                                               |
+Workers are the Haiku `high` agents from [model-policy](../model-policy/SKILL.md); they pin model, effort and a 100k compaction window, so do not pass `model` or `effort` for them. Without model-policy installed, use `subagent_type: general-purpose`, `model: haiku`, `effort: high` (verifier: no edits) — this skill explicitly asks for that effort.
 
-Composer 2.5 (`composer-2.5`, not Fast) is an acceptable grunt worker only when Low is unavailable or the user asks for Composer. Never `inherit`, never High, never Fast on workers.
+| Role               | Agent call                   |
+| ------------------ | ---------------------------- |
+| You (orchestrator) | Session model: **Opus 5.5**  |
+| Search             | `subagent_type: Explore`     |
+| Implementer        | `subagent_type: implementer` |
+| Verifier           | `subagent_type: verifier`    |
+
+Keep each worker brief small enough that the worker stays under ~100k tokens of context; split a phase by folder before it gets bigger. When a Haiku worker returns wrong or shallow work, re-run that one brief as `general-purpose`, `model: sonnet`, `effort: high` and say so in chat. A worker that went over 100k but did the work right needs no re-run. No `xhigh` unless the user names it, never `low` or `max`, no Fable.
 
 Each phase below is its **own** orchestrated unit: explore → implementer → verifier → **separate** [finish-work](../finish-work/SKILL.md) commit. Do not batch phases into one worker.
 
@@ -282,4 +284,4 @@ Write this summary following [unslop-text](../unslop-text/SKILL.md).
 
 ## Related
 
-[unslop-text](../unslop-text/SKILL.md) · [agent-orchestration](../agent-orchestration/SKILL.md) · [finish-work](../finish-work/SKILL.md) · [tech-stack](../tech-stack/SKILL.md) · [react-dev](../react-dev/SKILL.md) · [react-map-gl](../react-map-gl/SKILL.md) · [tanstack-router-conventions](../tanstack-router-conventions/SKILL.md) · [tanstack-start-conventions](../tanstack-start-conventions/SKILL.md) · [zustand-state-management](../zustand-state-management/SKILL.md) · [prisma](../prisma/SKILL.md) · [worker-briefs.md](references/worker-briefs.md) · [typescript.md](references/typescript.md) · [zod-audit.md](references/zod-audit.md) · [undeployed-wip.md](references/undeployed-wip.md) · [component-location.md](references/component-location.md) · [decision-lift.md](references/decision-lift.md) · [semantic-html.md](references/semantic-html.md) · [leftover-process.md](references/leftover-process.md)
+[unslop-text](../unslop-text/SKILL.md) · [model-policy](../model-policy/SKILL.md) · [finish-work](../finish-work/SKILL.md) · [tech-stack](../tech-stack/SKILL.md) · [react-dev](../react-dev/SKILL.md) · [react-map-gl](../react-map-gl/SKILL.md) · [tanstack-router-conventions](../tanstack-router-conventions/SKILL.md) · [tanstack-start-conventions](../tanstack-start-conventions/SKILL.md) · [zustand-state-management](../zustand-state-management/SKILL.md) · [prisma](../prisma/SKILL.md) · [worker-briefs.md](references/worker-briefs.md) · [typescript.md](references/typescript.md) · [zod-audit.md](references/zod-audit.md) · [undeployed-wip.md](references/undeployed-wip.md) · [component-location.md](references/component-location.md) · [decision-lift.md](references/decision-lift.md) · [semantic-html.md](references/semantic-html.md) · [leftover-process.md](references/leftover-process.md)

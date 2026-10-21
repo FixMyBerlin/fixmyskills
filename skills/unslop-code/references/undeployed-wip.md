@@ -33,7 +33,7 @@ Skip this phase when the branch adds no migrations and no old-to-new paths.
 - **Deployed / live data:** keep applied migrations and on-disk contracts
 - **Unsure:** AskUserQuestion with the list of files; do not guess
 
-## Search (give to `explore`)
+## Search (give to `Explore`)
 
 ```bash
 git diff --name-status <base>...HEAD -- '*prisma/migrations*' '*drizzle*' '**/migrations/**'

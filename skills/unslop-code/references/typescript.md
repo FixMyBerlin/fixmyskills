@@ -69,7 +69,7 @@ switch (status) {
 }
 ```
 
-## Search (give to `explore`)
+## Search (give to `Explore`)
 
 ```bash
 rg -n -g '*.ts' -g '*.tsx' -e '\)\s*:\s*' -e ' as ' -e ' as const' -e 'satisfies ' -e 'else if' -e 'switch \(' -e 'default:'

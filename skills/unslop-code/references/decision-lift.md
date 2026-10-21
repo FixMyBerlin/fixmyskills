@@ -36,6 +36,6 @@ Every proposed question must:
 
 No vague “should we refactor X?”
 
-## Search (give to `explore`)
+## Search (give to `Explore`)
 
 Walk the branch (and obvious call sites) for repeated decisions and wasted work. Group by “could move to route / layout / parent”. Do not edit.

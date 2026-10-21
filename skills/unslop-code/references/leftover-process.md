@@ -38,7 +38,7 @@ Before deleting any candidate, prove it is unreferenced: grep the repo for its b
 
 Then Phase 10 (unslop-text) runs on what remains.
 
-## Search (give to `explore`)
+## Search (give to `Explore`)
 
 ```bash
 git diff --name-status <base>...HEAD -- '*.md' '*.sql' 'scripts/' '*.http'

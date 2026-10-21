@@ -1,6 +1,6 @@
 # Worker briefs (unslop-code)
 
-Orchestrator: paste the matching brief into `/implementer`. Fill `<base>` (`develop` or `main`), repo root, and skill name. Each implementer runs [finish-work](../../finish-work/SKILL.md) for **one** commit when it changed files; skip commit when there is nothing to land.
+Orchestrator: paste the matching brief into an implementer subagent (model and effort: see the Models table in [SKILL.md](../SKILL.md)). Paste the explore briefs into `Explore`. Fill `<base>` (`develop` or `main`), repo root, and skill name. Each implementer runs [finish-work](../../finish-work/SKILL.md) for **one** commit when it changed files; skip commit when there is nothing to land.
 
 Every brief means the **merge-base** range `<base>...HEAD`, never `<base>` alone. Repo-wide `rg` is discovery only: intersect with `git diff --name-only <base>...HEAD` and work the branch files first.
 

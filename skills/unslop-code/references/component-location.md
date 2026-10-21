@@ -28,7 +28,7 @@ Do not invent a third dumping ground. Do not leave the old file behind after a c
 - **Colocate vs shared is a product/API choice:** AskUserQuestion with both folders and the importer list
 - **Unclear or large move:** follow-up plan item; do not guess
 
-## Search (give to `explore`)
+## Search (give to `Explore`)
 
 ```bash
 git diff --name-status -M <base>...HEAD -- '**/components/**' '**/routes/**'

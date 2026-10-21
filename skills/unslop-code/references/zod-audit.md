@@ -67,7 +67,7 @@ Type-only GeoJSON (React props, a value a parent already parsed) stays a why-not
 - Prisma / generated client types for rows we already loaded
 - Narrowing after a schema (`.discriminatedUnion` already did it)
 
-## Search (give to `explore`)
+## Search (give to `Explore`)
 
 Focus on untrusted values (`JSON.parse`, env, cookies, request bodies), not every `as` in the app.
 
