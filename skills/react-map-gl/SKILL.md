@@ -7,7 +7,6 @@ description: >-
   missing images. Use when building or reviewing Map components, layers, click/hover handlers,
   setFeatureState, map URL sync, or agent/test map inspection in TanStack Start / Vite apps.
   Reference implementation: tilda-geo/app.
-disable-model-invocation: true
 ---
 
 # react-map-gl (MapLibre)
