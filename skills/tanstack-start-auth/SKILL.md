@@ -5,7 +5,6 @@ description: >-
   and FMC route protection (layout beforeLoad for route UX, endpointAuth/guards
   for data boundaries, headers, tanstackStartCookies plugin, OAuth sign-in).
   Use for auth.server.ts, Better Auth, sign-in flows, session helpers, or secured routes/APIs.
-disable-model-invocation: true
 ---
 
 # TanStack Start + Better Auth
