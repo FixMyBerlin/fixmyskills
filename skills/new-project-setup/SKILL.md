@@ -3,8 +3,8 @@ name: new-project-setup
 description: >-
   Orchestrate greenfield FixMyBerlin/FMC repo bootstrap: plan which fixmyskills
   to install, git init, AGPL license, three finish-work commits. Use when
-  scaffolding a new project or onboarding a new repo. Delegates to finish-work,
-  tech-stack, and agent-orchestration — do not duplicate their steps.
+  scaffolding a new project or onboarding a new repo. Delegates to finish-work
+  and tech-stack — do not duplicate their steps.
 disable-model-invocation: true
 ---
 
@@ -32,7 +32,7 @@ Present the checklist below; confirm all **ask** items before executing.
 
 **Skills — default** (`bunx skills add FixMyBerlin/fixmyskills … -a claude-code -y`)
 
-- `finish-work`, `tech-stack`, `agent-orchestration`
+- `finish-work`, `tech-stack`
 - `react-dev` — TanStack/React; **skip** non-UI
 - `tanstack-router-conventions` — TanStack Router (SPA or Start); **skip** non-TanStack
 - `tanstack-start-conventions` — TanStack Start only; **skip** for Router SPA and other frameworks
@@ -53,17 +53,17 @@ Present the checklist below; confirm all **ask** items before executing.
 - [ ] Plan confirmed
 - [ ] git init (if needed)
 - [ ] License → finish-work commit 1
-- [ ] Skills + orchestration → finish-work commit 2
+- [ ] Skills → finish-work commit 2
 - [ ] Dev tooling → finish-work commit 3
 - [ ] Summary
 ```
 
-| Step        | Do                                                                                                                             | Skill                                  |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------- |
-| Git         | `test -d .git \|\| git init`                                                                                                   | —                                      |
-| License     | Verbatim AGPL-3.0 as [tilda-geo LICENSE.md](https://github.com/FixMyBerlin/tilda-geo/blob/develop/LICENSE.md); README links it | **finish-work** → commit **1**         |
-| Skills      | `bunx skills add …` per plan; then `init-claude.sh`                                                                            | **agent-orchestration** → commit **2** |
-| Dev tooling | bunfig, oxc, dependabot, tsconfig, vscode when `package.json` exists                                                           | **tech-stack** → commit **3**          |
-| Each commit | Separate commit; never batch                                                                                                   | **finish-work**                        |
+| Step        | Do                                                                                                                             | Skill                          |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------ | ------------------------------ |
+| Git         | `test -d .git \|\| git init`                                                                                                   | —                              |
+| License     | Verbatim AGPL-3.0 as [tilda-geo LICENSE.md](https://github.com/FixMyBerlin/tilda-geo/blob/develop/LICENSE.md); README links it | **finish-work** → commit **1** |
+| Skills      | `bunx skills add …` per plan                                                                                                   | **finish-work** → commit **2** |
+| Dev tooling | bunfig, oxc, dependabot, tsconfig, vscode when `package.json` exists                                                           | **tech-stack** → commit **3**  |
+| Each commit | Separate commit; never batch                                                                                                   | **finish-work**                |
 
 End with summary: installed skills, skipped items, follow-ups, three commit SHAs.

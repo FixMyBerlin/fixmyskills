@@ -22,6 +22,7 @@ Then delete the skill entry from `skills-lock.json` and commit (the CLI does not
 
 ## Contents
 
-| Skill                      | Deprecated                                           | Replacement                               |
-| -------------------------- | ---------------------------------------------------- | ----------------------------------------- |
-| `tanstack-start-migration` | FMC Next.js → TanStack Start migrations are complete | `tanstack-start-conventions`, `react-dev` |
+| Skill                      | Deprecated                                                                     | Replacement                                            |
+| -------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------ |
+| `tanstack-start-migration` | FMC Next.js → TanStack Start migrations are complete                           | `tanstack-start-conventions`, `react-dev`              |
+| `agent-orchestration`      | FMC moved from Cursor to Claude Code; Grok workers and `cursor-agent` are gone | `model-policy` (user-level subagent models and effort) |
