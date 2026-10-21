@@ -36,7 +36,7 @@ Before deleting any candidate, prove it is unreferenced: grep the repo for its b
 - Unclear: follow-up; do not guess
 - Never delete a file the branch did not add. Untracked scratch files are the user's, not yours — list them, do not remove them.
 
-Then Phase 10 (unslop-text) runs on what remains.
+Then Phase 10 (text pass) runs on what remains.
 
 ## Search (give to `Explore`)
 

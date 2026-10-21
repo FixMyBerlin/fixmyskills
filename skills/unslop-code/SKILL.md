@@ -8,7 +8,7 @@ description: >-
   skill-aligned code-review passes (react-dev,
   react-map-gl, tanstack-router-conventions, tech-stack, zustand), component
   location, decision lift, semantic HTML, leftover process artifacts on a
-  merge-ready PR, then unslop-text on comments and docs in the branch.
+  merge-ready PR, then a text pass on comments and docs in the branch.
   Use when the user asks to cleanup LLM changes, post-agent cleanup, unslop
   code, or to tidy a branch after agent/refactor work. Formerly
   cleanup-llm-changes.
@@ -80,10 +80,10 @@ A phase whose checks stay red after one fix attempt gets reverted, not patched f
 - [ ] Phase 7: Decision lift (skip if no app tree)
 - [ ] Phase 8: Semantic HTML (skip if no UI TSX)
 - [ ] Phase 9: Leftover process artifacts (skip if not merge-ready)
-- [ ] Phase 10: unslop-text on comments, docs, and copy
+- [ ] Phase 10: text pass on comments, docs, and copy
 - [ ] Secondary changes listed
 - [ ] Decision-lift follow-ups listed
-- [ ] Chat summary (unslop-text)
+- [ ] Chat summary
 ```
 
 ---
@@ -244,13 +244,13 @@ Commit this phase on its own when it ran.
 
 ---
 
-## Phase 10: unslop-text
+## Phase 10: text pass
 
-After the code phases (and Phase 9 deletes), apply [unslop-text](../unslop-text/SKILL.md) to **comments, JSDoc, markdown, and user-facing strings** in the branch (diff vs `<base>` plus leftover LLM comments in touched files). Do not rewrite the whole docs tree. Do not restructure code in this phase.
+After the code phases (and Phase 9 deletes), apply [text-pass.md](references/text-pass.md) to **comments, JSDoc, markdown, and user-facing strings** in the branch (diff vs `<base>` plus leftover LLM comments in touched files). Do not rewrite the whole docs tree. Do not restructure code in this phase.
 
 **Keep:** legal/attribution text; intentional German UI copy; a comment that names a MapLibre/React quirk with a link.
 
-Commit this phase on its own. The orchestrator chat summary follows unslop-text too.
+Commit this phase on its own.
 
 ---
 
@@ -274,14 +274,13 @@ Running list (orchestrator owns it). Items from Phase 7 that need a real plan: l
 8. **Phase 7 Decision lift:** obvious lifts; follow-ups; asked
 9. **Phase 8 Semantic HTML:** families changed / skipped
 10. **Phase 9 Leftover process:** cleaned / skipped — not merge-ready
-11. **Phase 10 unslop-text:** comments/docs rewritten or deleted
+11. **Phase 10 text pass:** comments/docs rewritten or deleted
 12. **Commits:** SHAs + subjects
 13. **Secondary changes:** the full list (or "none")
 14. **Decision-lift follow-ups:** the full list (or "none")
 15. **Follow-ups:** phases reverted and why, checks still red, open AskUserQuestion items
 
-Write this summary following [unslop-text](../unslop-text/SKILL.md).
 
 ## Related
 
-[unslop-text](../unslop-text/SKILL.md) · [model-policy](../model-policy/SKILL.md) · [finish-work](../finish-work/SKILL.md) · [tech-stack](../tech-stack/SKILL.md) · [react-dev](../react-dev/SKILL.md) · [react-map-gl](../react-map-gl/SKILL.md) · [tanstack-router-conventions](../tanstack-router-conventions/SKILL.md) · [tanstack-start-conventions](../tanstack-start-conventions/SKILL.md) · [zustand-state-management](../zustand-state-management/SKILL.md) · [prisma](../prisma/SKILL.md) · [worker-briefs.md](references/worker-briefs.md) · [typescript.md](references/typescript.md) · [zod-audit.md](references/zod-audit.md) · [undeployed-wip.md](references/undeployed-wip.md) · [component-location.md](references/component-location.md) · [decision-lift.md](references/decision-lift.md) · [semantic-html.md](references/semantic-html.md) · [leftover-process.md](references/leftover-process.md)
+[model-policy](../model-policy/SKILL.md) · [finish-work](../finish-work/SKILL.md) · [tech-stack](../tech-stack/SKILL.md) · [react-dev](../react-dev/SKILL.md) · [react-map-gl](../react-map-gl/SKILL.md) · [tanstack-router-conventions](../tanstack-router-conventions/SKILL.md) · [tanstack-start-conventions](../tanstack-start-conventions/SKILL.md) · [zustand-state-management](../zustand-state-management/SKILL.md) · [prisma](../prisma/SKILL.md) · [worker-briefs.md](references/worker-briefs.md) · [typescript.md](references/typescript.md) · [zod-audit.md](references/zod-audit.md) · [undeployed-wip.md](references/undeployed-wip.md) · [component-location.md](references/component-location.md) · [decision-lift.md](references/decision-lift.md) · [semantic-html.md](references/semantic-html.md) · [leftover-process.md](references/leftover-process.md) · [text-pass.md](references/text-pass.md)

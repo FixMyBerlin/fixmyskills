@@ -194,17 +194,17 @@ Then finish-work commit this phase only.
 
 ---
 
-## Explore: Phase 10 (unslop-text)
+## Explore: Phase 10 (text pass)
 
-Diff vs `<base>`: comments, JSDoc, new/changed markdown, user-facing strings. Flag restating comments, AI vocabulary, em dashes, emoji in headings, curly quotes, chatbot phrases. Do not edit.
+Diff vs `<base>`: comments, JSDoc, new/changed markdown, user-facing strings. Flag restating comments and name-only JSDoc. Do not edit.
 
 ```bash
 rg -n -g '*.ts' -g '*.tsx' -g '*.md' -e 'TODO' -e 'NOTE:' -e 'IMPORTANT:' -e 'simply' -e 'leverage' -e 'robust'
 ```
 
-## Implementer: Phase 10 (unslop-text)
+## Implementer: Phase 10 (text pass)
 
-Read skill `unslop-text`. Apply it to comments, JSDoc, markdown, and user-facing strings in the branch. Do not restructure code. Do not rewrite the whole docs tree.
+Read `references/text-pass.md` of skill `unslop-code`. Apply it to comments, JSDoc, markdown, and user-facing strings in the branch. Do not restructure code. Do not rewrite the whole docs tree.
 
 Keep legal/attribution text, intentional German UI copy, and comments that name a MapLibre/React quirk with a link.
 
