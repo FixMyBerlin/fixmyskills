@@ -21,12 +21,14 @@ TW_DIR="${TAILWIND_PLUS_DIR:-$HOME/Development/_tailwind}"; test -f "$TW_DIR/REA
 
 No output → read [references/setup.md](references/setup.md) first.
 
-Then read `$TW_DIR/README.md`. It says which folders are migrated, the
-conventions, and links the catalog guide (`tailwindplus-components/README.md`).
+Then read, in that folder, `README.md` (which folders are migrated, the
+conventions) and `tailwindplus-components/README.md` (folder layout, file
+variants).
 
 ## Rules
 
-1. Prefer `v4/react-system.tsx` blocks and `catalyst-ui-kit/typescript/`.
+1. Prefer `v4/react-system.tsx` blocks (Ecommerce ships only `v4/react.tsx`)
+   and `catalyst-ui-kit/typescript/`.
 2. Copy class structure, then adapt to the project: its colors, button styles,
    router, and dark-mode policy.
 3. FMC's licence covers copying and adapting components into our projects,

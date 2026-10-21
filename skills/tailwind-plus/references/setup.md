@@ -7,8 +7,9 @@ The workspace is the private repo
 [tordans/tailwind-plus](https://github.com/tordans/tailwind-plus). It already
 holds the downloaded and migrated catalog, so no Tailwind Plus login is needed.
 
-1. Check access: `gh repo view tordans/tailwind-plus`. No access → stop and
-   tell the user to ask Tobias for it.
+1. Check access: `gh repo view tordans/tailwind-plus`. `gh` missing →
+   `brew install gh && gh auth login` first. No access → stop and tell the
+   user to ask Tobias for it.
 2. Ask the user where to put it. Default: `~/Development/_tailwind`.
 3. Clone:
 
@@ -23,5 +24,9 @@ holds the downloaded and migrated catalog, so no Tailwind Plus login is needed.
    export TAILWIND_PLUS_DIR="/path/to/tailwind-plus"
    ```
 
-Update later with `git -C "$TW_DIR" pull`. Downloading new components from
+   This session does not see the new export yet: use the chosen path directly
+   until Claude Code is restarted.
+
+Update later with `git -C "${TAILWIND_PLUS_DIR:-$HOME/Development/_tailwind}" pull`.
+Downloading new components from
 Tailwind Plus is the maintainer's job; see `docs/downloading.md` in the repo.

@@ -28,6 +28,7 @@ Folder missing → read [references/setup.md](references/setup.md) first.
 4. Never commit `.osm.pbf` files; make sure `*.osm.pbf` is gitignored.
 
 ```bash
+PBF_DIR="${OSM_PBFS_DIR:-$HOME/Development/_osm-pbfs}" # repeat in every Bash call; shell state does not persist
 ln -s "$PBF_DIR/berlin-latest.osm.pbf" ./berlin-latest.osm.pbf # absolute target, works from worktrees
 curl -L -o "$PBF_DIR/brandenburg-latest.osm.pbf" \
   "https://download.geofabrik.de/europe/germany/brandenburg-latest.osm.pbf"
