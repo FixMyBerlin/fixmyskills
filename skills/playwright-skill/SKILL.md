@@ -3,8 +3,6 @@ name: playwright-skill
 description: E2E testing and browser automation for TanStack Start apps (FMC/TILDA). Use @playwright/test for committed suites/CI; agent-browser MCP (skill tech-stack) for agent exploration; this skill for smoke tests, stubbed auth, map hooks, and quick /tmp scripts. Not for Next.js.
 ---
 
-**Path resolution:** Discover `$SKILL_DIR` from where this file was loaded (plugin, global `~/.claude/skills/`, or project `.agents/skills/`).
-
 **Read the project’s `tests/README.md` first** — env vars, Docker, and scripts live there.
 
 **Related FMC skills:** `tanstack-router-conventions` (routes/search), `tanstack-start-auth` (sessions), `tanstack-start-conventions`.
@@ -255,7 +253,7 @@ Write tests in `tests/**/*.spec.ts` with TypeScript. Use web-first assertions (`
 **Setup (once):**
 
 ```bash
-cd $SKILL_DIR && bun run setup
+cd ${CLAUDE_SKILL_DIR} && bun run setup
 ```
 
 **Workflow:**
@@ -263,25 +261,25 @@ cd $SKILL_DIR && bun run setup
 1. For localhost: detect dev servers first:
 
    ```bash
-   cd $SKILL_DIR && bun -e "require('./lib/helpers').detectDevServers().then(s => console.log(JSON.stringify(s)))"
+   bun -e "require('${CLAUDE_SKILL_DIR}/lib/helpers').detectDevServers().then(s => console.log(JSON.stringify(s)))"
    ```
 
 2. Write script to `/tmp/playwright-test-*.js` (never commit ad-hoc scripts to the skill dir).
 3. Parameterize `TARGET_URL` at the top.
-4. Run: `cd $SKILL_DIR && bun run.js /tmp/playwright-test-*.js`
+4. Run from the project directory (not the skill folder): `bun ${CLAUDE_SKILL_DIR}/run.js /tmp/playwright-test-*.js`. `run.js` resolves relative script paths and `takeScreenshot` output against the directory you ran it from; for raw `page.screenshot({ path })` use an absolute path.
 
 **Headers** (identify automated traffic):
 
 ```bash
 PW_HEADER_NAME=X-Automated-By PW_HEADER_VALUE=playwright-skill \
-  cd $SKILL_DIR && bun run.js /tmp/my-script.js
+  bun ${CLAUDE_SKILL_DIR}/run.js /tmp/my-script.js
 ```
 
 Multiple headers: `PW_EXTRA_HEADERS='{"X-Automated-By":"playwright-skill"}'`.
 
-**Defaults:** Use `headless: false` for ad-hoc unless the user asks for headless. Prefer semantic locators in ad-hoc scripts too.
+**Defaults:** Run headless by default (agents cannot watch a window); use `headless: false` only when a human wants to watch. Prefer semantic locators in ad-hoc scripts too.
 
-**Helpers** (`lib/helpers.js`): `detectDevServers`, `createContext` / `getExtraHeadersFromEnv`, `takeScreenshot`. Avoid custom retry click helpers — use Playwright auto-waiting.
+**Helpers** (`lib/helpers.js`): `detectDevServers`, `createContext` / `getExtraHeadersFromEnv`, `takeScreenshot`. There are no click/type/retry wrappers — use Playwright locators and auto-waiting.
 
 ---
 
