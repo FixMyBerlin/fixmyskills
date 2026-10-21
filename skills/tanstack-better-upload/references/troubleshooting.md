@@ -11,7 +11,7 @@ Never skip phase 2 when the app tracks uploads in Postgres. Never create DB reco
 
 - `uploadFiles()` + TanStack Query **instead of** `useUploadFiles` when you need built-in progress UI
 - S3 keys or auth enforced only on the client
-- Swallowing `createUploadRecord` errors (orphan S3 objects)
+- Swallowing `createUploadRecord` (app helper wrapping `createUploadFn`) errors (orphan S3 objects)
 - Importing `*.server.ts` from route files without handler-only usage (see `tanstack-start-conventions`)
 - `putObject` helper for **browser** uploads — use router + presigned URLs (`putObject` is fine for small **server-side** buffer puts)
 - Importing `@aws-sdk/client-s3` or `PutObjectCommand` when `@better-upload/server/helpers` covers the operation — see [s3-helpers.md](s3-helpers.md)

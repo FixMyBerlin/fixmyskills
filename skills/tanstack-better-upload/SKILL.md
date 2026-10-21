@@ -74,7 +74,7 @@ file picker / dropzone* onDrop
 | API path        | Client defaults to `/api/upload`; set `api` when the TanStack route differs                                                                                                                 |
 | Handler         | `return handleRequest(request, router)` — no Next.js adapter                                                                                                                                |
 | Auth            | Enforce in handler or `onBeforeUpload`; `endpointAuth.inherited(...)` when auth lives in handler                                                                                            |
-| DB after upload | `useMutation({ mutationFn: createUploadFn })` in `onUploadComplete`                                                                                                                         |
+| DB after upload | `useMutation({ mutationFn: createUploadFn })` in `onUploadComplete` (app server fn; trassenscout: `src/server/uploads/uploads.functions.ts`)                                                |
 | Boundaries      | Post-upload persistence in `*.functions.ts` + `createServerFn`; never import `@better-upload/server` in client components                                                                   |
 | S3 access       | `getConfiguredS3Client()` (`aws()`) + `@better-upload/server/helpers` — not `@aws-sdk/client-s3` unless helpers lack the op ([s3-helpers.md](references/s3-helpers.md))                     |
 | Serve via API   | GET `/api/` routes for `<img>` / `<video>` previews need `forwardApiRequestsPastViteAssetMiddleware()` in `vite.config.ts` (dev only) — [serving-uploads.md](references/serving-uploads.md) |

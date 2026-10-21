@@ -105,7 +105,7 @@ Optional enhancements on top of the shadcn template:
 ## Component stack
 
 ```text
-UploadDropzone (domain: API path, createUploadRecord, relations)
+UploadDropzone (domain: API path, createUploadRecord app helper, relations)
   └─ UploadDropzoneBase (useUploadFiles, onUploadComplete → DB)
        └─ UploadDropzoneProgress (react-dropzone + progress list)
             └─ wrapped by UploadDropzoneContainer (layout)

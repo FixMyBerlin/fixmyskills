@@ -92,7 +92,7 @@ Add `@aws-sdk/client-s3` and a separate `getAwsSdkS3Client()` only when Better U
 ## Object keys and URLs
 
 - Keys come from `generateObjectInfo` in `onBeforeUpload` (browser uploads) or shared key helpers (server puts)
-- Store key or full URL in DB via `getS3Url(key)`
+- Store key or full URL in DB via an app URL helper (trassenscout: `getS3Url(key)` in `src/shared/uploads/url.ts`; tilda-geo: `s3VirtualHostedUrl` in `app/src/server/s3VirtualHostedUrl.server.ts`)
 - Do not expose bucket credentials to the client
 
 ## Multipart

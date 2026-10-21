@@ -23,7 +23,7 @@ const uploader = useUploadFiles({
   onUploadComplete: async ({ files }: { files: FileUploadInfo<'complete'>[] }) => {
     // Phase 2: persist each completed upload as a DB row (server fn)
     for (const file of files) {
-      await createUploadRecord(file)
+      await createUploadRecord(file) // app helper: wraps the persist server fn (trassenscout: `src/components/uploads/useUploadRecordCreation.ts`)
     }
   },
 })
@@ -39,11 +39,11 @@ const { upload, control, isPending, progresses } = uploader
 file.name
 file.size
 file.type
-file.objectInfo.key // S3 key — store as externalUrl or resolve via getS3Url(key)
+file.objectInfo.key // S3 key — store as externalUrl or resolve via `getS3Url(key)` (app helper, trassenscout: `src/shared/uploads/url.ts`; tilda-geo: `s3VirtualHostedUrl({ bucket, key })` in `app/src/server/s3VirtualHostedUrl.server.ts`)
 file.progress // 0–1 during upload
 ```
 
-Build DB payload from completed file:
+Build DB payload from completed file (`createUploadFn` is an app server fn; trassenscout: `src/server/uploads/uploads.functions.ts`, called through `useMutation` in `createUploadRecord`):
 
 ```ts
 await createUploadFn({
@@ -87,7 +87,7 @@ For button + single file picker — **no react-dropzone**. Use `useUploadFile` w
 **Recommended FMC split:**
 
 - **Upload bytes:** `useUploadFiles` (progress, presign, S3)
-- **Persist metadata:** `useMutation({ mutationFn: createUploadFn })` inside `onUploadComplete`
+- **Persist metadata:** `useMutation({ mutationFn: createUploadFn })` inside `onUploadComplete` (usually wrapped as `createUploadRecord(file)`, see above)
 
 Alternative (manual progress): `uploadFiles()` / `uploadFile()` inside `useMutation` — only without `UploadHookControl` UI. Prefer `useUploadFiles` when you need progress UI ([troubleshooting.md](troubleshooting.md)).
 
