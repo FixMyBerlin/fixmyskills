@@ -25,7 +25,7 @@ When intent is ambiguous, prefer committing — especially after implementing ch
 
 Commit path: `git status`, `git diff`, and `git log -5` in parallel; stage relevant files only; `git commit` via HEREDOC; `git status` to verify.
 
-Safety: no push unless asked. No `--no-verify`. No amend of pushed commits. Do not stage secrets or unrelated dirty files.
+Safety: no push unless asked. No `--no-verify`. No amend of pushed commits, except the lint/format amend below. Do not stage secrets or unrelated dirty files.
 
 Already committed and verify only fixed lint/format: when the changes are purely lint/format and clearly belong to HEAD, `git commit --amend --no-edit` (if HEAD was already pushed, say that the push now needs `--force-with-lease`; do not push). Otherwise ask.
 

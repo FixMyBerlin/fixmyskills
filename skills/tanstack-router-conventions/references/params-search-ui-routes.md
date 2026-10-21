@@ -10,7 +10,7 @@ Define each route's search schema **once**. Never duplicate search shapes as han
 
 - Route: `validateSearch: itemSearchSchema` (Zod 4 is Standard Schema; **no** `@tanstack/zod-adapter` / `zodValidator()`; no `(search) => schema.parse(search)` wrapper).
 - Type: `type ItemSearch = z.infer<typeof itemSearchSchema>`, exported only when imported elsewhere.
-- Components: `Route.useSearch()` or `useSearch({ from: Route.id })`, never `useSearch({ strict: false }) as …`.
+- Components: `Route.useSearch()` in the route file, `getRouteApi('/path').useSearch()` elsewhere, never `useSearch({ strict: false }) as …`.
 - Revalidate elsewhere with the **same schema object**: `itemSearchSchema.safeParse(raw)`; `z.flattenError()` for user-facing errors.
 
 Always use `.default()` (so `<Link search>` does not need every key) plus `.catch(fallback)` (invalid values recover instead of erroring):

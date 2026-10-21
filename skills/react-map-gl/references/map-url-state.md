@@ -28,9 +28,9 @@ const navigate = useNavigate({ from: Route.fullPath })
 
 `replace: true` on viewport drags; default push when the user navigates to a new place.
 
-## nuqs (only when TanStack Router search is not used)
+## nuqs (Vite apps without TanStack Router)
 
-Next.js, Pages Router, existing nuqs trees (tilda wraps `PageRegionSlug` with `NuqsAdapter`). Same parse/serialize util.
+Same parse/serialize util as the router variant.
 
 ```tsx
 const mapParamParser = createParser({

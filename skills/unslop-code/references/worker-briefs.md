@@ -199,7 +199,7 @@ Then finish-work commit this phase only.
 Diff vs `<base>`: comments, JSDoc, new/changed markdown, user-facing strings. Flag restating comments and name-only JSDoc. Do not edit.
 
 ```bash
-rg -n -g '*.ts' -g '*.tsx' -g '*.md' -e 'TODO' -e 'NOTE:' -e 'IMPORTANT:' -e 'simply' -e 'leverage' -e 'robust'
+rg -n -g '*.ts' -g '*.tsx' -g '*.md' -e 'TODO' -e 'NOTE:' -e 'IMPORTANT:'
 ```
 
 ## Implementer: Phase 10 (text pass)

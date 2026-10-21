@@ -1,6 +1,6 @@
 ---
 name: playwright-skill
-description: E2E testing and browser automation for TanStack Start apps (FMC/TILDA). Use @playwright/test for committed suites/CI; agent-browser MCP (skill tech-stack) for agent exploration; this skill for smoke tests, stubbed auth, map hooks, and quick /tmp scripts. Not for Next.js.
+description: E2E testing and browser automation for TanStack Start apps (FMC/TILDA). Use @playwright/test for committed suites/CI; agent-browser MCP (skill tech-stack) for agent exploration; this skill for smoke tests, stubbed auth, map hooks, and quick ad-hoc scripts.
 ---
 
 **Read the project’s `tests/README.md` first** — env vars, Docker, and scripts live there.

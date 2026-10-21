@@ -105,7 +105,7 @@ async function customLoader() {
 }
 ```
 
-Because the fetch runs while `content.config.ts` is evaluated (including `astro sync` and dev start), keep it fail-fast. Alternative without top-level await: wrap `glob()` in an object loader whose `load(context)` calls `fetchAndStore()` and then `await inner.load(context)`.
+Because the fetch runs while `content.config.ts` is evaluated (including `astro sync` and dev start), keep it fail-fast.
 
 ## Pattern D — Local CMS + remote merge
 

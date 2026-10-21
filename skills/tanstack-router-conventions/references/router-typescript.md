@@ -4,14 +4,14 @@ Docs: [TanStack Router](https://tanstack.com/router/latest/docs/framework/react/
 
 ## Typed hooks outside the route file
 
-Shared hooks use `from` with the route id (FMC convention), not `strict: false` casts:
+Shared hooks use `getRouteApi('/path')` (what tilda-geo and trassenscout do), not `strict: false` casts:
 
 ```typescript
-import { useParams, useSearch } from '@tanstack/react-router'
-import { Route as userRoute } from '@/routes/users/$userId'
+import { getRouteApi } from '@tanstack/react-router'
 
-const { userId } = useParams({ from: userRoute.id })
-const { tab } = useSearch({ from: userRoute.id })
+const userRouteApi = getRouteApi('/users/$userId')
+const { userId } = userRouteApi.useParams()
+const { tab } = userRouteApi.useSearch()
 ```
 
 Inside the route file use `Route.useParams()` / `Route.useSearch()`. Catch-all splat routes (`routes/posts/$.tsx`) expose the remainder as `_splat`.

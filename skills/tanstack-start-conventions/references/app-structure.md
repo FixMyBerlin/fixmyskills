@@ -85,7 +85,7 @@ Owned by skill **`tanstack-router-conventions`** (`validateSearch`, `router.tsx`
   - **Shared** (route + `navigate({ search })`, components, or multiple routes): `shared/<domain>/searchSchemas.ts`, or `shared/routing/` for cross-cutting params (e.g. back links). Not `*.server.ts` — routes and components import from `shared/`.
 - Colocate search hooks under `components/` when they wrap `Route.useSearch()` + `navigate({ search })`.
 
-Do not add nuqs on greenfield TanStack routes. Skill `nuqs` covers Next.js and legacy interop only.
+No nuqs in TanStack Router apps; use route search params. Skill `nuqs` is for Vite apps without TanStack Router.
 
 ## Client state (Zustand)
 

@@ -48,6 +48,6 @@ Stack conventions for **TanStack Router** apps (Vite SPA or the router layer of 
 | TanStack Start (SSR, server) | `tanstack-start-conventions` |
 | Auth / session (Start)       | `tanstack-start-auth`        |
 | Zustand                      | `zustand-state-management`   |
-| nuqs (Next.js / legacy only) | `nuqs`                       |
+| URL state without the router | `nuqs`                       |
 | React TS / Compiler          | `react-dev`                  |
 | Map component + URL sync     | `react-map-gl`               |

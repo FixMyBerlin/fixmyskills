@@ -56,5 +56,5 @@ Auth flows: skill `tanstack-start-auth`.
 | Auth / session                     | `tanstack-start-auth`                                       |
 | Bun install / nvm                  | `tech-stack` -> bun-install                                 |
 | Zustand                            | `zustand-state-management`                                  |
-| nuqs (Next.js)                     | `nuqs`                                                      |
+| URL state without TanStack Router  | `nuqs`                                                      |
 | Leftover placement after refactors | `unslop-code` Phase 6 -> `references/component-location.md` |
