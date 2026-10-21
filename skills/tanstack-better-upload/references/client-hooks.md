@@ -1,10 +1,10 @@
 # Better Upload — client hooks
 
-`@better-upload/client` hooks — no react-dropzone dependency. Wire any file input: `<input onChange>`, button + picker, or optional [dropzone-ui.md](dropzone-ui.md) for multi-file drag-and-drop.
+`@better-upload/client` hooks. Wire any file input: `<input onChange>`, button + picker, or optional [dropzone-ui.md](dropzone-ui.md).
 
 ## useUploadFiles (multiple files)
 
-Primary hook for **multi-file** uploads with batch progress. Wire it to a multi-select `<input type="file" multiple>` or, for drag-and-drop, the dropzone in [dropzone-ui.md](dropzone-ui.md).
+Primary hook for **multi-file** uploads with batch progress.
 
 ```tsx
 import { useUploadFiles } from '@better-upload/client'
@@ -76,20 +76,15 @@ await createUploadFn({
 upload(files, { metadata: { surveyResponseId, surveySessionId } })
 ```
 
-Read on server as `clientMetadata` in `onBeforeUpload`.
+Read on server as `clientMetadata` in `onBeforeUpload`. It is a client hint only — validate it there with Zod ([server-router.md](server-router.md)).
 
 ## useUploadFile (single file)
 
-For button + single file picker — **no react-dropzone**. Use `useUploadFile` with `UploadHookControl<false>`.
+For button + single file picker. Use `useUploadFile` with `UploadHookControl<false>`.
 
 ## TanStack Query integration
 
-**Recommended FMC split:**
-
-- **Upload bytes:** `useUploadFiles` (progress, presign, S3)
-- **Persist metadata:** `useMutation({ mutationFn: createUploadFn })` inside `onUploadComplete` (usually wrapped as `createUploadRecord(file)`, see above)
-
-Alternative (manual progress): `uploadFiles()` / `uploadFile()` inside `useMutation` — only without `UploadHookControl` UI. Prefer `useUploadFiles` when you need progress UI ([troubleshooting.md](troubleshooting.md)).
+Bytes go through `useUploadFiles`; the DB row is `useMutation({ mutationFn: createUploadFn })` inside `onUploadComplete` (wrapped as `createUploadRecord(file)`, see above). `uploadFiles()` / `uploadFile()` inside `useMutation` only when there is no `UploadHookControl` UI — otherwise prefer `useUploadFiles`.
 
 ## Helpers
 
