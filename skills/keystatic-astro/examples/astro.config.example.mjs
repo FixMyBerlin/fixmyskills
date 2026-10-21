@@ -3,9 +3,9 @@
 // Which we have to do manually, see https://docs.astro.build/en/guides/configuring-astro/#environment-variables
 //
 // USAGE:
-// `npm run dev` — Keystatic enabled, Netlify adapter optional
-// `npm run build` — based on `.env`: CMS host (Keystatic + adapter) vs static production host (no Keystatic)
-// `npm run build:local && npm run serve` — test the static production build locally
+// `bun run dev` — Keystatic enabled, Netlify adapter optional
+// `bun run build` — based on `.env`: CMS host (Keystatic + adapter) vs static production host (no Keystatic)
+// `bun run build:local && bun run serve` — test the static production build locally
 //
 // Astro v5+ removed `output: 'hybrid'`. Use `output: 'static'` (default). On-demand routes use an adapter
 // and `export const prerender = false` where needed. See https://docs.astro.build/en/guides/on-demand-rendering/

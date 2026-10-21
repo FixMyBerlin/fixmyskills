@@ -5,7 +5,6 @@ description: >-
   collection structure, glob loaders, MDX blocks, and remote/fetched collections. Use
   when scaffolding or changing Keystatic collections, Astro content.config.ts,
   keystatic.config, MDX blocks, or build-time API-backed content.
-disable-model-invocation: true
 ---
 
 # Keystatic + Astro
@@ -38,8 +37,8 @@ Do not duplicate upstream Keystatic or Astro API reference in this skill.
 | ------------------------------- | ------------------------------- | ------------------------------------------------------------------------ |
 | Keystatic root                  | `keystatic.config.ts` or `.tsx` | Storage, UI nav, GitHub repo, brand — site values inline here            |
 | Astro content registry          | `src/content.config.ts`         | Exports `collections = { ... }` from all `*Astro*` definitions           |
-| Per-collection Keystatic schema | `cms/{name}.keystatic.ts(x)`    | `collection()` / `singleton()`                                           |
-| Per-collection Astro schema     | `cms/{name}.astro.ts(x)`        | `defineCollection()` + `loader` + Zod schema                             |
+| Per-collection Keystatic schema | `cms/{name}Keystatic.ts`        | `collection()` / `singleton()`                                           |
+| Per-collection Astro schema     | `cms/{name}Astro.ts`            | `defineCollection()` + `loader` + Zod schema                             |
 | Astro integration               | `astro.config.mjs`              | Start from [astro.config.example.mjs](examples/astro.config.example.mjs) |
 | Glob loader helper              | `cms/utils/loader.ts`           | Wraps `glob()` from `astro/loaders`                                      |
 
@@ -73,8 +72,8 @@ Every Keystatic-managed collection gets **two paired files**:
 
 | File                     | Exports                                                           | Role                                                    |
 | ------------------------ | ----------------------------------------------------------------- | ------------------------------------------------------- |
-| `{name}.keystatic.ts(x)` | `keystatic{Name}Config`, `basePath` / `contentBase`, shared enums | Keystatic schema, paths, CMS labels                     |
-| `{name}.astro.ts(x)`     | `astro{Name}Definition`                                           | Astro `defineCollection`, Zod schema, required `loader` |
+| `{name}Keystatic.ts`     | `keystatic{Name}Config`, `basePath` / `contentBase`, shared enums | Keystatic schema, paths, CMS labels                     |
+| `{name}Astro.ts`         | `astro{Name}Definition`                                           | Astro `defineCollection`, Zod schema, required `loader` |
 
 Register both in root configs:
 
@@ -82,6 +81,8 @@ Register both in root configs:
 - `src/content.config.ts` → imports all `astro*Definition` into `export const collections`
 
 Every Astro collection needs a **`loader`** (typically `glob()` or `file()` from `astro/loaders`, or a custom async loader). Import `z` from `astro/zod`.
+
+**File naming:** camelCase suffix, `.ts` by default: `{name}Keystatic.ts`, `{name}Astro.ts`, `{name}Schema.ts` (e.g. `postsKeystatic.ts`, `postsAstro.ts`). Use `.tsx` only when the file contains JSX (custom field or preview components), not for plain schema files.
 
 **Export naming:**
 
@@ -91,14 +92,14 @@ Every Astro collection needs a **`loader`** (typically `glob()` or `file()` from
 Export shared enums and paths from the Keystatic file; import them in Astro:
 
 ```ts
-// faqs.keystatic.ts
+// faqsKeystatic.ts
 export const categoryEnumAndOrder = ['Allgemein', 'Planung & Bau', ...] as const
 export const basePath = 'src/content/faqs'
 
-// faqs.astro.ts
+// faqsAstro.ts
 import { defineCollection } from 'astro:content'
 import { z } from 'astro/zod'
-import { basePath, categoryEnumAndOrder } from './faqs.keystatic'
+import { basePath, categoryEnumAndOrder } from './faqsKeystatic'
 import { loader } from './utils/loader'
 
 export const astroFaqsDefinition = defineCollection({
@@ -117,8 +118,8 @@ All collection and singleton definitions live in `cms/` at the project root.
 
 | Concern                        | Location                                   | Pattern                                                                         |
 | ------------------------------ | ------------------------------------------ | ------------------------------------------------------------------------------- |
-| Shared Zod (API + Astro)       | `{name}.schema.ts`                         | API response + collection validation                                            |
-| Local variant of remote schema | `{name}Schema.ts`                          | extends/omits/transforms remote schema for CMS                                  |
+| Shared Zod (API + Astro)       | `{name}Schema.ts`                          | API response + collection validation                                            |
+| Local variant of remote schema | `local{Name}Schema.ts`                     | extends/omits/transforms the remote schema for CMS (e.g. `localCampaignsSchema.ts`) |
 | Glob loader helper             | `cms/utils/loader.ts`                      | reused by all local file collections                                            |
 | MDX block registry (CMS)       | `cms/components/mdxComponentsKeystatic.ts` | `mdxComponentsKeystatic('faqs')` per context                                    |
 | MDX block registry (site)      | `cms/components/mdxComponentsAstro.astro`  | passed to `<Content components={...} />`                                        |
@@ -257,8 +258,8 @@ Astro: [Images in content collections](https://docs.astro.build/en/guides/images
 
 ## Checklist: add a new local collection
 
-1. Create `{name}.keystatic.ts` — export `basePath`, enums, `keystatic{Name}Config`
-2. Create `{name}.astro.ts` — import shared exports, `defineCollection` with `loader(basePath, format)` and Zod schema
+1. Create `{name}Keystatic.ts` — export `basePath`, enums, `keystatic{Name}Config`
+2. Create `{name}Astro.ts` — import shared exports, `defineCollection` with `loader(basePath, format)` and Zod schema
 3. Register in `keystatic.config.*` (collections or singletons) and `src/content.config.ts`
 4. Add UI navigation entry in `keystatic.config.*` `ui.navigation`
 5. Create `src/content/{name}/` folder (or let Keystatic create on first save)
@@ -276,7 +277,7 @@ Astro: [Images in content collections](https://docs.astro.build/en/guides/images
 ## Anti-patterns
 
 - Using `createReader` — use Astro Content Layer instead
-- Duplicating enums/paths between Keystatic and Astro files — export from `.keystatic.ts`
+- Duplicating enums/paths between Keystatic and Astro files — export from `{name}Keystatic.ts`
 - Enabling `@keystatic/astro` in static production builds
 - Native MDX images when using custom blocks — always `options: { image: false }`
 - Adding remote-only collections to Keystatic unless editors need readonly visibility (pattern C)

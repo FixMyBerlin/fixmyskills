@@ -4,6 +4,8 @@ Build-time API data loaded through Astro content collections, not Keystatic.
 
 Astro: [Custom build-time loaders](https://docs.astro.build/en/guides/content-collections/#custom-build-time-loaders) · [Content Loader API](https://docs.astro.build/en/reference/content-loader-reference/)
 
+**Loader contract (Astro 5+):** `defineCollection({ loader })` takes either a `Loader` object (what `glob()` and `file()` return) or a function `() => Promise<entries>` that returns an array of entries with a string `id` (or an object keyed by id). A function-form loader must return **entries**, never a `Loader` object. `file()` and `glob()` are loader factories: their return value is not data and cannot be parsed or returned from a function loader.
+
 ## Decision flow
 
 ```
@@ -55,40 +57,55 @@ export const astroRemoteItemsDefinition = defineCollection({
 - Document in script README why fallback exists
 
 ```ts
+import { readFile } from 'node:fs/promises'
+
 loader: async () => {
-  function fallback() {
-    const json = file('src/content/{name}/index.json')
+  // `file()` returns a Loader object, not data. Read the committed JSON with fs instead.
+  async function fallback() {
+    const json = JSON.parse(await readFile('src/content/{name}/index.json', 'utf-8'))
     return ApiSchema.parse(json).features
   }
   const raw = await fetch(apiUrl)
   if (!raw.ok) return fallback()
-  const features = await enrich(await raw.json())
+  const features = await enrich(ApiSchema.parse(await raw.json()).features)
   if (features.length === 0) return fallback()
   return features
 }
 ```
 
+Each returned feature needs a string `id`. If the fallback file is a plain array of entries with `id`, it can instead be the whole loader for offline builds: `loader: file('src/content/{name}/index.json')`.
+
 ## Pattern C — Fetch-to-disk + glob
 
-**Files:** `{name}.astro.ts`, `{name}.keystatic.tsx`, `{name}.schema.ts`
+**Files:** `{name}Astro.ts`, `{name}Keystatic.ts`, `{name}Schema.ts`
 
 Flow:
 
 1. Loader calls `fetchAndStore()` — hits API, writes `src/content/{name}/{id}.json`
 2. Optionally writes aggregate cache to `src/content_cache/`
 3. Removes JSON files for IDs no longer in API
-4. Returns `loader(basePath, 'json')` so Astro reads cached files like normal content
+4. Hands the `glob()` loader (`loader(basePath, 'json')`) to `defineCollection`, so Astro reads the cached files like normal content
 
 **Keystatic:** readonly collection with `[READONLY]` labels — editors see data and can use `fields.relationship` from other collections, but must not hand-edit.
 
 **Why disk cache:** Git-tracked files, Keystatic visibility, relationship slugs, same consumption path as local JSON collections.
 
 ```ts
+export const astroRemoteItemsDefinition = defineCollection({
+  // Top-level await: `customLoader()` resolves to a Loader object (from glob()), which is what
+  // `loader` accepts. Do NOT pass the function itself as `loader`: a function-form loader must
+  // return entries, not a Loader.
+  loader: await customLoader(),
+  schema: () => RemoteItemSchema,
+})
+
 async function customLoader() {
-  await fetchAndStore()
+  await fetchAndStore() // runs when the content config is evaluated
   return loader(basePath, 'json')
 }
 ```
+
+Because the fetch runs while `content.config.ts` is evaluated (including `astro sync` and dev start), keep it fail-fast. Alternative without top-level await: wrap `glob()` in an object loader whose `load(context)` calls `fetchAndStore()` and then `await inner.load(context)`.
 
 ## Pattern D — Local CMS + remote merge
 
@@ -128,7 +145,7 @@ export type Item = CollectionEntry<'localItems'> | CollectionEntry<'remoteItems'
 ## Adding a remote collection (steps)
 
 1. Define Zod schema matching API payload; include stable `id` per entry
-2. Create `cms/{name}Astro.ts` with async loader
+2. Create `cms/{name}Astro.ts` with an async function loader that returns entries (or, for pattern C, `await customLoader()` as above)
 3. Register in `src/content.config.ts` — **do not** add to `keystatic.config`
 4. Choose error strategy: throw (A), fallback file (B), or write-to-disk (C)
 5. If editors need a local variant: separate Keystatic collection + shared schema + page merge (D)
