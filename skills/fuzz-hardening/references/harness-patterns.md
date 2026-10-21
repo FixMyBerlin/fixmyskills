@@ -66,21 +66,20 @@ Build the valid-shaped generator by hand from the schema's fields — do not add
 
 ## API route handler
 
-`server.handlers` receive `{ request, params, context }` (see `tanstack-start-conventions` → `params-search-api-routes.md`), not a bare `Request`. Export the handler as a named function in the route file (`export const exportPOST = async ({ request }: { request: Request }) => ...` and `handlers: { POST: exportPOST }`), then fuzz that export with one `Request` per run. Assert on the status, not the body.
+Route files export only `Route`, and helpers do not live under `routes/` (`tanstack-router-conventions`, `tanstack-start-conventions`). So move the handler body into a plain function in the domain folder, call it from `server.handlers` (`POST: ({ request }) => handleExportPost(request)`), and fuzz that function with one `Request` per run. Assert on the status, not the body.
 
 ```ts
-import { exportPOST } from '@/routes/api/export'
+import { handleExportPost } from '@/server/export/handleExportPost'
 
 const bodies = fc.oneof(fc.json(), fc.string({ unit: 'binary' }), fc.constant(''))
 
 test.prop([bodies], { numRuns: fuzzRuns })('POST /api/export never answers 5xx', async (body) => {
-  const request = new Request('http://test/api/export', { method: 'POST', body })
-  const res = await exportPOST({ request })
+  const res = await handleExportPost(new Request('http://test/api/export', { method: 'POST', body }))
   expect(res.status).toBeLessThan(500)
 })
 ```
 
-If the handler reads the session or other context, either stub it the way `playwright-skill` / `tanstack-start-auth` stub auth, or extract the body handling into a plain `(body: unknown) => Response` function and fuzz that — the cheaper option.
+If the handler needs the session, pass it in as a second parameter and give the harness a fixed stub user — do not fuzz auth here.
 
 ## Search params round-trip
 
