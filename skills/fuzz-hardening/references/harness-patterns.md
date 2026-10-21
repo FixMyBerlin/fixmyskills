@@ -2,12 +2,14 @@
 
 Copy the pattern that fits the target, adapt names. Keep each harness to the one or two invariants that matter for it.
 
+Imports below use `@/`; match the project's alias or use relative paths.
+
 ## Shared run count
 
 `src/test/fuzz.ts` (or next to the existing test helpers):
 
 ```ts
-// 100 runs inside the normal test run; `bun run test:fuzz` sets FUZZ_RUNS for a deep run
+// 100 runs inside the normal test run; `bun run test-fuzz` sets FUZZ_RUNS for a deep run
 export const fuzzRuns = Number(process.env.FUZZ_RUNS ?? 100)
 ```
 
@@ -21,10 +23,15 @@ Pick per target. The first two cover most FMC boundaries.
 | ------------------- | ----------------------------------------------------------------------------------------- | --------------------------------------------------- |
 | **Rejects cleanly** | `schema.safeParse(anything)` never throws (custom `.transform` / `.refine` code can)      | Server function / API route input schemas           |
 | **Accepted ⇒ safe** | Whatever the schema accepts, the handler logic runs without throwing; numbers stay finite | Handler logic behind the schema, geo calculations   |
-| **Round-trip**      | `parse(stringify(x))` deep-equals `x`                                                     | `routerSearch`, custom search serializers, encoders |
+| **Round-trip**      | `parse(stringify(x))` deep-equals `x` (or its normalized form, see search params)         | `routerSearch`, custom search serializers, encoders |
 | **Idempotent**      | `f(f(x)) === f(x)`                                                                        | slugify, normalize, trim/clean helpers              |
 | **Bounded output**  | Result within known range (lng/lat ranges, 0–100 %, length ≤ limit)                       | Geo math, percentages, truncation                   |
 | **Differential**    | Two implementations agree within tolerance                                                | WASM vs Turf (`rust-wasm-geo`), old vs new refactor |
+
+## Generators: valid-shaped vs hostile
+
+- **Hostile** generators (`fc.anything()`, `fc.string({ unit: 'binary' })`, broken JSON) go into **rejects cleanly** harnesses. No `fc.pre` there — every value must produce a clean result.
+- **Valid-shaped** generators go into **accepted ⇒ safe** harnesses. Build them so the schema accepts most values; use `fc.pre(parsed.success)` only to drop the odd stray. fast-check aborts the property when skips exceed 100× `numRuns` ("too many pre-condition failures") — that is a generator bug, not a code bug.
 
 ## Server function input
 
@@ -43,14 +50,14 @@ test.prop([fc.anything()], { numRuns: fuzzRuns })('updateNoteInput rejects garba
 
 // Valid-shaped: fields of the right kind with hostile content
 const noteLike = fc.record({
-  id: fc.oneof(fc.integer(), fc.string()),
-  title: fc.string({ unit: 'binary' }), // includes lone surrogates, control chars
-  body: fc.option(fc.string({ maxLength: 10_000 })),
+  id: fc.integer({ min: 1 }),
+  title: fc.string({ unit: 'binary', maxLength: 200 }), // includes lone surrogates, control chars
+  body: fc.option(fc.string({ maxLength: 10_000 }), { nil: undefined }),
 })
 
 test.prop([noteLike], { numRuns: fuzzRuns })('accepted input builds a valid update', (input) => {
   const parsed = updateNoteInput.safeParse(input)
-  fc.pre(parsed.success) // only check inputs the schema lets through
+  fc.pre(parsed.success) // only drops the odd value the schema refuses
   expect(() => buildNoteUpdate(parsed.data)).not.toThrow()
 })
 ```
@@ -59,23 +66,25 @@ Build the valid-shaped generator by hand from the schema's fields — do not add
 
 ## API route handler
 
-Handlers take a `Request`; build one per run. Assert on the status, not the body.
+`server.handlers` receive `{ request, params, context }` (see `tanstack-start-conventions` → `params-search-api-routes.md`), not a bare `Request`. Export the handler as a named function in the route file (`export const exportPOST = async ({ request }: { request: Request }) => ...` and `handlers: { POST: exportPOST }`), then fuzz that export with one `Request` per run. Assert on the status, not the body.
 
 ```ts
-test.prop([fc.oneof(fc.json(), fc.string(), fc.constant(''))], { numRuns: fuzzRuns })(
-  'POST /api/export never answers 5xx',
-  async (body) => {
-    const res = await handleExport(new Request('http://test/api/export', { method: 'POST', body }))
-    expect(res.status).toBeLessThan(500)
-  },
-)
+import { exportPOST } from '@/routes/api/export'
+
+const bodies = fc.oneof(fc.json(), fc.string({ unit: 'binary' }), fc.constant(''))
+
+test.prop([bodies], { numRuns: fuzzRuns })('POST /api/export never answers 5xx', async (body) => {
+  const request = new Request('http://test/api/export', { method: 'POST', body })
+  const res = await exportPOST({ request })
+  expect(res.status).toBeLessThan(500)
+})
 ```
 
-If the handler needs auth/context, pass a stub context — see `playwright-skill` / `tanstack-start-auth` for the project's stub pattern.
+If the handler reads the session or other context, either stub it the way `playwright-skill` / `tanstack-start-auth` stub auth, or extract the body handling into a plain `(body: unknown) => Response` function and fuzz that — the cheaper option.
 
 ## Search params round-trip
 
-Every FMC router has `routerSearch.parse` / `routerSearch.stringify` (`tanstack-router-conventions` → `router-search-serialization.md`).
+Every FMC router has `routerSearch.parse` / `routerSearch.stringify` (`tanstack-router-conventions` → `router-search-serialization.md`). Its `parse` runs `JSON.parse` on each value, so the string `'241'` comes back as the number `241`, `'true'` as `true` — by design. A naive `parse(stringify(s)) == s` therefore fails on the first run. Test the stable form instead: one trip normalizes, the second must change nothing.
 
 ```ts
 const searchValue = fc.oneof(
@@ -87,8 +96,9 @@ const searchValue = fc.oneof(
 )
 const search = fc.dictionary(fc.string({ minLength: 1 }), searchValue, { maxKeys: 5 })
 
-test.prop([search], { numRuns: fuzzRuns })('routerSearch round-trips', (s) => {
-  expect(routerSearch.parse(routerSearch.stringify(s))).toEqual(s)
+test.prop([search], { numRuns: fuzzRuns })('routerSearch is stable after one round-trip', (s) => {
+  const once = routerSearch.parse(routerSearch.stringify(s))
+  expect(routerSearch.parse(routerSearch.stringify(once))).toEqual(once)
 })
 
 // Users edit URLs by hand: parsing any string must not throw
@@ -97,17 +107,23 @@ test.prop([fc.string({ unit: 'binary' })], { numRuns: fuzzRuns })('routerSearch.
 })
 ```
 
-Also round-trip each route's `validateSearch` schema with its own valid-shaped values when it has custom serializers (map viewport, filters).
+For a route's `validateSearch` schema, strict round-trip (`parse(stringify(x))` equals `x`) is the right invariant **after** Zod coercion: generate values the schema produces (strings via `z.coerce.string()`, enums, numbers) and compare parsed output to parsed output. Do this for routes with custom serializers (map viewport, filters).
 
 ## Geo input
+
+Two harnesses: hostile shapes for **rejects cleanly**, valid-shaped polygons for **accepted ⇒ safe**. Random positions almost never form a closed ring, so close the ring in the generator instead of hoping `fc.pre` lets enough through.
 
 ```ts
 const lng = fc.oneof(fc.double({ min: -180, max: 180, noNaN: true }), fc.constantFrom(-180, 180, 0, -0))
 const lat = fc.oneof(fc.double({ min: -90, max: 90, noNaN: true }), fc.constantFrom(-90, 90, 0, -0))
 const position = fc.tuple(lng, lat)
-// Mostly invalid rings on purpose: self-intersecting, unclosed, duplicates, too short
-const ring = fc.array(position, { minLength: 0, maxLength: 12 })
-const polygon = fc.record({ type: fc.constant('Polygon'), coordinates: fc.array(ring, { maxLength: 3 }) })
+
+// Valid-shaped: closed ring with ≥ 4 positions; still self-intersecting / degenerate often enough
+const closedRing = fc.array(position, { minLength: 3, maxLength: 12 }).map((ps) => [...ps, ps[0]])
+const polygon = fc.record({
+  type: fc.constant('Polygon' as const),
+  coordinates: fc.array(closedRing, { minLength: 1, maxLength: 3 }),
+})
 
 test.prop([polygon], { numRuns: fuzzRuns })('area is finite for any accepted polygon', (geom) => {
   const parsed = polygonSchema.safeParse(geom)
@@ -116,13 +132,24 @@ test.prop([polygon], { numRuns: fuzzRuns })('area is finite for any accepted pol
   expect(Number.isFinite(result)).toBe(true)
   expect(result).toBeGreaterThanOrEqual(0)
 })
-```
 
-Out-of-range coordinates (`fc.double()` unbounded, `NaN`, `Infinity`) go into the **rejects cleanly** harness for the schema.
+// Hostile: unclosed / short rings, out-of-range and non-finite coordinates
+const brokenPolygon = fc.record({
+  type: fc.constant('Polygon'),
+  coordinates: fc.array(fc.array(fc.tuple(fc.double(), fc.double()), { maxLength: 5 }), { maxLength: 3 }),
+})
+
+test.prop([fc.oneof(brokenPolygon, fc.anything())], { numRuns: fuzzRuns })(
+  'polygonSchema rejects broken geometry cleanly',
+  (geom) => {
+    expect(() => polygonSchema.safeParse(geom)).not.toThrow()
+  },
+)
+```
 
 ## With Postgres / PostGIS
 
-Only when the project already has a test database (compose service + test `DATABASE_URL`). Wrap each run in a transaction that rolls back.
+Only when the project already has a test database (compose service + test `DATABASE_URL`). Read-only checks like the one below need no cleanup. If a harness inserts, run each iteration inside `prisma.$transaction(async (tx) => { ...; throw new Rollback() })` and catch `Rollback`, so nothing persists.
 
 ```ts
 test.prop([polygon], { numRuns: Math.min(fuzzRuns, 200) })(
@@ -144,6 +171,8 @@ A failure here means the Zod schema accepts geometry PostGIS rejects or stores i
 fast-check prints the shrunk counterexample and `{ seed, path }`. After the fix, add a plain example test next to the property so the case runs forever, independent of the random seed:
 
 ```ts
+import { expect, it } from 'vitest'
+
 it('regression: title with lone surrogate (fuzz)', () => {
   expect(updateNoteInput.safeParse({ id: 1, title: '\uD800' }).success).toBe(false)
 })
@@ -174,7 +203,7 @@ jobs:
       - uses: actions/checkout@v6
       - uses: oven-sh/setup-bun@v2
       - run: bun install --frozen-lockfile
-      - run: bun run test:fuzz
+      - run: bun run test-fuzz
 ```
 
 Monorepo: add `working-directory:` per package. DB-backed harnesses need the project's Postgres service in this job too — copy it from the existing CI job, or leave those files out with a Vitest `exclude` for the scheduled run.
