@@ -20,7 +20,7 @@ agent-browser doctor                # verify daemon + browser launch
 
 ## Setup (user only)
 
-User-level config only — never commit MCP config to a repo ([postgres-mcp.md](postgres-mcp.md)).
+User-level config only ([postgres-mcp.md](postgres-mcp.md)).
 
 Use the same `agent-browser` server block in both clients (from [mcp.json.template](../examples/mcp.json.template)):
 

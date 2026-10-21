@@ -32,25 +32,20 @@ Load [references/llm-resources.md](references/llm-resources.md) **only for the a
 
 ## Specialized skills
 
-Prefer installed skill names when present; otherwise fetch from git.
+Refer to skills by name; install missing ones with the command above.
 
-| Area                                      | Skill                         | GitHub                                                                                                                              |
-| ----------------------------------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| Rust/WASM geo                             | `rust-wasm-geo`               | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/rust-wasm-geo>                                                         |
-| Maps (react-map-gl)                       | `react-map-gl`                | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/react-map-gl>                                                          |
-| React TS patterns, useEffect discipline   | `react-dev`                   | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/react-dev>                                                             |
-| TanStack Router (search, loaders, Query)  | `tanstack-router-conventions` | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/tanstack-router-conventions>                                           |
-| Router search params (UI routes)          | —                             | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-router-conventions/references/params-search-ui-routes.md>     |
-| Router search serialization (pretty URLs) | —                             | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-router-conventions/references/router-search-serialization.md> |
-| Router + Query loaders                    | —                             | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-router-conventions/references/router-and-query.md>            |
-| Devtools debug panel                      | —                             | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-router-conventions/references/devtools.md>                    |
-| TanStack Start (boundaries, SSR, server)  | `tanstack-start-conventions`  | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/tanstack-start-conventions>                                            |
-| App folder layout (Start)                 | —                             | <https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-start-conventions/references/app-structure.md>                |
-| URL state (with TanStack Router)          | `tanstack-router-conventions` | `params-search-ui-routes.md`                                                                                                        |
-| URL state (Vite app without Router)       | `nuqs`                        | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/nuqs>                                                                  |
-| Client global state                       | `zustand-state-management`    | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/zustand-state-management>                                              |
-| Prisma schema naming, migrations          | `prisma`                      | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/prisma>                                                                |
-| E2E / Playwright                          | `playwright-skill`            | <https://github.com/FixMyBerlin/fixmyskills/tree/main/skills/playwright-skill>                                                      |
+| Area                                     | Skill                                                                                                                                                      |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rust/WASM geo                            | `rust-wasm-geo`                                                                                                                                            |
+| Maps (react-map-gl)                      | `react-map-gl`                                                                                                                                             |
+| React TS patterns, useEffect discipline  | `react-dev`                                                                                                                                                |
+| TanStack Router (search, loaders, Query) | `tanstack-router-conventions` (refs: `params-search-ui-routes.md`, `router-search-serialization.md` for pretty URLs, `router-and-query.md`, `devtools.md`) |
+| TanStack Start (boundaries, SSR, server) | `tanstack-start-conventions` (ref: `app-structure.md` for folder layout)                                                                                   |
+| URL state (with TanStack Router)         | `tanstack-router-conventions` → `params-search-ui-routes.md`                                                                                               |
+| URL state (Vite app without Router)      | `nuqs`                                                                                                                                                     |
+| Client global state                      | `zustand-state-management`                                                                                                                                 |
+| Prisma schema naming, migrations         | `prisma`                                                                                                                                                   |
+| E2E / Playwright                         | `playwright-skill`                                                                                                                                         |
 
 ## Runtime and build
 
@@ -73,7 +68,7 @@ Prefer installed skill names when present; otherwise fetch from git.
 - **Scaffold (TS 7):** `package.json` — `devDependencies.typescript` `^7`, script `"type-check": "tsc --noEmit"` (add `-p` when using split tsconfigs); pin `@typescript/typescript-darwin-arm64` / `@typescript/typescript-linux-x64` in `optionalDependencies` at the same version when CI runs on a different platform than dev (the `typescript` package lists these as optional — extend for other platforms as needed). `bunfig.toml` — [bun-install.md](references/bun-install.md). Commit `.vscode/settings.json` (template: [examples/vscode.settings.typescript.json.template](examples/vscode.settings.typescript.json.template)) and recommend the **TypeScript 7** extension in `.vscode/extensions.json` ([examples/vscode.extensions.json.template](examples/vscode.extensions.json.template)).
 - **Monorepos:** when TypeScript lives in a package subfolder, prefix `js/ts.tsdk.path` to that package’s `node_modules/typescript` (e.g. `app/node_modules/typescript` — [tilda-geo](https://github.com/FixMyBerlin/tilda-geo/blob/develop/.vscode/settings.json)).
 - **Cursor / VS Code:** install **TypeScript 7** (`TypeScriptTeam.native-preview` — marketplace ID unchanged). Enable via command palette **TypeScript: Enable TypeScript 7** or the settings template. Copy [examples/vscode.settings.typescript.json.template](examples/vscode.settings.typescript.json.template) into `.vscode/settings.json` (merge with oxc keys from [references/oxc-config.md](references/oxc-config.md)). Toggle back with **Disable TypeScript 7 Language Server** when editor plugins still require TS 6 (Vue, Astro, Svelte, Angular templates — see release notes).
-- **Claude Code MCP (user-level):** `claude mcp add --scope user` only (`~/.claude.json`) — [examples/mcp.json.template](examples/mcp.json.template). Postgres: [references/postgres-mcp.md](references/postgres-mcp.md). Browser exploration: [references/agent-browser-mcp.md](references/agent-browser-mcp.md). Never commit MCP config to a repo.
+- **Claude Code MCP (user-level):** `claude mcp add --scope user` only (`~/.claude.json`) — [examples/mcp.json.template](examples/mcp.json.template). Postgres: [references/postgres-mcp.md](references/postgres-mcp.md). Browser exploration: [references/agent-browser-mcp.md](references/agent-browser-mcp.md).
 - **Claude Code rules (app-level):** copy [examples/package-json-scripts.md.template](examples/package-json-scripts.md.template) → `.claude/rules/package-json-scripts.md` on scaffold — [references/package-json-scripts.md](references/package-json-scripts.md)
 
 **Verify:** `node -e "console.log(require('typescript/package.json').version)"`, `tsc --version`, and `bun run type-check` — all 7.x. In the editor, confirm **TypeScript 7** is enabled (status bar / command palette). Do not add `typescript` to repos that have no TS source (e.g. this skills monorepo).
@@ -96,7 +91,7 @@ Use **two profiles** — do not merge app and scripts into one config.
 
 - `@types/bun` pinned to the Bun floor (`1.3.14`)
 - `bun-types` as a **direct** dep (`^` that floor) — `types` looks up the package name `bun-types`; `@types/bun` alone is not enough
-- `@types/web` if the config lists `"web"` — setting `types` turns off automatic `@types/*` inclusion, so DOM globals disappear unless `web` is installed and listed
+- `@types/web` if the config lists `"web"`
 
 Scripts profile (`types: ["bun-types"]`) still needs both `@types/bun` and `bun-types` even with no DOM. Bun scripts should use `Glob` / `Bun.file()`; that is only type-safe after these deps — otherwise agents fall back to `node:fs`.
 
@@ -118,7 +113,7 @@ Single-config repos (e.g. one root `tsconfig.json` covering app + scripts) are a
 
 Optional root `tsconfig.json` with `"references"` to both child configs.
 
-**ES2025:** `target` and `lib` stay in sync. `lib` adds typings only; new ES2025 **runtime** APIs in client bundles are not auto-polyfilled — use deliberately on the client; fine on server/Bun/scripts. Which browsers get that client bundle: [references/browser-target.md](references/browser-target.md).
+**ES2025:** `target` and `lib` stay in sync. New ES2025 **runtime** APIs: use deliberately on the client, fine on server/Bun/scripts. Which browsers get that client bundle: [references/browser-target.md](references/browser-target.md).
 
 Component typing, Compiler, oxlint React rules, and useEffect discipline: skill `react-dev`. Map camera, clicks, and layers: skill `react-map-gl` (not `useEffect` + `map.on()`).
 
@@ -136,14 +131,14 @@ Component typing, Compiler, oxlint React rules, and useEffect discipline: skill 
 | Local UI state                                         | `useState`                                                                                                  |
 | Prisma schema / migrations                             | skill `prisma` — naming, relation fields, migrate workflows                                                 |
 
-Loader + Query integration: [router-and-query.md](https://github.com/FixMyBerlin/fixmyskills/blob/main/skills/tanstack-router-conventions/references/router-and-query.md).
+Loader + Query integration: skill `tanstack-router-conventions` → `router-and-query.md`.
 
 ## Styling and UI
 
 - **CSS:** Tailwind CSS, `@tailwindcss/forms`, `@tailwindcss/typography`
 - **Class merging:** `tailwind-merge` with `twJoin`, `twMerge`
 - **Fonts:** Fontsource imports
-- **Accessibility:** semantic HTML; keyboard-accessible map controls; do not rely on color alone
+- **Accessibility:** semantic HTML; keyboard-accessible map controls
 
 ## Maps and geo (JS)
 
@@ -153,7 +148,7 @@ Stack choices only — map component patterns, layers, events, URL viewport: ski
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | Library         | `react-map-gl/maplibre` (not raw MapLibre in components)                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | Basemap         | [OpenFreeMap](https://openfreemap.org/); Maptiler if required                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
-| Coordinates     | WGS84, `[lng, lat]` at API boundaries; validate with Zod                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| Coordinates     | WGS84 at API boundaries; validate with Zod                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | Turf            | `@turf/*` per-function imports — not `import * as turf`                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
 | Feature editing | [`@osm-editor-kit/react-map-gl-draw`](https://github.com/osm-editor-kit/react-map-gl-draw/tree/main/packages/react-map-gl-draw) (controlled `value` / `onChange`, styles as layer styles); example: [tilda-geo drawing](https://github.com/FixMyBerlin/tilda-geo/tree/develop/app/src/components/regionen/pageRegionSlug/Map/Calculator/drawing). Used before, still a possible alternative: [TerraDraw](https://github.com/JamesLMilner/terra-draw) with [maplibre-gl-terradraw](https://github.com/watergis/maplibre-gl-terradraw) |
 
@@ -180,17 +175,3 @@ Turf vs WASM, crates, Vite wiring: skill `rust-wasm-geo`.
 | Cross-route, map, or auth flows | `playwright-skill`                                                                                           |
 | Pure logic / utils only         | Vitest — skip Playwright                                                                                     |
 | Explicit deps / dead exports    | [knip.md](references/knip.md) · verify scripts [package-json-scripts.md](references/package-json-scripts.md) |
-
-## Quick decisions
-
-```mermaid
-flowchart TD
-  start[Tech decision] --> maps{Maps involved?}
-  maps -->|yes| reactMapGl[react-map-gl skill]
-  maps -->|no| data{Server or URL state?}
-  data -->|server| tanstackQuery[router-and-query.md]
-  data -->|URL with Router| validateSearch[params-search-ui-routes.md]
-  data -->|URL no Router| nuqsSkill[nuqs skill]
-  data -->|client global| zustandSkill[zustand-state-management]
-  maps -->|slow geo compute| rustWasm[rust-wasm-geo skill]
-```
