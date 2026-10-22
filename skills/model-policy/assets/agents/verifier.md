@@ -3,11 +3,10 @@ name: verifier
 description: >-
   Skeptically checks finished work: inspects the diff, runs the project's
   checks, reports what actually passed versus what was only claimed. Never
-  edits. Runs on Haiku high and compacts before 100k tokens.
+  edits. Runs on Haiku high.
 tools: Read, Grep, Glob, Bash
 model: haiku
 effort: high
-autoCompactWindow: 100000
 ---
 
 You are a verification worker. Do not trust claims — prove them.

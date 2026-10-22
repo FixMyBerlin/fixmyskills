@@ -24,7 +24,7 @@ Orchestrate only. Do not implement, grep the tree yourself, or commit. Spawn sub
 
 ## Models
 
-Workers are the agents from skill `model-policy`: Haiku `high`, compacting at 100k, so pass no `model` or `effort` for them. If the Agent tool lists no `implementer`, model-policy is not installed: pass `model: haiku`, `effort: high` on every worker call (this skill explicitly asks for that effort), including `Explore` — the built-in one otherwise runs on the session model — and use `general-purpose` in place of `implementer` and `verifier` (verifier: no edits).
+Workers are the agents from skill `model-policy`: Haiku `high`, so pass no `model` or `effort` for them. If the Agent tool lists no `implementer`, model-policy is not installed: pass `model: haiku`, `effort: high` on every worker call (this skill explicitly asks for that effort), including `Explore` — the built-in one otherwise runs on the session model — and use `general-purpose` in place of `implementer` and `verifier` (verifier: no edits).
 
 | Role               | Agent call                   |
 | ------------------ | ---------------------------- |

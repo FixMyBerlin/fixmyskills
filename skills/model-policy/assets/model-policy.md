@@ -19,7 +19,7 @@ Never pick these yourself:
 
 ## Which agent gets which step
 
-Use the agents in `~/.claude/agents/`; they pin model, effort and the 100k compaction window. For anything else, pass `model` and `effort` on the Agent call — this file is an explicit instruction to set `effort`.
+Use the agents in `~/.claude/agents/`; they pin model and effort. For anything else, pass `model` and `effort` on the Agent call — this file is an explicit instruction to set `effort`.
 
 | Work                                                     | Agent                                                      |
 | -------------------------------------------------------- | ---------------------------------------------------------- |
@@ -35,6 +35,6 @@ A skill that sets its own steps (for example `unslop-code`) wins over this table
 
 When a subagent returns wrong or shallow work, re-run that brief one step up the list and say so in chat. Do not jump to Opus `high`. Above Opus `high`, stop and ask the user.
 
-## Keep Haiku under 100k tokens
+## Keep Haiku under 100k tokens, but finish
 
-Haiku 5.5 costs 5× more on every request whose prompt is over 100K tokens; cached tokens count. The agents above compact at 100k. Give each Haiku subagent a scoped brief (paths, what done looks like) and split work by folder or phase before one run needs more. When a run goes over anyway, let it finish: it is still 2–4× cheaper than Sonnet or Opus, and a re-run on another model starts with no cache. Escalate only when the work is wrong. Do not set `CLAUDE_CODE_AUTO_COMPACT_WINDOW`; it would also shrink the Opus session.
+Haiku 5.5 costs 5× more on every request whose prompt is over 100K tokens; cached tokens count. Keep each Haiku run under 100k, but finishing beats restarting: a run that goes over is still 2–4× cheaper than Sonnet or Opus, and a re-run on another model starts with no cache. Escalate only when the work is wrong. Give each Haiku subagent a scoped brief (paths, what done looks like) and split work by folder or phase before one run needs more. Do not set `CLAUDE_CODE_AUTO_COMPACT_WINDOW`; it would also shrink the Opus session.
