@@ -4,9 +4,11 @@ description: >-
   Reviews React web apps for iPad and touchscreen usability with Tailwind CSS
   fixes. Audits touch targets, hover failures, touch-over list highlighting
   (Headless UI data-focus, Radix data-highlighted, inline rows), Safari/iPadOS
-  quirks, layout fluidity, and FMC cursor conventions. Use when the user asks to
-  review an app for touch, iPad, tablet, or touchscreen-optimized usage.
-disable-model-invocation: true
+  quirks, layout fluidity, and FMC cursor conventions, and says how to make a
+  React + Tailwind app shell feel like a native iOS app: press feedback, keyboard,
+  bottom sheets, springs, navigation. Use when the user asks to review an app for
+  touch, iPad, tablet, or touchscreen-optimized usage, or to build or improve a
+  mobile version that should feel like an app.
 ---
 
 # Touch & iPad review
@@ -14,6 +16,8 @@ disable-model-invocation: true
 Audit React + Tailwind apps for **finger-first** interaction on iPad and touch screens. Skip generic advice (use semantic HTML, be responsive, etc.) — only flag non-obvious gaps.
 
 **Checklist:** [references/tailwind-touch-checklist.md](references/tailwind-touch-checklist.md)
+
+**App feel on phones:** [references/ios-app-feel.md](references/ios-app-feel.md). Read it when building a mobile version, and when a review asks why an app feels like a website.
 
 ## When to run
 
