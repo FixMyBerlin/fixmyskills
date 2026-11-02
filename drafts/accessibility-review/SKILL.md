@@ -95,7 +95,7 @@ Workers must not skip verifier or finish-work unless the user explicitly asked f
 
 ### 5. Runtime verification
 
-Where possible, verify with browser automation (skill `playwright-skill`, agent-browser MCP, axe-core):
+Where possible, verify with browser automation (skill `playwright-skill`, built-in browser, axe-core):
 
 - Keyboard-only path through the flow
 - Focus order after navigation, dialog open/close, submit errors
@@ -137,7 +137,7 @@ Include executive summary: quick wins, design-system fixes, manual test checklis
 | `finish-work`         | `bun run check` + commit per chunk          |
 | `playwright-skill`    | Runtime a11y scans, E2E keyboard paths      |
 | `touch-ipad-review`   | Touch targets; overlaps AAA-inspired checks |
-| `tech-stack`          | Stack defaults, agent-browser MCP           |
+| `tech-stack`          | Stack defaults                              |
 | `react-dev`           | React 19 patterns, focus discipline         |
 
 ## Sources

@@ -1,6 +1,6 @@
 ---
 name: playwright-skill
-description: E2E testing and browser automation for TanStack Start apps (FMC/TILDA). Use @playwright/test for committed suites/CI; agent-browser MCP (skill tech-stack) for agent exploration; this skill for smoke tests, stubbed auth, map hooks, and quick ad-hoc scripts.
+description: E2E testing and browser automation for TanStack Start apps (FMC/TILDA). Use @playwright/test for committed suites/CI; Claude Code's built-in browser for agent exploration; this skill for smoke tests, stubbed auth, map hooks, and quick ad-hoc scripts.
 ---
 
 **Read the project’s `tests/README.md` first** — env vars, Docker, and scripts live there.
@@ -29,22 +29,22 @@ Playwright has **no** official `llms.txt` ([request closed](https://github.com/m
 
 ## Three layers (pick the right tool)
 
-| Layer                   | When                                                          | Where                                                                                              |
-| ----------------------- | ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
-| **Project E2E**         | Suites, CI, regression                                        | `@playwright/test` in `tests/*.spec.ts`, repo `playwright.config.ts`                               |
-| **Agent exploration**   | Interactive debugging, hydration, React tree, quick UI checks | **agent-browser MCP** — skill `tech-stack`, skill `tech-stack` → `references/agent-browser-mcp.md` |
-| **Ad-hoc** (this skill) | One-off scripts, external sites, no MCP                       | `/tmp/playwright-test-*.js` via `run.js`                                                           |
-| **DB schema / queries** | Inspecting tables                                             | Postgres MCP — skill `tech-stack` → `references/postgres-mcp.md`                                   |
+| Layer                   | When                                    | Where                                                                                |
+| ----------------------- | --------------------------------------- | ------------------------------------------------------------------------------------ |
+| **Project E2E**         | Suites, CI, regression                  | `@playwright/test` in `tests/*.spec.ts`, repo `playwright.config.ts`                 |
+| **Agent exploration**   | Interactive debugging, quick UI checks  | **Claude Code's built-in browser**; Cursor: `agent-browser` CLI — skill `tech-stack` |
+| **Ad-hoc** (this skill) | One-off scripts, external sites, no MCP | `/tmp/playwright-test-*.js` via `run.js`                                             |
+| **DB schema / queries** | Inspecting tables                       | Postgres MCP — skill `tech-stack` → `references/postgres-mcp.md`                     |
 
 For in-repo work, **prefer project E2E** for anything that should regress.
 
-### Boundaries (Playwright vs agent-browser)
+### Boundaries (Playwright vs built-in browser)
 
-| Concern                                      | `@playwright/test` (this skill)                 | agent-browser (tech-stack)    |
-| -------------------------------------------- | ----------------------------------------------- | ----------------------------- |
-| Regression, CI, stubbed auth, map test hooks | ✓                                               | —                             |
-| Hydration, React tree, quick UI debugging    | —                                               | ✓                             |
-| Maps (WebGL)                                 | `waitForMapLoad`, tile/network helpers, MapGrab | Annotated screenshots, `eval` |
+| Concern                                      | `@playwright/test` (this skill)                 | Built-in browser                              |
+| -------------------------------------------- | ----------------------------------------------- | --------------------------------------------- |
+| Regression, CI, stubbed auth, map test hooks | ✓                                               | —                                             |
+| Hydration, quick UI debugging                | —                                               | ✓                                             |
+| Maps (WebGL)                                 | `waitForMapLoad`, tile/network helpers, MapGrab | Screenshots, JavaScript on `window.__mainMap` |
 
 **tilda-geo smoke / stubbed-auth / map specs:** read [references/tilda-patterns.md](references/tilda-patterns.md) when writing them (env gating, smoke suite, stubbed-session flow, map steps, route fixtures).
 

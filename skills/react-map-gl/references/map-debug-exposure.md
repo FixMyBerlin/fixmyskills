@@ -19,7 +19,7 @@ declare global {
 }
 ```
 
-Inspect via `agent_browser_eval` or `page.evaluate`:
+Inspect via the built-in browser's JavaScript tool or `page.evaluate`:
 
 ```js
 window.__mainMap?.getZoom()
@@ -27,6 +27,6 @@ window.__mainMap?.getStyle().layers.map((layer) => layer.id)
 window.__mainMap?.queryRenderedFeatures({ layers: ['my-layer-id'] })
 ```
 
-Fallbacks without it: annotated screenshots, `agent_browser_react_tree`, `playwright-skill`.
+Fallbacks without it: screenshots, `playwright-skill`.
 
 Do not: expose in production; pass a `MapRef` to the helper (pass the MapLibre map); call before `onLoad` ([map-loaded-hook.md](map-loaded-hook.md)).

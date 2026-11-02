@@ -2,7 +2,6 @@
 //   claude mcp add-json --scope user <name> '<block>'
 // (stored in ~/.claude.json — never in a project .mcp.json).
 // Replace DATABASE_URL placeholders from local .env — never commit real credentials here.
-// Browser MCP: agent-browser — see references/agent-browser-mcp.md
 {
   "mcpServers": {
     "postgres-tilda-dev": {
@@ -10,14 +9,6 @@
       "args": ["-y", "@yawlabs/postgres-mcp@latest"],
       "env": {
         "DATABASE_URL": "postgresql://USER:PASSWORD@localhost:5432/postgres"
-      }
-    },
-    "agent-browser": {
-      "command": "/opt/homebrew/bin/agent-browser",
-      "args": ["mcp", "--tools", "core,react,debug"],
-      "env": {
-        "AGENT_BROWSER_ENABLE": "react-devtools",
-        "AGENT_BROWSER_HEADED": "true"
       }
     }
   }

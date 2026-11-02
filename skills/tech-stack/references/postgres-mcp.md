@@ -4,8 +4,6 @@
 
 Template: [examples/mcp.json.template](../examples/mcp.json.template)
 
-Browser exploration: [agent-browser-mcp.md](agent-browser-mcp.md)
-
 ## Setup (user only)
 
 **User scope only** (`--scope user`, stored in `~/.claude.json`). Never add Postgres MCP to a project `.mcp.json` — credentials must not be committed.
