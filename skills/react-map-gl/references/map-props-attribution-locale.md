@@ -12,21 +12,18 @@ Disable the default control on `<Map>` and mount your own child; this prevents d
 
 Static dataset sources can pass `attribution={attributionHtml}` on `<Source>`.
 
-### compact starts expanded — start closed after mount
+### compact starts expanded
 
 `compact` is **not** “start as the ⓘ button”. In MapLibre 6 (checked against 6.13.0, the version in tilda-geo) it means: use the compact `<details>` toggle, and collapse when the user pans. When the compact classes are applied, MapLibre sets `open` plus `.maplibregl-compact-show`, so the text is expanded. There is no `closedOnLoad` option ([maplibre-gl-js#7426](https://github.com/maplibre/maplibre-gl-js/issues/7426)).
 
-**FMC pattern** — reference implementation: tilda-geo `app/src/components/regionen/pageRegionSlug/Map/CollapseCompactAttributionOnMount.tsx` (rendered in `RegionMap.tsx`; first version in osmcha-frontend-v2 `views/map.tsx`). Render `<AttributionControl compact>`, then a sibling whose `useEffect` runs after `useControl` and removes `.maplibregl-compact-show`. Later `sourcedata` will not re-add that class once `.maplibregl-compact` is present. Click still expands; pan still collapses.
+**Option: start collapsed, for apps that are 100% about OSM.** In OSMCha or MAID all data is OSM and the whole app says so, so the map does not need to repeat it. Example: osmcha-frontend-v2 `views/map.tsx`. This is not an FMC default. tilda-geo and Trassenscout show more than OSM data, so they keep the attribution open.
 
-With a style **URL** (tilda: `/api/map-style`) the attribution is still empty when the control is added (`.maplibregl-attrib-empty`). MapLibre adds `.maplibregl-compact` + `.maplibregl-compact-show` only once the first attribution text arrives, after the mount effect ran. So the effect collapses right away if `.maplibregl-compact` is already there, and otherwise watches the class with a `MutationObserver` until it appears, collapses once and disconnects:
+Wrap the control in one `Attribution` component that returns `<AttributionControl compact>` and removes `.maplibregl-compact-show` in its own `useEffect`. `useControl` adds the control in a child effect, and child effects run before parent effects, so the control exists by then. Do not collapse in `onLoad`: `useControl` often mounts the control after `onLoad`. Later `sourcedata` will not re-add that class once `.maplibregl-compact` is present. Click still expands; pan still collapses.
+
+With a style **URL** the attribution is still empty when the control is added (`.maplibregl-attrib-empty`). MapLibre adds `.maplibregl-compact` + `.maplibregl-compact-show` only once the first attribution text arrives, after the mount effect ran. So the effect collapses right away if `.maplibregl-compact` is already there, and otherwise watches the class with a `MutationObserver`:
 
 ```tsx
-<Map id="mainMap" attributionControl={false} …>
-  <AttributionControl compact position="bottom-left" />
-  <CollapseCompactAttributionOnMount />
-</Map>
-
-export const CollapseCompactAttributionOnMount = () => {
+export const Attribution = () => {
   const { mainMap } = useMap() // keyed by <Map id="mainMap">
 
   useEffect(
@@ -50,11 +47,9 @@ export const CollapseCompactAttributionOnMount = () => {
     [mainMap],
   )
 
-  return null
+  return <AttributionControl compact position="bottom-left" />
 }
 ```
-
-Put the collapse sibling **after** `<AttributionControl>` so effects run after the control is added. Do not collapse in `onLoad` — react-map-gl `useControl` often mounts the control after `onLoad`.
 
 ## locale
 
@@ -74,6 +69,5 @@ FMC default: `<Map RTLTextPlugin={false} … />` on every Map. Never omit it: th
   // locale={{ … }}   // optional: German control strings
 >
   <AttributionControl compact position="bottom-left" />
-  <CollapseCompactAttributionOnMount /> {/* see compact starts expanded */}
 </Map>
 ```
