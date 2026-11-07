@@ -13,8 +13,10 @@ Pick **one** schedule and apply it to every `bun` and `github-actions` entry. If
 | Project                       | Schedule                                              |
 | ----------------------------- | ----------------------------------------------------- |
 | **FixMyCity** apps            | Weekly, Monday 07:00 Europe/Berlin (template default) |
-| **Private open-source** repos | First Friday of the month, 07:00 Europe/Berlin        |
+| **Private open-source** repos | First Thursday of the month, 07:00 Europe/Berlin      |
 | **Astro** sites               | Same as private OSS. Same template.                   |
+
+Thursday, not Friday: the weekly Claude usage window resets Friday 07:00, so the run lands while there is still budget for the review sweep.
 
 FixMyCity (already in the template):
 
@@ -31,7 +33,7 @@ Private OSS and Astro — replace that block with:
 ```yaml
 schedule:
   interval: cron
-  cronjob: '0 7 * * FRI#1'
+  cronjob: '0 7 * * THU#1'
   timezone: Europe/Berlin
 ```
 

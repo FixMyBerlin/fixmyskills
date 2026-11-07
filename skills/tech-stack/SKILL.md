@@ -159,7 +159,7 @@ Turf vs WASM, crates, Vite wiring: skill `rust-wasm-geo`.
 
 ## Dependency updates (Dependabot)
 
-- Schedule by project type — **AskUserQuestion** if unclear. FixMyCity: weekly Monday. Private OSS and Astro: first Friday of the month. Same template. Details: [dependabot.md](references/dependabot.md).
+- Schedule by project type — **AskUserQuestion** if unclear. FixMyCity: weekly Monday. Private OSS and Astro: first Thursday of the month. Same template. Details: [dependabot.md](references/dependabot.md).
 - **One open PR at a time** per ecosystem (`open-pull-requests-limit: 1`).
 - Template: [examples/dependabot.yml.template](examples/dependabot.yml.template)
 - **Reviewing and merging PRs:** skill `review-dependabot` (changelog triage, risk tiers, rebase merge)
