@@ -56,7 +56,7 @@ bunx skills add FixMyBerlin/fixmyskills --list
 Install all skills:
 
 ```bash
-bunx skills add FixMyBerlin/fixmyskills --all -g -a claude-code -y
+bunx skills add FixMyBerlin/fixmyskills --skill '*' -g -a claude-code -y
 ```
 
 Install one skill:
