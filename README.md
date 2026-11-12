@@ -56,8 +56,10 @@ bunx skills add FixMyBerlin/fixmyskills --list
 Install all skills:
 
 ```bash
-bunx skills add FixMyBerlin/fixmyskills --all -g -a claude-code -y
+bunx skills add FixMyBerlin/fixmyskills --skill '*' -g -a claude-code -y
 ```
+
+Do not use `--all` here: it is shorthand for `--skill '*' --agent '*' -y`, so it ignores `-a claude-code` and links the skills into a dot-folder for every known agent (`~/.qwen`, `~/.roo`, `~/.trae`, … — over 40 of them).
 
 Install one skill:
 
