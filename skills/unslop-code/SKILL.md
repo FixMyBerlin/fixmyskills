@@ -33,7 +33,7 @@ Workers are the agents from skill `model-policy`: Haiku `high`, so pass no `mode
 | Implementer        | `subagent_type: implementer` |
 | Verifier           | `subagent_type: verifier`    |
 
-Keep each worker brief small enough that the worker stays under ~100k tokens of context; split a phase by folder before it gets bigger. When a Haiku worker returns wrong or shallow work, re-run that one brief as `general-purpose`, `model: sonnet`, `effort: high` and say so in chat. A worker that went over 100k but did the work right needs no re-run. The rest of the model and effort policy is the model-policy rule.
+Keep each worker brief small: split a phase by folder before it gets big. When a Haiku worker returns wrong or shallow work, re-run that one brief as `general-purpose`, `model: sonnet`, `effort: high` and say so in chat. A long worker run that did the work right needs no re-run. The rest of the model and effort policy is the model-policy rule.
 
 Each phase below is its **own** orchestrated unit: explore → implementer → verifier → **separate** skill `finish-work` commit. Do not batch phases into one worker.
 
