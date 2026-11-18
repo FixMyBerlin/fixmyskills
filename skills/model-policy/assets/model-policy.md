@@ -14,7 +14,7 @@ Pick the cheapest step you expect to do the work right:
 
 Use no other model or effort; `xhigh` and `max` only when the user names them for this task.
 
-Pass `model` and `effort` on every Agent call, except to agents that pin both. This file is the explicit instruction to set `effort`.
+Pass `model` and `effort` on every Agent call, except to agents that pin both and to `Plan`, which stays on the session model. This file is the explicit instruction to set `effort`.
 
 Work that needs your own step: do it yourself, unless a subagent keeps it parallel or out of your context.
 
