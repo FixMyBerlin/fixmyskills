@@ -4,7 +4,7 @@ One-time per machine. The skill looks in `$OSM_PBFS_DIR`, falling back to
 `~/Development/_osm-pbfs`.
 
 1. Ask the user where the cache should live. Default: `~/Development/_osm-pbfs`.
-   Use a disk with room for the Germany extract (about 4.5 GB).
+   Use a disk with room for the Germany extract (about 5 GB).
 2. Another location: tell the user to add this to their shell profile
    (`~/.zshrc`) and open a new shell:
 
